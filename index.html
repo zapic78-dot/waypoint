@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waypoint — Fixed-Price Transfers</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --ink:#11161C;
+  --ink-soft:#2A323C;
+  --paper:#F6F4EF;
+  --paper-dim:#ECE9E1;
+  --signal:#E8542C;
+  --signal-dark:#C2431F;
+  --slate:#41566B;
+  --mist:#D9D5CB;
+  --success:#3F7D5C;
+  --danger:#B23A2E;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+h1,h2,h3,h4{
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:0.01em;
+  margin:0 0 .4rem 0;
+  line-height:1.05;
+}
+.mono{font-family:'IBM Plex Mono',monospace; letter-spacing:.02em;}
+p{line-height:1.5; color:var(--ink-soft);}
+a{color:inherit;}
+
+#topnav{
+  background:var(--ink);
+  color:var(--paper);
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:.85rem 1.5rem;
+  flex-wrap:wrap; gap:.5rem;
+}
+.brand{display:flex; flex-direction:column; cursor:pointer;}
+.brand .wordmark{
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:800; font-size:1.5rem; text-transform:uppercase; letter-spacing:.03em;
+  display:flex; align-items:center; gap:.4rem;
+}
+.brand .wordmark .dot{width:9px;height:9px;background:var(--signal);border-radius:50%;display:inline-block;}
+.brand .tagline{font-family:'IBM Plex Mono',monospace; font-size:.62rem; letter-spacing:.18em; color:#9aa3ad; text-transform:uppercase; margin-top:1px;}
+.navtabs{display:flex; gap:.25rem; flex-wrap:wrap;}
+.navtab{
+  font-family:'IBM Plex Mono',monospace; text-transform:uppercase; font-size:.72rem; letter-spacing:.08em;
+  padding:.5rem .85rem; cursor:pointer; color:#aab1b9; border-bottom:3px solid transparent; transition:.15s;
+  background:none; border-top:none; border-left:none; border-right:none;
+}
+.navtab:hover{color:var(--paper);}
+.navtab.active{color:var(--paper); border-bottom-color:var(--signal);}
+
+main{max-width:1080px; margin:0 auto; padding:2rem 1.5rem 4rem;}
+.view{display:none;}
+.view.active{display:block;}
+.section{margin-bottom:2.5rem;}
+.eyebrow{font-family:'IBM Plex Mono',monospace; font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; color:var(--signal); margin-bottom:.35rem; display:block;}
+
+.hero{padding:2.5rem 0 2rem; border-bottom:1px solid var(--mist);}
+.hero h1{font-size:clamp(2.1rem,5vw,3.4rem); max-width:14ch;}
+.hero p.lede{font-size:1.05rem; max-width:46ch; margin-bottom:1.5rem;}
+.hero-ctas{display:flex; gap:.75rem; flex-wrap:wrap;}
+.feature-row{display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; margin-top:2.25rem;}
+.feature{padding:1.1rem; border:1px solid var(--mist); background:var(--paper-dim);}
+.feature .num{font-family:'IBM Plex Mono',monospace; color:var(--signal); font-size:.75rem; margin-bottom:.4rem; display:block;}
+.feature h4{font-size:1rem; margin-bottom:.3rem;}
+.feature p{font-size:.88rem; margin:0;}
+.disclaimer{margin-top:2rem; padding:.85rem 1rem; border-left:3px solid var(--signal); background:var(--paper-dim); font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--ink-soft); line-height:1.5;}
+
+.route-line{display:flex; align-items:center; gap:.5rem; margin:.6rem 0; position:relative;}
+.route-line .stop{display:flex; flex-direction:column; min-width:0;}
+.route-line .stop .label{font-family:'IBM Plex Mono',monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--slate);}
+.route-line .stop .place{font-size:.85rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:140px;}
+.route-line .dot{width:9px; height:9px; border-radius:50%; background:var(--ink); flex-shrink:0;}
+.route-line .dot.end{background:var(--signal);}
+.route-line .track{flex:1; height:2px; background:var(--mist); position:relative; min-width:30px;}
+.route-line .icon{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); background:var(--paper); font-size:.95rem; padding:0 .2rem;}
+
+.card{background:#fff; border:1px solid var(--mist); padding:1.1rem 1.25rem; margin-bottom:.85rem;}
+.btn{
+  font-family:'IBM Plex Mono',monospace; text-transform:uppercase; font-size:.72rem; letter-spacing:.07em;
+  padding:.65rem 1.15rem; border:2px solid var(--ink); background:transparent; color:var(--ink);
+  cursor:pointer; transition:.15s;
+}
+.btn:hover{background:var(--ink); color:var(--paper);}
+.btn-primary{background:var(--signal); border-color:var(--signal); color:#fff;}
+.btn-primary:hover{background:var(--signal-dark); border-color:var(--signal-dark); color:#fff;}
+.btn-sm{padding:.4rem .75rem; font-size:.65rem;}
+.btn[disabled]{opacity:.4; cursor:not-allowed;}
+.btn[disabled]:hover{background:transparent; color:var(--ink);}
+
+form .field{margin-bottom:.85rem;}
+form label{display:block; font-family:'IBM Plex Mono',monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; color:var(--slate); margin-bottom:.3rem;}
+form input, form select{
+  width:100%; padding:.6rem .65rem; border:1px solid var(--mist); background:#fff; font-family:'Inter',sans-serif; font-size:.92rem;
+}
+form input:focus, form select:focus{outline:2px solid var(--signal); outline-offset:1px;}
+.field-row{display:grid; grid-template-columns:1fr 1fr; gap:.75rem;}
+fieldset{border:1px solid var(--mist); padding:1rem; margin-bottom:1rem;}
+legend{font-family:'IBM Plex Mono',monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; color:var(--slate); padding:0 .4rem;}
+
+.badge{
+  display:inline-block; font-family:'IBM Plex Mono',monospace; text-transform:uppercase; font-size:.65rem; letter-spacing:.06em;
+  padding:.22rem .55rem; border:1px solid var(--ink);
+}
+.badge-requested{border-color:var(--slate); color:var(--slate);}
+.badge-assigned{background:var(--signal); border-color:var(--signal); color:#fff;}
+.badge-enroute{background:var(--ink); border-color:var(--ink); color:var(--paper);}
+.badge-completed{background:var(--success); border-color:var(--success); color:#fff;}
+.badge-cancelled{border-color:var(--mist); color:#9a958a; text-decoration:line-through;}
+.badge-pending{border-color:#b58a2e; color:#b58a2e;}
+.badge-active{background:var(--success); border-color:var(--success); color:#fff;}
+.badge-rejected{border-color:var(--danger); color:var(--danger);}
+
+.stepper{display:flex; align-items:center; margin:.7rem 0; flex-wrap:wrap;}
+.step{font-family:'IBM Plex Mono',monospace; font-size:.62rem; text-transform:uppercase; letter-spacing:.06em; color:#b8b2a4; padding-bottom:4px; border-bottom:2px solid var(--mist); margin-right:.5rem; padding-right:.5rem;}
+.step.done{color:var(--ink); border-bottom-color:var(--ink);}
+.step.now{color:var(--signal); border-bottom-color:var(--signal);}
+
+.fare-box{border:1px solid var(--ink); background:var(--paper-dim); padding:1rem 1.1rem; margin:1rem 0;}
+.fare-row{display:flex; justify-content:space-between; font-size:.8rem; color:var(--ink-soft); padding:.18rem 0;}
+.fare-row.total{border-top:1px solid var(--ink); margin-top:.4rem; padding-top:.5rem; font-size:1rem; font-weight:700; color:var(--ink);}
+.fare-row .v{font-family:'IBM Plex Mono',monospace;}
+.fare-note{font-family:'IBM Plex Mono',monospace; font-size:.65rem; color:var(--signal); margin-top:.3rem;}
+
+.offer{display:flex; justify-content:space-between; align-items:center; padding:.6rem .8rem; border:1px solid var(--mist); margin-bottom:.5rem; background:var(--paper-dim);}
+.offer .driver{font-weight:600; font-size:.88rem;}
+.offer .meta{font-family:'IBM Plex Mono',monospace; font-size:.68rem; color:var(--slate);}
+.offer .price{font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:1rem; margin-right:.75rem;}
+
+.subtabs{display:flex; gap:.3rem; border-bottom:1px solid var(--mist); margin-bottom:1.25rem; flex-wrap:wrap;}
+.subtab{font-family:'IBM Plex Mono',monospace; text-transform:uppercase; font-size:.72rem; letter-spacing:.06em; padding:.6rem .9rem; cursor:pointer; color:var(--slate); border-bottom:3px solid transparent; background:none; border-top:none;border-left:none;border-right:none;}
+.subtab.active{color:var(--ink); border-bottom-color:var(--signal);}
+
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--mist); border:1px solid var(--mist); margin-bottom:1.5rem;}
+.stat{background:#fff; padding:1rem;}
+.stat .n{font-family:'IBM Plex Mono',monospace; font-size:1.6rem; font-weight:600;}
+.stat .l{font-family:'IBM Plex Mono',monospace; font-size:.62rem; text-transform:uppercase; letter-spacing:.08em; color:var(--slate);}
+
+table{width:100%; border-collapse:collapse; font-size:.85rem;}
+th{font-family:'IBM Plex Mono',monospace; text-transform:uppercase; font-size:.62rem; letter-spacing:.07em; text-align:left; color:var(--slate); border-bottom:1px solid var(--ink); padding:.5rem .4rem;}
+td{padding:.55rem .4rem; border-bottom:1px solid var(--mist); vertical-align:middle;}
+
+.empty{border:1px dashed var(--mist); padding:1.5rem; text-align:center; color:var(--slate); font-size:.88rem;}
+
+#toast{position:fixed; bottom:1.25rem; right:1.25rem; background:var(--ink); color:var(--paper); padding:.75rem 1rem; font-family:'IBM Plex Mono',monospace; font-size:.78rem; letter-spacing:.03em; opacity:0; transform:translateY(8px); transition:.25s; pointer-events:none; max-width:280px; z-index:100;}
+#toast.show{opacity:1; transform:translateY(0);}
+
+select.online-toggle{width:auto; display:inline-block;}
+
+/* LocationIQ autocomplete dropdown */
+.liq-suggestions{
+  position:absolute;
+  top:100%;
+  left:0;
+  right:0;
+  background:#fff;
+  border:1px solid var(--ink);
+  border-top:none;
+  z-index:30;
+  max-height:240px;
+  overflow-y:auto;
+  display:none;
+  box-shadow:0 6px 14px rgba(0,0,0,0.08);
+}
+.liq-item{
+  padding:.55rem .7rem;
+  font-size:.85rem;
+  cursor:pointer;
+  border-bottom:1px solid var(--mist);
+  line-height:1.3;
+}
+.liq-item:last-child{border-bottom:none;}
+.liq-item:hover{background:var(--paper-dim);}
+.liq-empty{
+  padding:.7rem;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.72rem;
+  color:var(--slate);
+  text-align:center;
+}
+
+/* Legal banner at top */
+#legal-banner{
+  background:#FFF3E6;
+  color:#7A3E0F;
+  padding:.6rem 1rem;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.72rem;
+  letter-spacing:.04em;
+  text-align:center;
+  border-bottom:1px solid #F0D2A8;
+  position:relative;
+}
+#legal-banner strong{color:#5C2D08;}
+#legal-banner .close-banner{
+  position:absolute; right:.7rem; top:50%; transform:translateY(-50%);
+  background:none; border:none; cursor:pointer; font-size:1.1rem; color:#7A3E0F; line-height:1;
+}
+
+/* Footer with contact info */
+#site-footer{
+  background:var(--ink);
+  color:#9aa3ad;
+  padding:1.5rem;
+  font-size:.78rem;
+  border-top:4px solid var(--signal);
+}
+#site-footer .ft-grid{
+  max-width:1080px; margin:0 auto;
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem;
+}
+#site-footer h5{
+  font-family:'Big Shoulders Display',sans-serif;
+  font-size:.95rem; text-transform:uppercase; color:var(--paper);
+  letter-spacing:.04em; margin:0 0 .5rem 0;
+}
+#site-footer a{color:var(--paper); text-decoration:none;}
+#site-footer a:hover{color:var(--signal);}
+#site-footer .ft-bottom{
+  max-width:1080px; margin:1.2rem auto 0; padding-top:1rem;
+  border-top:1px solid #2A323C; font-size:.7rem; color:#6f7782;
+}
+@media(max-width:680px){
+  #site-footer .ft-grid{grid-template-columns:1fr;}
+}
+
+/* Booking confirmation modal */
+#confirmation-overlay{
+  position:fixed; inset:0; background:rgba(17,22,28,0.65);
+  display:none; align-items:center; justify-content:center; z-index:200;
+  padding:1rem; overflow-y:auto;
+}
+#confirmation-overlay.show{display:flex;}
+.confirmation-card{
+  background:var(--paper); max-width:480px; width:100%;
+  padding:1.5rem; border:1px solid var(--ink);
+  box-shadow:0 20px 50px rgba(0,0,0,0.25);
+  max-height:90vh; overflow-y:auto;
+}
+.confirmation-card h3{font-size:1.4rem;}
+.conf-row{display:flex; justify-content:space-between; padding:.45rem 0; border-bottom:1px dashed var(--mist); font-size:.85rem;}
+.conf-row:last-child{border-bottom:none;}
+.conf-row .l{color:var(--slate); font-family:'IBM Plex Mono',monospace; font-size:.72rem; text-transform:uppercase; letter-spacing:.05em;}
+.conf-row .v{font-weight:600; text-align:right;}
+.conf-number{
+  background:var(--ink); color:var(--paper);
+  padding:.7rem; font-family:'IBM Plex Mono',monospace;
+  text-align:center; font-size:1rem; letter-spacing:.15em;
+  margin:.7rem 0;
+}
+
+/* FAQ */
+.faq-item{
+  border:1px solid var(--mist); margin-bottom:.5rem; background:#fff;
+}
+.faq-q{
+  padding:.85rem 1rem; font-weight:600; cursor:pointer;
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:.95rem;
+}
+.faq-q:hover{background:var(--paper-dim);}
+.faq-q .arrow{transition:transform .15s; color:var(--signal);}
+.faq-item.open .faq-q .arrow{transform:rotate(180deg);}
+.faq-a{display:none; padding:0 1rem 1rem; color:var(--ink-soft); font-size:.88rem; line-height:1.55;}
+.faq-item.open .faq-a{display:block;}
+
+/* Multi-stop additional stops */
+.stop-row{
+  display:flex; gap:.5rem; align-items:flex-start;
+  margin-bottom:.5rem;
+}
+.stop-row .field{flex:1; margin-bottom:0; position:relative;}
+.stop-row .remove-stop{
+  background:none; border:1px solid var(--mist); color:var(--danger);
+  font-family:'IBM Plex Mono',monospace; font-size:.7rem;
+  padding:.45rem .65rem; cursor:pointer; align-self:center;
+}
+.stop-row .remove-stop:hover{background:var(--danger); color:#fff; border-color:var(--danger);}
+
+/* Hourly mode badge */
+.service-mode-badge{
+  display:inline-block; font-family:'IBM Plex Mono',monospace;
+  font-size:.6rem; text-transform:uppercase; letter-spacing:.08em;
+  padding:.15rem .45rem; background:var(--signal); color:#fff;
+  margin-left:.4rem;
+}
+
+/* Settings sub-cards */
+.settings-subcard{padding-top:.5rem;}
+.settings-subcard summary{
+  cursor:pointer; padding:.5rem 0; font-weight:600;
+  font-size:.95rem; outline:none;
+}
+.settings-subcard summary:hover{color:var(--signal);}
+.settings-subcard summary::-webkit-details-marker{color:var(--signal);}
+
+/* Per-route price table */
+.flat-route-row{
+  display:grid; grid-template-columns:1fr 1fr auto auto; gap:.5rem;
+  margin-bottom:.5rem; align-items:center;
+  font-size:.85rem;
+}
+.flat-route-row input{padding:.4rem; font-size:.85rem;}
+.flat-route-row .price-input{font-family:'IBM Plex Mono',monospace; text-align:right;}
+@media(max-width:680px){
+  .flat-route-row{grid-template-columns:1fr 1fr; gap:.4rem;}
+  .flat-route-row .remove-btn{grid-column:span 2;}
+}
+
+@media(max-width:680px){
+  .feature-row{grid-template-columns:1fr;}
+  .field-row{grid-template-columns:1fr;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .route-line .stop .place{max-width:90px;}
+}
+</style>
+</head>
+<body>
+
+<div id="legal-banner"></div>
+
+<nav id="topnav">
+  <div class="brand" onclick="setView('home')">
+    <div class="wordmark"><span class="dot"></span>Waypoint</div>
+    <div class="tagline">Fixed-Price Transfers</div>
+  </div>
+  <div class="navtabs">
+    <button class="navtab" data-view="home" onclick="setView('home')">Home</button>
+    <button class="navtab" data-view="rider" onclick="setView('rider')">Book a Ride</button>
+    <button class="navtab" data-view="faq" onclick="setView('faq')">FAQ</button>
+    <button class="navtab" data-view="driver" onclick="setView('driver')">Drive</button>
+    <button class="navtab" data-view="admin" onclick="setView('admin')">Admin</button>
+  </div>
+</nav>
+
+<main>
+
+  <section class="view" id="view-home">
+    <div class="hero">
+      <span class="eyebrow">SeaTac Transfers · Long-Distance Across Washington</span>
+      <h1>Fixed-price rides. SeaTac and beyond.</h1>
+      <p class="lede">Door-to-door car service across Washington — to SeaTac from anywhere in the state, plus custom long-distance trips. Vetted drivers, one fixed price, no surge.</p>
+      <div id="home-route-demo"></div>
+      <div class="hero-ctas">
+        <button class="btn btn-primary" onclick="setView('rider')">Book a ride</button>
+        <button class="btn" onclick="setView('driver')">Drive with us</button>
+      </div>
+      <div class="feature-row">
+        <div class="feature"><span class="num">01</span><h4>Fixed price</h4><p>Confirmed before you book. Tolls and fees included.</p></div>
+        <div class="feature"><span class="num">02</span><h4>Vetted fleet</h4><p>Every driver is reviewed and approved before going live.</p></div>
+        <div class="feature"><span class="num">03</span><h4>Free wait time</h4><p>60 min at SeaTac, 30 min on long-distance trips.</p></div>
+      </div>
+      <div class="disclaimer">PROTOTYPE — this build demonstrates the booking, driver, and dispatch flows with simulated data. It is not yet licensed to operate as a for-hire transportation service in any state.</div>
+    </div>
+  </section>
+
+  <section class="view" id="view-rider">
+    <div class="section">
+      <span class="eyebrow">New Booking</span>
+      <h2>Request a transfer</h2>
+      <form id="booking-form" class="card">
+        <div class="field">
+          <label>Your name</label>
+          <input type="text" id="b-name" required placeholder="Jordan Avila">
+        </div>
+        <div class="field">
+          <label>Phone</label>
+          <input type="tel" id="b-phone" required placeholder="(206) 555-0123">
+        </div>
+        <div class="field-row">
+          <div class="field" style="position:relative;">
+            <label>Pickup address</label>
+            <input type="text" id="b-pickup" required placeholder="Start typing address..." autocomplete="off">
+            <div id="b-pickup-suggestions" class="liq-suggestions"></div>
+          </div>
+          <div class="field" style="position:relative;">
+            <label>Drop-off address</label>
+            <input type="text" id="b-dropoff" required placeholder="Start typing destination..." autocomplete="off">
+            <div id="b-dropoff-suggestions" class="liq-suggestions"></div>
+          </div>
+        </div>
+        <div id="extra-stops"></div>
+        <div style="margin-bottom:.85rem;">
+          <button type="button" class="btn btn-sm" onclick="addExtraStop()">+ Add another stop</button>
+          <span class="mono" style="font-size:.7rem; color:var(--slate); margin-left:.5rem;">+$10 per extra stop</span>
+        </div>
+        <div id="maps-status" class="mono" style="font-size:.7rem; color:var(--signal); margin:-.4rem 0 .8rem 0; min-height:1em;"></div>
+        <div class="field-row">
+          <div class="field">
+            <label>Service type</label>
+            <select id="b-service" onchange="onServiceChange()">
+              <option value="seatac">SeaTac Airport Transfer</option>
+              <option value="longdistance">Custom Long-Distance</option>
+              <option value="hourly">Hourly Charter</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Vehicle class</label>
+            <select id="b-class" onchange="updateFarePreview()">
+              <option value="economy">Economy</option>
+              <option value="business">Business</option>
+              <option value="minivan">Minivan</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row" id="hourly-fields" style="display:none;">
+          <div class="field">
+            <label>Hours needed</label>
+            <input type="number" id="b-hours" min="2" max="12" step="1" value="3" oninput="updateFarePreview()">
+          </div>
+          <div class="field">
+            <label style="visibility:hidden;">spacer</label>
+            <div class="mono" style="font-size:.72rem; color:var(--slate); padding:.7rem 0;">Minimum 2 hours</div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field" id="city-field">
+            <label>Pickup city (WA → SeaTac)</label>
+            <select id="b-city" onchange="onCityChange()">
+              <option value="">— Select your city —</option>
+              <option value="custom">Other / not listed (enter miles manually)</option>
+            </select>
+          </div>
+          <div class="field" id="distance-field" style="display:none;">
+            <label>Distance (miles)</label>
+            <input type="number" id="b-distance" min="0.5" step="0.1" placeholder="e.g. 90" oninput="updateFarePreview()">
+          </div>
+          <div class="field" id="traffic-field">
+            <label>Traffic conditions</label>
+            <select id="b-traffic" onchange="updateFarePreview()">
+              <option value="light">Light</option>
+              <option value="moderate" selected>Moderate</option>
+              <option value="heavy">Heavy (rush hour)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Date</label>
+            <input type="date" id="b-date" required>
+          </div>
+          <div class="field">
+            <label>Time</label>
+            <input type="time" id="b-time" required>
+          </div>
+        </div>
+        <div class="field">
+          <label>Notes for the driver (optional)</label>
+          <input type="text" id="b-notes" placeholder="e.g. flight #, child seat, extra luggage">
+        </div>
+        <div id="fare-preview"></div>
+        <button type="submit" class="btn btn-primary">Request ride</button>
+      </form>
+    </div>
+
+    <div class="section">
+      <span class="eyebrow">Your Bookings</span>
+      <h2>Trips</h2>
+      <div id="rider-rides-list"></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-faq">
+    <span class="eyebrow">Common Questions</span>
+    <h2>FAQ</h2>
+    <div id="faq-list"></div>
+  </section>
+
+  <section class="view" id="view-driver">
+    <div class="section" id="driver-identity-bar"></div>
+    <div id="driver-portal-body"></div>
+  </section>
+
+  <section class="view" id="view-admin">
+    <span class="eyebrow">Dispatch</span>
+    <h2>Operations overview</h2>
+    <div class="stats" id="admin-stats"></div>
+
+    <div class="section">
+      <h3>⚙️ Settings</h3>
+      <div id="admin-settings"></div>
+    </div>
+
+    <div class="section">
+      <h3>Pending driver approvals</h3>
+      <div id="admin-pending"></div>
+    </div>
+
+    <div class="section">
+      <h3>All rides</h3>
+      <div id="admin-rides"></div>
+    </div>
+
+    <div class="section">
+      <h3>All drivers</h3>
+      <div id="admin-drivers"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer id="site-footer">
+  <div class="ft-grid" id="footer-content"></div>
+  <div class="ft-bottom" id="footer-bottom"></div>
+</footer>
+
+<div id="confirmation-overlay" onclick="if(event.target.id==='confirmation-overlay') closeConfirmation()">
+  <div class="confirmation-card" id="confirmation-card"></div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   LOCATIONIQ API CONFIG  (free, no credit card required)
+   ============================================================
+   The API key is set inside the app under Admin → Settings.
+   You do NOT need to edit this code.
+   ============================================================ */
+const SETTINGS_KEY = 'waypoint-settings';
+
+function getSettings(){
+  try{
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  }catch(e){ return {}; }
+}
+function saveSettings(s){
+  try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); return true; }
+  catch(e){ return false; }
+}
+function getLocationIqKey(){
+  return getSettings().locationIqKey || '';
+}
+
+const LIQ_AUTOCOMPLETE_URL = 'https://api.locationiq.com/v1/autocomplete';
+const LIQ_DIRECTIONS_URL   = 'https://us1.locationiq.com/v1/directions/driving';
+
+let liqReady = false;
+function isLiqConfigured(){
+  const k = getLocationIqKey();
+  return k && k.length > 5;
+}
+
+function showMapsStatus(msg){
+  const el = document.getElementById('maps-status');
+  if(el) el.textContent = msg || '';
+}
+
+/* ---------- Custom autocomplete dropdown ---------- */
+let autocompleteTimers = {};
+
+function attachLiqAutocomplete(inputId, suggestionsId){
+  const input = document.getElementById(inputId);
+  const box = document.getElementById(suggestionsId);
+  if(!input || !box) return;
+
+  input.addEventListener('input', ()=>{
+    clearTimeout(autocompleteTimers[inputId]);
+    const q = input.value.trim();
+    if(q.length < 3){ box.innerHTML=''; box.style.display='none'; return; }
+    autocompleteTimers[inputId] = setTimeout(()=> fetchLiqSuggestions(q, input, box), 350);
+  });
+
+  input.addEventListener('blur', ()=>{
+    setTimeout(()=>{ box.style.display='none'; }, 200);
+  });
+  input.addEventListener('focus', ()=>{
+    if(box.innerHTML.trim()) box.style.display='block';
+  });
+}
+
+async function fetchLiqSuggestions(query, input, box){
+  if(!isLiqConfigured()) return;
+  try{
+    const url = `${LIQ_AUTOCOMPLETE_URL}?key=${getLocationIqKey()}&q=${encodeURIComponent(query)}&limit=5&countrycodes=us,ca&dedupe=1&format=json`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('autocomplete failed');
+    const results = await res.json();
+    if(!Array.isArray(results) || !results.length){ box.innerHTML='<div class="liq-empty">No matches</div>'; box.style.display='block'; return; }
+    box.innerHTML = results.map(r=>{
+      const display = r.display_name || r.display_place || '';
+      return `<div class="liq-item" onmousedown="pickLiqSuggestion('${input.id}','${r.lat}','${r.lon}','${escapeHtml(display).replace(/'/g,"&#39;")}')">${escapeHtml(display)}</div>`;
+    }).join('');
+    box.style.display='block';
+  }catch(e){
+    console.error('LocationIQ autocomplete error', e);
+    showMapsStatus('Address lookup failed — type carefully or use city dropdown below.');
+  }
+}
+
+function pickLiqSuggestion(inputId, lat, lon, display){
+  const input = document.getElementById(inputId);
+  input.value = display;
+  input.dataset.lat = lat;
+  input.dataset.lng = lon;
+  const box = document.getElementById(inputId+'-suggestions');
+  if(box){ box.innerHTML=''; box.style.display='none'; }
+  tryCalculateRouteLiq();
+}
+
+async function tryCalculateRouteLiq(){
+  if(!isLiqConfigured()) return;
+  const pickup = document.getElementById('b-pickup');
+  const dropoff = document.getElementById('b-dropoff');
+  if(!pickup.dataset.lat || !dropoff.dataset.lat) return;
+
+  showMapsStatus('Calculating route...');
+  try{
+    const url = `${LIQ_DIRECTIONS_URL}/${pickup.dataset.lng},${pickup.dataset.lat};${dropoff.dataset.lng},${dropoff.dataset.lat}?key=${getLocationIqKey()}&overview=false`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('routing failed');
+    const data = await res.json();
+    if(!data.routes || !data.routes[0]) throw new Error('no route');
+    const route = data.routes[0];
+    const miles = Math.round((route.distance * 0.000621371) * 10) / 10;
+    const minutes = Math.round(route.duration / 60);
+
+    const distanceInput = document.getElementById('b-distance');
+    const distanceField = document.getElementById('distance-field');
+    distanceInput.value = miles;
+    distanceField.style.display = '';
+    distanceInput.dataset.liqMinutes = minutes;
+
+    const citySelect = document.getElementById('b-city');
+    if(citySelect) citySelect.value = '';
+
+    showMapsStatus(`📍 ${miles} mi · ~${minutes} min drive`);
+    updateFarePreview();
+  }catch(e){
+    console.error('LocationIQ routing error', e);
+    showMapsStatus('Could not calculate that route. Try the city dropdown below.');
+  }
+}
+
+function initLiq(){
+  if(!isLiqConfigured()){
+    showMapsStatus('Address autocomplete: not configured yet (set up in Admin → Settings)');
+    return;
+  }
+  attachLiqAutocomplete('b-pickup', 'b-pickup-suggestions');
+  attachLiqAutocomplete('b-dropoff', 'b-dropoff-suggestions');
+  liqReady = true;
+  showMapsStatus('Address autocomplete ready ✓');
+}
+
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let state = { drivers: [], rides: [], currentDriverId: null };
+let currentView = 'home';
+let driverSubTab = 'dashboard';
+let storageReady = false;
+
+const STORAGE_KEY = 'waypoint-data';
+
+const SERVICE_LABEL = { seatac:'SeaTac Airport Transfer', longdistance:'Custom Long-Distance', hourly:'Hourly Charter' };
+const SERVICE_ICON  = { seatac:'✈️', longdistance:'🛣️', hourly:'⏱️' };
+
+/* Pricing calibrated against Seattle-area metered taxi + airport transfer market rates (Jun 2026):
+   ~$2.70-3.00/mi metered, ~$5 flag drop, ~$20 airport minimum, $85-110 fixed black-car to downtown. */
+const RATE = {
+  base: 5.00,
+  perMile: 2.85,
+  perMinute: 0.40,
+  airportFee: 4.50,
+  minimum: 20.00,
+  extraStopFee: 10.00,
+  hourly: {
+    economy: 65,
+    business: 90,
+    minivan: 110
+  },
+  hourlyMinHours: 2
+};
+const VEHICLE_MULT = { economy: 1.0, business: 1.35, minivan: 1.5 };
+const AVG_SPEED_MPH = { light: 32, moderate: 22, heavy: 14 };
+const FREE_WAIT_MIN = { seatac: 60, longdistance: 30, hourly: 0 };
+
+/* WA cities → SeaTac distances (one-way, approximate driving miles).
+   Addy: edit this list anytime to add/remove cities or adjust mileage. */
+const WA_CITIES = [
+  { name: 'Kent',          miles: 10 },
+  { name: 'Renton',        miles: 10 },
+  { name: 'Federal Way',   miles: 12 },
+  { name: 'Seattle (Downtown)', miles: 14 },
+  { name: 'Bellevue',      miles: 15 },
+  { name: 'Auburn',        miles: 15 },
+  { name: 'Tacoma',        miles: 22 },
+  { name: 'Everett',       miles: 35 },
+  { name: 'Olympia',       miles: 52 },
+  { name: 'Bellingham',    miles: 100 },
+  { name: 'Yakima',        miles: 150 },
+  { name: 'Wenatchee',     miles: 150 },
+  { name: 'Vancouver, WA', miles: 165 },
+  { name: 'Spokane',       miles: 280 }
+];
+
+function estimateDuration(miles, traffic){
+  const mph = AVG_SPEED_MPH[traffic] || AVG_SPEED_MPH.moderate;
+  return Math.max(5, Math.round((miles / mph) * 60));
+}
+
+function computeFare(serviceType, vehicleClass, miles, minutes, extraStops, hours){
+  // HOURLY mode: pure hourly rate × hours, ignores distance
+  if(serviceType === 'hourly'){
+    const hr = Math.max(hours || RATE.hourlyMinHours, RATE.hourlyMinHours);
+    const rate = RATE.hourly[vehicleClass] || RATE.hourly.economy;
+    const total = Math.round(rate * hr);
+    return {
+      base: 0, distanceCharge: 0, timeCharge: 0, airportFee: 0,
+      mult: 1, extraStopCharge: 0, rawTotal: total, total,
+      minimumApplied: false, hourly: true, hourlyRate: rate, hours: hr
+    };
+  }
+
+  const distanceCharge = miles * RATE.perMile;
+  const timeCharge = minutes * RATE.perMinute;
+  const airportFee = serviceType === 'seatac' ? RATE.airportFee : 0;
+  const stops = Math.max(0, extraStops || 0);
+  const extraStopCharge = stops * RATE.extraStopFee;
+  const preMultiplier = RATE.base + distanceCharge + timeCharge + airportFee + extraStopCharge;
+  const mult = VEHICLE_MULT[vehicleClass] || 1;
+  const rawTotal = preMultiplier * mult;
+  const total = Math.max(rawTotal, RATE.minimum);
+  return {
+    base: RATE.base,
+    distanceCharge: Math.round(distanceCharge*100)/100,
+    timeCharge: Math.round(timeCharge*100)/100,
+    airportFee,
+    mult,
+    extraStopCharge,
+    rawTotal: Math.round(rawTotal*100)/100,
+    total: Math.round(total),
+    minimumApplied: rawTotal < RATE.minimum,
+    hourly: false
+  };
+}
+
+// Find a flat-rate route override if pickup + dropoff match a saved one
+function findFlatRouteMatch(pickup, dropoff){
+  const routes = getSettings().flatRoutes || [];
+  const p = (pickup||'').toLowerCase();
+  const d = (dropoff||'').toLowerCase();
+  for(const r of routes){
+    if(!r.from || !r.to || !r.price) continue;
+    const from = r.from.toLowerCase();
+    const to = r.to.toLowerCase();
+    // Match if EITHER direction contains the keywords
+    if((p.includes(from) && d.includes(to)) || (p.includes(to) && d.includes(from))){
+      return r;
+    }
+  }
+  return null;
+}
+
+function uid(prefix){ return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function money(n){ return '$' + Math.round(n); }
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function seedDrivers(){
+  return [
+    { id: uid('drv'), name:'Adil Zaman (Addy)', phone:'(253) 555-0142', vehicleMake:'Toyota', vehicleModel:'Sienna', vehicleYear:'2022', plate:'WA-7TLX91', vehicleClass:'minivan', serviceAreas:['seatac','longdistance'], payoutMethod:'Direct deposit (ACH)', payoutAccount:'••••4821', status:'active', online:true, rating:4.9, completedRides:0, earnings:0 },
+    { id: uid('drv'), name:'Driver 2 (open seat)', phone:'(206) 555-0198', vehicleMake:'Honda', vehicleModel:'Accord', vehicleYear:'2023', plate:'WA-9KPM03', vehicleClass:'business', serviceAreas:['seatac','longdistance'], payoutMethod:'Direct deposit (ACH)', payoutAccount:'••••6630', status:'active', online:false, rating:0, completedRides:0, earnings:0 },
+    { id: uid('drv'), name:'Driver 3 (open seat)', phone:'(425) 555-0177', vehicleMake:'Hyundai', vehicleModel:'Sonata', vehicleYear:'2021', plate:'WA-2DRN58', vehicleClass:'economy', serviceAreas:['seatac','longdistance'], payoutMethod:'Not set up', payoutAccount:'—', status:'pending', online:false, rating:0, completedRides:0, earnings:0 }
+  ];
+}
+
+/* ============================================================
+   STORAGE ADAPTER — uses Claude window.storage when available,
+   falls back to localStorage everywhere else (GitHub Pages, etc.)
+   ============================================================ */
+const storageAdapter = {
+  async get(key){
+    if(typeof window !== 'undefined' && window.storage && typeof window.storage.get === 'function'){
+      try{
+        const res = await window.storage.get(key, false);
+        if(res && res.value !== undefined) return res.value;
+        return null;
+      }catch(e){ /* fall through to localStorage */ }
+    }
+    try{ return localStorage.getItem(key); }catch(e){ return null; }
+  },
+  async set(key, value){
+    if(typeof window !== 'undefined' && window.storage && typeof window.storage.set === 'function'){
+      try{
+        const res = await window.storage.set(key, value, false);
+        if(res) return true;
+      }catch(e){ /* fall through to localStorage */ }
+    }
+    try{ localStorage.setItem(key, value); return true; }catch(e){ return false; }
+  }
+};
+
+async function loadState(){
+  try{
+    const raw = await storageAdapter.get(STORAGE_KEY);
+    if(raw){ state = JSON.parse(raw); }
+    else { throw new Error('empty'); }
+  }catch(e){
+    state = { drivers: seedDrivers(), rides: [], currentDriverId: null };
+    await saveState();
+  }
+  if(!state.currentDriverId && state.drivers.length){ state.currentDriverId = state.drivers[0].id; }
+  storageReady = true;
+}
+
+async function saveState(){
+  const ok = await storageAdapter.set(STORAGE_KEY, JSON.stringify(state));
+  if(!ok){ console.error('Storage save failed'); showToast('Could not save — changes may not persist.'); }
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('show'), 2600);
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+function setView(v){
+  currentView = v;
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.navtab').forEach(el=>el.classList.toggle('active', el.dataset.view===v));
+  renderCurrentView();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function renderCurrentView(){
+  if(currentView==='home') renderHome();
+  if(currentView==='rider') renderRider();
+  if(currentView==='faq') renderFAQ();
+  if(currentView==='driver') renderDriver();
+  if(currentView==='admin') renderAdmin();
+}
+
+/* ============================================================
+   ROUTE LINE COMPONENT
+   ============================================================ */
+function routeLine(pickup, dropoff, serviceType){
+  return `<div class="route-line">
+    <div class="stop"><span class="label">Pickup</span><span class="place">${escapeHtml(pickup)}</span></div>
+    <div class="dot"></div>
+    <div class="track"><span class="icon">${SERVICE_ICON[serviceType]||'•'}</span></div>
+    <div class="dot end"></div>
+    <div class="stop"><span class="label">Drop-off</span><span class="place">${escapeHtml(dropoff)}</span></div>
+  </div>`;
+}
+
+function stepperFor(status){
+  const steps = ['requested','assigned','enroute','completed'];
+  const labels = {requested:'Requested', assigned:'Assigned', enroute:'En Route', completed:'Completed'};
+  if(status==='cancelled'){
+    return `<div class="stepper"><span class="step now mono">Cancelled</span></div>`;
+  }
+  const idx = steps.indexOf(status);
+  return `<div class="stepper">${steps.map((s,i)=>{
+    let cls='step mono';
+    if(i<idx) cls+=' done';
+    if(i===idx) cls+=' now';
+    return `<span class="${cls}">${labels[s]}</span>`;
+  }).join('')}</div>`;
+}
+
+/* ============================================================
+   HOME
+   ============================================================ */
+function renderHome(){
+  document.getElementById('home-route-demo').innerHTML = routeLine('Bellingham, WA','SeaTac · Terminal A','seatac');
+}
+
+/* ============================================================
+   FARE PREVIEW
+   ============================================================ */
+function updateFarePreview(){
+  const el = document.getElementById('fare-preview');
+  const service = document.getElementById('b-service').value;
+  const cls = document.getElementById('b-class').value;
+  const distanceInput = document.getElementById('b-distance');
+
+  if(service === 'hourly'){
+    const hours = parseInt(document.getElementById('b-hours').value) || RATE.hourlyMinHours;
+    const fare = computeFare(service, cls, 0, 0, 0, hours);
+    el.innerHTML = `
+      <div class="fare-box">
+        <div class="fare-row"><span>Hourly rate (${cls})</span><span class="v">${money(fare.hourlyRate)}/hr</span></div>
+        <div class="fare-row"><span>${fare.hours} hours</span><span class="v">×${fare.hours}</span></div>
+        <div class="fare-row total"><span>Total — fixed price</span><span class="v">${money(fare.total)}</span></div>
+        <div class="fare-note">Hourly charter — driver stays with you for the booked time.</div>
+      </div>`;
+    return;
+  }
+
+  const miles = parseFloat(distanceInput.value);
+  if(!miles || miles<=0){ el.innerHTML=''; return; }
+  const traffic = document.getElementById('b-traffic').value;
+  const liqMinutes = parseFloat(distanceInput.dataset.liqMinutes);
+  const usingLiq = !isNaN(liqMinutes) && liqMinutes > 0;
+  const minutes = usingLiq ? liqMinutes : estimateDuration(miles, traffic);
+  const extraStops = document.querySelectorAll('#extra-stops .stop-row').length;
+
+  // Check for flat-rate route match
+  const pickup = document.getElementById('b-pickup').value;
+  const dropoff = document.getElementById('b-dropoff').value;
+  const flatMatch = findFlatRouteMatch(pickup, dropoff);
+
+  if(flatMatch){
+    const vMult = VEHICLE_MULT[cls] || 1;
+    const flatTotal = Math.round(parseFloat(flatMatch.price) * vMult + extraStops * RATE.extraStopFee);
+    el.innerHTML = `
+      <div class="fare-box">
+        <div class="fare-row"><span>Flat-rate route: ${escapeHtml(flatMatch.from)} ↔ ${escapeHtml(flatMatch.to)}</span><span class="v">${money(flatMatch.price)}</span></div>
+        ${vMult!==1 ? `<div class="fare-row"><span>${cls} vehicle ×${vMult}</span><span class="v"></span></div>` : ''}
+        ${extraStops ? `<div class="fare-row"><span>${extraStops} extra stop${extraStops>1?'s':''}</span><span class="v">${money(extraStops * RATE.extraStopFee)}</span></div>` : ''}
+        <div class="fare-row total"><span>Total — fixed price</span><span class="v">${money(flatTotal)}</span></div>
+        <div class="fare-note">⭐ Flat-rate route applied · ${usingLiq ? `📍 Live route ${miles} mi` : `${miles} mi`}</div>
+      </div>`;
+    return;
+  }
+
+  const fare = computeFare(service, cls, miles, minutes, extraStops);
+  el.innerHTML = `
+    <div class="fare-box">
+      <div class="fare-row"><span>Base fare</span><span class="v">${money(fare.base)}</span></div>
+      <div class="fare-row"><span>Distance — ${miles} mi × ${money(RATE.perMile)}</span><span class="v">${money(fare.distanceCharge)}</span></div>
+      <div class="fare-row"><span>${usingLiq ? 'Live drive time' : 'Est. time'} — ${minutes} min × ${money(RATE.perMinute)}</span><span class="v">${money(fare.timeCharge)}</span></div>
+      ${fare.airportFee ? `<div class="fare-row"><span>Airport facility fee</span><span class="v">${money(fare.airportFee)}</span></div>` : ''}
+      ${fare.extraStopCharge ? `<div class="fare-row"><span>${extraStops} extra stop${extraStops>1?'s':''}</span><span class="v">${money(fare.extraStopCharge)}</span></div>` : ''}
+      ${fare.mult!==1 ? `<div class="fare-row"><span>${cls} vehicle ×${fare.mult}</span><span class="v"></span></div>` : ''}
+      <div class="fare-row total"><span>Total — fixed price</span><span class="v">${money(fare.total)}</span></div>
+      ${fare.minimumApplied ? `<div class="fare-note">Minimum fare applied</div>` : ''}
+      <div class="fare-note">Free wait: ${FREE_WAIT_MIN[service]} min · ${usingLiq ? `📍 Live route` : `Est. drive time ${minutes} min`}</div>
+    </div>`;
+}
+
+/* ============================================================
+   RIDER VIEW
+   ============================================================ */
+document.getElementById('booking-form').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const serviceType = document.getElementById('b-service').value;
+  const vehicleClass = document.getElementById('b-class').value;
+  const pickup = document.getElementById('b-pickup').value.trim();
+  const dropoff = document.getElementById('b-dropoff').value.trim();
+
+  // Collect extra stops
+  const extraStopInputs = document.querySelectorAll('#extra-stops input[type="text"]');
+  const extraStops = Array.from(extraStopInputs).map(i=>i.value.trim()).filter(v=>v);
+
+  let miles = 0, minutes = 0, hours = 0, fare;
+
+  if(serviceType === 'hourly'){
+    hours = Math.max(parseInt(document.getElementById('b-hours').value)||RATE.hourlyMinHours, RATE.hourlyMinHours);
+    fare = computeFare(serviceType, vehicleClass, 0, 0, 0, hours);
+  } else {
+    miles = parseFloat(document.getElementById('b-distance').value);
+    if(!miles || miles <= 0){
+      showToast('Please select your city or enter the distance');
+      return;
+    }
+    const traffic = document.getElementById('b-traffic').value;
+    const liqMin = parseFloat(document.getElementById('b-distance').dataset.liqMinutes);
+    minutes = (!isNaN(liqMin) && liqMin > 0) ? liqMin : estimateDuration(miles, traffic);
+
+    // Flat-rate route?
+    const flatMatch = findFlatRouteMatch(pickup, dropoff);
+    if(flatMatch){
+      const vMult = VEHICLE_MULT[vehicleClass] || 1;
+      const flatTotal = Math.round(parseFloat(flatMatch.price) * vMult + extraStops.length * RATE.extraStopFee);
+      fare = { base:0, distanceCharge:0, timeCharge:0, airportFee:0, mult:vMult, extraStopCharge:extraStops.length*RATE.extraStopFee, rawTotal:flatTotal, total:flatTotal, minimumApplied:false, flatRoute:flatMatch.from+' ↔ '+flatMatch.to };
+    } else {
+      fare = computeFare(serviceType, vehicleClass, miles, minutes, extraStops.length);
+    }
+  }
+
+  const cityVal = document.getElementById('b-city').value;
+  const pickupCity = (serviceType === 'seatac' && cityVal && cityVal !== 'custom') ? cityVal : null;
+
+  const ride = {
+    id: uid('ride'),
+    riderName: document.getElementById('b-name').value.trim(),
+    riderPhone: document.getElementById('b-phone').value.trim(),
+    pickup, dropoff,
+    extraStops,
+    pickupCity,
+    notes: document.getElementById('b-notes').value.trim(),
+    serviceType, vehicleClass,
+    distanceMiles: miles,
+    durationMinutes: minutes,
+    hours,
+    date: document.getElementById('b-date').value,
+    time: document.getElementById('b-time').value,
+    status: 'requested',
+    price: fare.total,
+    fareBreakdown: fare,
+    assignedDriverId: null,
+    createdAt: Date.now()
+  };
+
+  const driver = findDriverForRide(ride);
+  if(driver){ ride.status = 'assigned'; ride.assignedDriverId = driver.id; }
+
+  state.rides.unshift(ride);
+  await saveState();
+  renderRider();
+  document.getElementById('fare-preview').innerHTML = '';
+  showConfirmation(ride);
+  e.target.reset();
+  document.getElementById('extra-stops').innerHTML = '';
+  document.getElementById('distance-field').style.display = 'none';
+  document.getElementById('b-pickup').dataset.lat = '';
+  document.getElementById('b-pickup').dataset.lng = '';
+  document.getElementById('b-dropoff').dataset.lat = '';
+  document.getElementById('b-dropoff').dataset.lng = '';
+  document.getElementById('b-distance').dataset.liqMinutes = '';
+  showMapsStatus('');
+  onServiceChange();
+});
+
+function findDriverForRide(ride){
+  return state.drivers.find(d=> d.status==='active' && d.online && d.vehicleClass===ride.vehicleClass)
+      || state.drivers.find(d=> d.status==='active' && d.online)
+      || null;
+}
+
+function renderRider(){
+  const list = document.getElementById('rider-rides-list');
+  if(!state.rides.length){
+    list.innerHTML = `<div class="empty">No trips yet. Submit a request above and you'll see your fixed price instantly.</div>`;
+    return;
+  }
+  list.innerHTML = state.rides.map(r=>{
+    const driver = state.drivers.find(d=>d.id===r.assignedDriverId);
+    const searching = (r.status==='requested' && !r.assignedDriverId);
+    return `<div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:.5rem;">
+        <span class="badge badge-${r.status}">${searching ? 'finding driver' : r.status}</span>
+        <span class="mono" style="font-size:.75rem; color:var(--slate);">${SERVICE_LABEL[r.serviceType]||r.serviceType} · ${r.date||''} ${r.time||''}</span>
+      </div>
+      ${routeLine(r.pickup, r.dropoff, r.serviceType)}
+      ${stepperFor(searching ? 'requested' : r.status)}
+      <div class="mono" style="font-size:.78rem; color:var(--slate); margin-top:.3rem;">${r.distanceMiles} mi · ~${r.durationMinutes} min · ${r.vehicleClass}${driver ? ' · Driver: '+escapeHtml(driver.name) : ''}</div>
+      <div class="fare-row total" style="border-top:none; margin-top:.4rem; padding-top:0;"><span>Fixed price</span><span class="v">${money(r.price)}</span></div>
+      ${searching ? `<div class="empty" style="margin-top:.5rem;">No driver online right now — an admin will dispatch this manually.</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+/* ============================================================
+   DRIVER PORTAL
+   ============================================================ */
+function renderDriver(){
+  const bar = document.getElementById('driver-identity-bar');
+  const driver = state.drivers.find(d=>d.id===state.currentDriverId);
+  bar.innerHTML = `
+    <span class="eyebrow">Carrier Portal</span>
+    <h2>Drive with Waypoint</h2>
+    <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.75rem;">
+      <div>
+        <label class="mono" style="font-size:.65rem; text-transform:uppercase; letter-spacing:.08em; color:var(--slate); display:block; margin-bottom:.25rem;">Driving as</label>
+        <select onchange="switchDriver(this.value)" style="font-family:'IBM Plex Mono',monospace; padding:.4rem; border:1px solid var(--mist);">
+          ${state.drivers.map(d=>`<option value="${d.id}" ${d.id===state.currentDriverId?'selected':''}>${escapeHtml(d.name)} ${d.status==='pending'?'(pending)':''}</option>`).join('')}
+        </select>
+      </div>
+      <button class="btn btn-sm" onclick="toggleRegisterForm()">+ Register new driver</button>
+    </div>
+    <div id="register-driver-form"></div>
+  `;
+
+  const body = document.getElementById('driver-portal-body');
+  if(!driver){
+    body.innerHTML = `<div class="empty">No driver selected. Register to get started.</div>`;
+    return;
+  }
+
+  body.innerHTML = `
+    <div class="subtabs">
+      <button class="subtab ${driverSubTab==='dashboard'?'active':''}" onclick="setDriverSubTab('dashboard')">Dashboard</button>
+      <button class="subtab ${driverSubTab==='cabinet'?'active':''}" onclick="setDriverSubTab('cabinet')">Cabinet / Settings</button>
+      <button class="subtab ${driverSubTab==='instructions'?'active':''}" onclick="setDriverSubTab('instructions')">Instructions</button>
+    </div>
+    <div id="driver-subtab-body"></div>
+  `;
+
+  if(driverSubTab==='dashboard'){
+    if(driver.status!=='active'){
+      const msg = driver.status==='pending'
+        ? "Your application is awaiting admin approval. Once approved you'll see open requests here. In the meantime, complete your Cabinet settings."
+        : "Your application was not approved. Contact support if you think this is a mistake.";
+      document.getElementById('driver-subtab-body').innerHTML = `<div class="empty">${msg}</div>`;
+    } else {
+      renderDriverDashboard(driver);
+    }
+  }
+  if(driverSubTab==='cabinet') renderDriverCabinet(driver);
+  if(driverSubTab==='instructions') renderDriverInstructions(driver);
+}
+
+function setDriverSubTab(tab){ driverSubTab = tab; renderDriver(); }
+function switchDriver(id){ state.currentDriverId = id; saveState(); renderDriver(); }
+
+function toggleRegisterForm(){
+  const el = document.getElementById('register-driver-form');
+  if(el.innerHTML.trim()){ el.innerHTML=''; return; }
+  el.innerHTML = `
+    <form class="card" onsubmit="return submitRegisterDriver(event)">
+      <div class="field-row">
+        <div class="field"><label>Full name</label><input type="text" id="rd-name" required></div>
+        <div class="field"><label>Phone</label><input type="text" id="rd-phone" required></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Vehicle make</label><input type="text" id="rd-make" required></div>
+        <div class="field"><label>Vehicle model</label><input type="text" id="rd-model" required></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Vehicle year</label><input type="text" id="rd-year" required></div>
+        <div class="field"><label>License plate</label><input type="text" id="rd-plate" required></div>
+      </div>
+      <div class="field"><label>Vehicle class</label>
+        <select id="rd-class"><option value="economy">Economy</option><option value="business">Business</option><option value="minivan">Minivan</option></select>
+      </div>
+      <button class="btn btn-primary" type="submit">Submit application</button>
+    </form>`;
+}
+
+async function submitRegisterDriver(e){
+  e.preventDefault();
+  const d = {
+    id: uid('drv'),
+    name: document.getElementById('rd-name').value.trim(),
+    phone: document.getElementById('rd-phone').value.trim(),
+    vehicleMake: document.getElementById('rd-make').value.trim(),
+    vehicleModel: document.getElementById('rd-model').value.trim(),
+    vehicleYear: document.getElementById('rd-year').value.trim(),
+    plate: document.getElementById('rd-plate').value.trim(),
+    vehicleClass: document.getElementById('rd-class').value,
+    serviceAreas: ['seatac','longdistance'],
+    payoutMethod: 'Not set up',
+    payoutAccount: '—',
+    status: 'pending',
+    online: false,
+    rating: 0,
+    completedRides: 0,
+    earnings: 0
+  };
+  state.drivers.push(d);
+  state.currentDriverId = d.id;
+  await saveState();
+  showToast('Application submitted — awaiting admin approval');
+  renderDriver();
+  return false;
+}
+
+function renderDriverDashboard(driver){
+  const body = document.getElementById('driver-subtab-body');
+  const unclaimed = state.rides.filter(r=> r.status==='requested' && !r.assignedDriverId);
+  const mine = state.rides.filter(r=> r.assignedDriverId===driver.id && r.status!=='completed' && r.status!=='cancelled');
+  const done = state.rides.filter(r=> r.assignedDriverId===driver.id && r.status==='completed');
+
+  body.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.75rem;">
+      <div class="mono" style="font-size:.75rem; color:var(--slate);">Status:
+        <select class="online-toggle" onchange="toggleOnline(this.value)" ${driver.status!=='active'?'disabled':''}>
+          <option value="online" ${driver.online?'selected':''}>Online</option>
+          <option value="offline" ${!driver.online?'selected':''}>Offline</option>
+        </select>
+      </div>
+      <div class="mono" style="font-size:.75rem;">⭐ ${driver.rating||'—'} · ${driver.completedRides} rides · ${money(driver.earnings)} earned</div>
+    </div>
+
+    <h3 style="font-size:1.1rem;">Unclaimed requests</h3>
+    ${unclaimed.length ? unclaimed.map(r=>`
+      <div class="card">
+        ${routeLine(r.pickup,r.dropoff,r.serviceType)}
+        <div class="mono" style="font-size:.75rem; color:var(--slate); margin-bottom:.5rem;">${SERVICE_LABEL[r.serviceType]||r.serviceType} · ${r.date||''} ${r.time||''} · ${r.distanceMiles} mi · ${r.vehicleClass}</div>
+        <div class="fare-row total" style="border-top:none; padding-top:0; margin-bottom:.5rem;"><span>Fixed price</span><span class="v">${money(r.price)}</span></div>
+        <button class="btn btn-primary btn-sm" ${driver.status!=='active'?'disabled':''} onclick="claimRide('${r.id}','${driver.id}')">Accept ride</button>
+      </div>`).join('') : `<div class="empty">No unclaimed requests — riders are being auto-assigned to whoever's online.</div>`}
+
+    <h3 style="font-size:1.1rem; margin-top:1.5rem;">My active rides</h3>
+    ${mine.length ? mine.map(r=>`
+      <div class="card">
+        ${routeLine(r.pickup,r.dropoff,r.serviceType)}
+        ${stepperFor(r.status)}
+        <div class="mono" style="font-size:.75rem; color:var(--slate); margin:.4rem 0;">${money(r.price)} · ${r.distanceMiles} mi · Rider: ${escapeHtml(r.riderName)}</div>
+        ${r.status==='assigned' ? `<button class="btn btn-sm" onclick="updateRideStatus('${r.id}','enroute')">Start ride</button>` : ''}
+        ${r.status==='enroute' ? `<button class="btn btn-primary btn-sm" onclick="updateRideStatus('${r.id}','completed')">Mark completed</button>` : ''}
+      </div>`).join('') : `<div class="empty">No active rides assigned.</div>`}
+
+    <h3 style="font-size:1.1rem; margin-top:1.5rem;">Completed</h3>
+    ${done.length ? `<div class="card"><table><tr><th>Route</th><th>Date</th><th>Earned</th></tr>${done.map(r=>`<tr><td>${escapeHtml(r.pickup)} → ${escapeHtml(r.dropoff)}</td><td class="mono">${r.date||''}</td><td class="mono">${money(r.price)}</td></tr>`).join('')}</table></div>` : `<div class="empty">No completed rides yet.</div>`}
+  `;
+}
+
+async function claimRide(rideId, driverId){
+  const ride = state.rides.find(r=>r.id===rideId);
+  ride.status = 'assigned';
+  ride.assignedDriverId = driverId;
+  await saveState();
+  renderDriver();
+  showToast(`Claimed — ${money(ride.price)}`);
+}
+
+async function toggleOnline(val){
+  const driver = state.drivers.find(d=>d.id===state.currentDriverId);
+  driver.online = (val==='online');
+  await saveState();
+  showToast(driver.online ? 'You are online' : 'You are offline');
+}
+
+async function updateRideStatus(rideId, status){
+  const ride = state.rides.find(r=>r.id===rideId);
+  ride.status = status;
+  if(status==='completed'){
+    const driver = state.drivers.find(d=>d.id===ride.assignedDriverId);
+    if(driver){ driver.completedRides += 1; driver.earnings += (ride.price||0); driver.rating = driver.rating ? Math.round((driver.rating*0.85 + 5*0.15)*100)/100 : 5; }
+  }
+  await saveState();
+  renderDriver();
+  showToast(`Ride marked ${status}`);
+}
+
+function renderDriverCabinet(driver){
+  const body = document.getElementById('driver-subtab-body');
+  body.innerHTML = `
+    <form class="card" onsubmit="return saveDriverCabinet(event)">
+      <fieldset>
+        <legend>Profile</legend>
+        <div class="field-row">
+          <div class="field"><label>Full name</label><input type="text" id="c-name" value="${escapeHtml(driver.name)}"></div>
+          <div class="field"><label>Phone</label><input type="text" id="c-phone" value="${escapeHtml(driver.phone||'')}"></div>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Vehicle</legend>
+        <div class="field-row">
+          <div class="field"><label>Make</label><input type="text" id="c-make" value="${escapeHtml(driver.vehicleMake||'')}"></div>
+          <div class="field"><label>Model</label><input type="text" id="c-model" value="${escapeHtml(driver.vehicleModel||'')}"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Year</label><input type="text" id="c-year" value="${escapeHtml(driver.vehicleYear||'')}"></div>
+          <div class="field"><label>Plate</label><input type="text" id="c-plate" value="${escapeHtml(driver.plate||'')}"></div>
+        </div>
+        <div class="field"><label>Vehicle class</label>
+          <select id="c-class">
+            <option value="economy" ${driver.vehicleClass==='economy'?'selected':''}>Economy</option>
+            <option value="business" ${driver.vehicleClass==='business'?'selected':''}>Business</option>
+            <option value="minivan" ${driver.vehicleClass==='minivan'?'selected':''}>Minivan</option>
+          </select>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Payout</legend>
+        <div class="field-row">
+          <div class="field"><label>Method</label>
+            <select id="c-payout-method">
+              <option ${driver.payoutMethod==='Direct deposit (ACH)'?'selected':''}>Direct deposit (ACH)</option>
+              <option ${driver.payoutMethod==='Check'?'selected':''}>Check</option>
+              <option ${driver.payoutMethod==='Not set up'?'selected':''}>Not set up</option>
+            </select>
+          </div>
+          <div class="field"><label>Account reference</label><input type="text" id="c-payout-account" value="${escapeHtml(driver.payoutAccount||'')}" placeholder="last 4 digits"></div>
+        </div>
+      </fieldset>
+      <button class="btn btn-primary" type="submit">Save settings</button>
+    </form>
+  `;
+}
+
+async function saveDriverCabinet(e){
+  e.preventDefault();
+  const driver = state.drivers.find(d=>d.id===state.currentDriverId);
+  driver.name = document.getElementById('c-name').value.trim();
+  driver.phone = document.getElementById('c-phone').value.trim();
+  driver.vehicleMake = document.getElementById('c-make').value.trim();
+  driver.vehicleModel = document.getElementById('c-model').value.trim();
+  driver.vehicleYear = document.getElementById('c-year').value.trim();
+  driver.plate = document.getElementById('c-plate').value.trim();
+  driver.vehicleClass = document.getElementById('c-class').value;
+  driver.payoutMethod = document.getElementById('c-payout-method').value;
+  driver.payoutAccount = document.getElementById('c-payout-account').value.trim();
+  await saveState();
+  showToast('Settings saved');
+  renderDriver();
+  return false;
+}
+
+function renderDriverInstructions(driver){
+  const body = document.getElementById('driver-subtab-body');
+  body.innerHTML = `
+    <div class="card">
+      <h3 style="font-size:1.05rem;">How dispatch works</h3>
+      <p>Prices are fixed at booking — you don't bid. When you're online, new requests in your vehicle class are auto-assigned to you. If a ride goes unclaimed, it shows up under "Unclaimed requests" for any online driver to accept, first come first served.</p>
+    </div>
+    <div class="card">
+      <h3 style="font-size:1.05rem;">Wait time policy</h3>
+      <p>You're covered for free waiting: 60 minutes at SeaTac, 30 minutes on long-distance trips, measured from the scheduled pickup time.</p>
+    </div>
+    <div class="card">
+      <h3 style="font-size:1.05rem;">Payout schedule</h3>
+      <p>Completed rides are totaled weekly and paid out via the method set in your Cabinet. Set up direct deposit there before your first ride to avoid delays.</p>
+    </div>
+    <div class="card">
+      <h3 style="font-size:1.05rem;">Documents required for approval</h3>
+      <p>Valid driver's license, vehicle registration, and proof of commercial auto insurance are reviewed by the admin team before your account goes active.</p>
+    </div>
+    <div class="card">
+      <h3 style="font-size:1.05rem;">Support</h3>
+      <p>Questions about a ride or your account go to zapic78@gmail.com.</p>
+    </div>
+  `;
+}
+
+/* ============================================================
+   ADMIN VIEW
+   ============================================================ */
+function renderAdmin(){
+  renderAdminSettings();
+  const today = new Date().toISOString().slice(0,10);
+  const todaysRides = state.rides.filter(r=>r.date===today).length;
+  const activeDrivers = state.drivers.filter(d=>d.status==='active').length;
+  const pending = state.drivers.filter(d=>d.status==='pending');
+  const revenue = state.rides.filter(r=>r.status==='completed').reduce((s,r)=>s+(r.price||0),0);
+
+  document.getElementById('admin-stats').innerHTML = `
+    <div class="stat"><div class="n mono">${todaysRides}</div><div class="l">Today's rides</div></div>
+    <div class="stat"><div class="n mono">${activeDrivers}</div><div class="l">Active drivers</div></div>
+    <div class="stat"><div class="n mono">${pending.length}</div><div class="l">Pending approvals</div></div>
+    <div class="stat"><div class="n mono">${money(revenue)}</div><div class="l">Completed revenue</div></div>
+  `;
+
+  document.getElementById('admin-pending').innerHTML = pending.length ? pending.map(d=>`
+    <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem;">
+      <div>
+        <div style="font-weight:600;">${escapeHtml(d.name)}</div>
+        <div class="mono" style="font-size:.72rem; color:var(--slate);">${escapeHtml(d.vehicleYear)} ${escapeHtml(d.vehicleMake)} ${escapeHtml(d.vehicleModel)} · ${d.vehicleClass} · ${escapeHtml(d.phone)}</div>
+      </div>
+      <div style="display:flex; gap:.4rem;">
+        <button class="btn btn-primary btn-sm" onclick="approveDriver('${d.id}')">Approve</button>
+        <button class="btn btn-sm" onclick="rejectDriver('${d.id}')">Reject</button>
+      </div>
+    </div>`).join('') : `<div class="empty">No pending applications.</div>`;
+
+  document.getElementById('admin-rides').innerHTML = state.rides.length ? `
+    <div class="card"><table>
+      <tr><th>Route</th><th>Service</th><th>Status</th><th>Price</th><th>Driver</th><th></th></tr>
+      ${state.rides.map(r=>{
+        const driver = state.drivers.find(d=>d.id===r.assignedDriverId);
+        const activeDriversForRide = state.drivers.filter(d=>d.status==='active');
+        const assignControl = (r.status==='requested' && !r.assignedDriverId)
+          ? `<select id="assign-${r.id}" style="font-family:'IBM Plex Mono',monospace; font-size:.7rem; padding:.25rem;">
+               ${activeDriversForRide.map(d=>`<option value="${d.id}">${escapeHtml(d.name)}</option>`).join('')}
+             </select>
+             <button class="btn btn-sm" onclick="adminAssignDriver('${r.id}')">Assign</button>`
+          : '';
+        return `<tr>
+          <td>${escapeHtml(r.pickup)} → ${escapeHtml(r.dropoff)}</td>
+          <td class="mono">${SERVICE_LABEL[r.serviceType]||r.serviceType}</td>
+          <td><span class="badge badge-${r.status}">${r.status}</span></td>
+          <td class="mono">${r.price?money(r.price):'—'}</td>
+          <td>${driver ? escapeHtml(driver.name) : assignControl}</td>
+          <td>${r.status!=='completed' && r.status!=='cancelled' ? `<button class="btn btn-sm" onclick="cancelRide('${r.id}')">Cancel</button>` : ''}</td>
+        </tr>`;
+      }).join('')}
+    </table></div>` : `<div class="empty">No rides yet.</div>`;
+
+  document.getElementById('admin-drivers').innerHTML = state.drivers.length ? `
+    <div class="card"><table>
+      <tr><th>Driver</th><th>Vehicle</th><th>Status</th><th>Rides</th><th>Earnings</th></tr>
+      ${state.drivers.map(d=>`<tr>
+        <td>${escapeHtml(d.name)}</td>
+        <td class="mono">${escapeHtml(d.vehicleMake)} ${escapeHtml(d.vehicleModel)}</td>
+        <td><span class="badge badge-${d.status}">${d.status}</span></td>
+        <td class="mono">${d.completedRides}</td>
+        <td class="mono">${money(d.earnings)}</td>
+      </tr>`).join('')}
+    </table></div>` : `<div class="empty">No drivers yet.</div>`;
+}
+
+async function approveDriver(id){
+  const d = state.drivers.find(d=>d.id===id);
+  d.status='active'; d.online=true;
+  await saveState(); renderAdmin(); showToast(`${d.name} approved`);
+}
+async function rejectDriver(id){
+  const d = state.drivers.find(d=>d.id===id);
+  d.status='rejected';
+  await saveState(); renderAdmin(); showToast(`${d.name} rejected`);
+}
+async function cancelRide(id){
+  const r = state.rides.find(r=>r.id===id);
+  r.status='cancelled';
+  await saveState(); renderAdmin();
+}
+
+async function adminAssignDriver(rideId){
+  const select = document.getElementById('assign-'+rideId);
+  if(!select || !select.value) return;
+  const ride = state.rides.find(r=>r.id===rideId);
+  ride.status = 'assigned';
+  ride.assignedDriverId = select.value;
+  await saveState();
+  renderAdmin();
+  showToast('Driver assigned');
+}
+
+/* ============================================================
+   ADMIN — SETTINGS PANEL (API keys, etc.)
+   ============================================================ */
+function renderAdminSettings(){
+  const settings = getSettings();
+  const currentKey = settings.locationIqKey || '';
+  const isSet = currentKey && currentKey.length > 5;
+  const masked = isSet ? (currentKey.slice(0,6) + '••••••••••••' + currentKey.slice(-4)) : '';
+  const flatRoutes = settings.flatRoutes || [];
+
+  document.getElementById('admin-settings').innerHTML = `
+    <div class="card">
+      <details class="settings-subcard" open>
+        <summary>📍 Address Autocomplete (LocationIQ)</summary>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin:.6rem 0; flex-wrap:wrap; gap:.5rem;">
+          <span style="font-size:.85rem; color:var(--ink-soft);">Powers address autocomplete + real distance.</span>
+          ${isSet ? `<span class="badge badge-active">Configured</span>` : `<span class="badge badge-pending">Not set</span>`}
+        </div>
+        <p style="font-size:.8rem; color:var(--ink-soft); margin:.3rem 0 .7rem 0;">
+          Get a free token (no credit card) at
+          <a href="https://locationiq.com/register" target="_blank" rel="noopener" style="color:var(--signal);">locationiq.com/register</a>.
+        </p>
+        ${isSet ? `<div class="mono" style="font-size:.75rem; color:var(--slate); margin-bottom:.6rem;">Current key: ${masked}</div>` : ''}
+        <div class="field">
+          <label>LocationIQ Access Token</label>
+          <input type="text" id="setting-liq-key" placeholder="pk.abc123..." value="${escapeHtml(currentKey)}">
+        </div>
+        <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" onclick="saveLiqKey()">Save key</button>
+          ${isSet ? `<button class="btn btn-sm" onclick="clearLiqKey()">Remove key</button>` : ''}
+          <button class="btn btn-sm" onclick="testLiqKey()">Test key</button>
+        </div>
+        <div id="setting-liq-status" class="mono" style="font-size:.72rem; margin-top:.6rem; min-height:1em;"></div>
+      </details>
+    </div>
+
+    <div class="card">
+      <details class="settings-subcard">
+        <summary>🏢 Business Info (shown to customers)</summary>
+        <p style="font-size:.8rem; color:var(--ink-soft);">This appears in the website footer and on booking confirmations.</p>
+        <div class="field-row">
+          <div class="field"><label>Business name</label><input type="text" id="set-biz-name" value="${escapeHtml(settings.bizName||'Waypoint Transfers')}"></div>
+          <div class="field"><label>Phone</label><input type="text" id="set-biz-phone" value="${escapeHtml(settings.bizPhone||'(253) 555-0142')}"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Email</label><input type="text" id="set-biz-email" value="${escapeHtml(settings.bizEmail||'zapic78@gmail.com')}"></div>
+          <div class="field"><label>Location / Address</label><input type="text" id="set-biz-addr" value="${escapeHtml(settings.bizAddr||'Kent, WA 98031')}"></div>
+        </div>
+        <div class="field"><label>Hours</label><input type="text" id="set-biz-hours" value="${escapeHtml(settings.bizHours||'24/7 by appointment')}"></div>
+        <button class="btn btn-primary btn-sm" onclick="saveBizInfo()">Save business info</button>
+      </details>
+    </div>
+
+    <div class="card">
+      <details class="settings-subcard">
+        <summary>💰 Flat-Rate Routes</summary>
+        <p style="font-size:.8rem; color:var(--ink-soft); margin-bottom:.5rem;">Set specific routes at flat prices (overrides the formula).
+          When pickup contains the "From" keyword AND drop-off contains "To" (or reversed), the flat price wins.
+          Example: From <em>Bellingham</em>, To <em>SeaTac</em>, Price <em>$325</em> → any Bellingham ↔ SeaTac booking uses $325 base.</p>
+        <div id="flat-routes-list">
+          ${flatRoutes.map((r,i)=>`
+            <div class="flat-route-row">
+              <input type="text" placeholder="From (e.g. Bellingham)" value="${escapeHtml(r.from||'')}" oninput="updateFlatRoute(${i},'from',this.value)">
+              <input type="text" placeholder="To (e.g. SeaTac)" value="${escapeHtml(r.to||'')}" oninput="updateFlatRoute(${i},'to',this.value)">
+              <input type="number" class="price-input" placeholder="$" value="${escapeHtml(r.price||'')}" oninput="updateFlatRoute(${i},'price',this.value)">
+              <button type="button" class="btn btn-sm remove-btn" onclick="removeFlatRoute(${i})">×</button>
+            </div>
+          `).join('')}
+        </div>
+        <button class="btn btn-sm" onclick="addFlatRoute()">+ Add route</button>
+      </details>
+    </div>
+
+    <div class="card">
+      <details class="settings-subcard">
+        <summary>⚖️ Legal & Licensing</summary>
+        <p style="font-size:.8rem; color:var(--ink-soft);">Once you're licensed for for-hire transportation in WA, turn off the "Prototype" banner that shows to customers.</p>
+        <div class="field"><label>Licensed status</label>
+          <select id="set-licensed">
+            <option value="no" ${settings.licensed!=='yes'?'selected':''}>Not yet licensed — show prototype banner</option>
+            <option value="yes" ${settings.licensed==='yes'?'selected':''}>Licensed — hide banner</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="saveLicensedStatus()">Save</button>
+      </details>
+    </div>
+  `;
+}
+
+function saveBizInfo(){
+  const settings = getSettings();
+  settings.bizName = document.getElementById('set-biz-name').value.trim();
+  settings.bizPhone = document.getElementById('set-biz-phone').value.trim();
+  settings.bizEmail = document.getElementById('set-biz-email').value.trim();
+  settings.bizAddr = document.getElementById('set-biz-addr').value.trim();
+  settings.bizHours = document.getElementById('set-biz-hours').value.trim();
+  saveSettings(settings);
+  renderFooter();
+  showToast('Business info saved');
+}
+
+function addFlatRoute(){
+  const settings = getSettings();
+  if(!settings.flatRoutes) settings.flatRoutes = [];
+  settings.flatRoutes.push({from:'', to:'', price:''});
+  saveSettings(settings);
+  renderAdminSettings();
+}
+function updateFlatRoute(i, field, value){
+  const settings = getSettings();
+  if(!settings.flatRoutes || !settings.flatRoutes[i]) return;
+  settings.flatRoutes[i][field] = value;
+  saveSettings(settings);
+}
+function removeFlatRoute(i){
+  const settings = getSettings();
+  if(!settings.flatRoutes) return;
+  settings.flatRoutes.splice(i,1);
+  saveSettings(settings);
+  renderAdminSettings();
+  showToast('Route removed');
+}
+function saveLicensedStatus(){
+  const settings = getSettings();
+  settings.licensed = document.getElementById('set-licensed').value;
+  saveSettings(settings);
+  renderLegalBanner();
+  showToast('Saved');
+}
+
+function saveLiqKey(){
+  const val = document.getElementById('setting-liq-key').value.trim();
+  if(!val){
+    document.getElementById('setting-liq-status').innerHTML = '<span style="color:var(--danger);">Please paste a key first.</span>';
+    return;
+  }
+  const settings = getSettings();
+  settings.locationIqKey = val;
+  saveSettings(settings);
+  document.getElementById('setting-liq-status').innerHTML = '<span style="color:var(--success);">✓ Saved. Go to Book a Ride to try the address autocomplete.</span>';
+  showToast('Settings saved');
+  // Re-initialize Maps in case key just became valid
+  if(isLiqConfigured() && !liqReady){
+    attachLiqAutocomplete('b-pickup', 'b-pickup-suggestions');
+    attachLiqAutocomplete('b-dropoff', 'b-dropoff-suggestions');
+    liqReady = true;
+  }
+  renderAdminSettings();
+}
+
+function clearLiqKey(){
+  const settings = getSettings();
+  delete settings.locationIqKey;
+  saveSettings(settings);
+  liqReady = false;
+  showToast('Key removed');
+  renderAdminSettings();
+}
+
+async function testLiqKey(){
+  const statusEl = document.getElementById('setting-liq-status');
+  const val = document.getElementById('setting-liq-key').value.trim();
+  if(!val){
+    statusEl.innerHTML = '<span style="color:var(--danger);">Paste a key first.</span>';
+    return;
+  }
+  statusEl.innerHTML = 'Testing...';
+  try{
+    const url = `${LIQ_AUTOCOMPLETE_URL}?key=${val}&q=seattle&limit=1&format=json`;
+    const res = await fetch(url);
+    if(res.status === 401 || res.status === 403){
+      statusEl.innerHTML = '<span style="color:var(--danger);">✗ Invalid key — double-check you copied it correctly.</span>';
+      return;
+    }
+    if(!res.ok){
+      statusEl.innerHTML = `<span style="color:var(--danger);">✗ Test failed (HTTP ${res.status}).</span>`;
+      return;
+    }
+    const data = await res.json();
+    if(Array.isArray(data) && data.length){
+      statusEl.innerHTML = '<span style="color:var(--success);">✓ Key works! Save it, then test on the booking form.</span>';
+    } else {
+      statusEl.innerHTML = '<span style="color:var(--danger);">✗ Got an unexpected response.</span>';
+    }
+  }catch(e){
+    statusEl.innerHTML = '<span style="color:var(--danger);">✗ Network error testing the key.</span>';
+  }
+}
+
+/* ============================================================
+   EXTRA STOPS (multi-stop bookings)
+   ============================================================ */
+let extraStopCounter = 0;
+function addExtraStop(){
+  extraStopCounter++;
+  const id = 'extra-stop-' + extraStopCounter;
+  const container = document.getElementById('extra-stops');
+  const row = document.createElement('div');
+  row.className = 'stop-row';
+  row.id = id + '-row';
+  row.innerHTML = `
+    <div class="field">
+      <label>Extra stop ${document.querySelectorAll('#extra-stops .stop-row').length + 1}</label>
+      <input type="text" id="${id}" placeholder="Address of additional stop" autocomplete="off">
+      <div id="${id}-suggestions" class="liq-suggestions"></div>
+    </div>
+    <button type="button" class="remove-stop" onclick="removeExtraStop('${id}-row')">Remove</button>
+  `;
+  container.appendChild(row);
+  if(liqReady) attachLiqAutocomplete(id, id+'-suggestions');
+  updateFarePreview();
+}
+function removeExtraStop(rowId){
+  const row = document.getElementById(rowId);
+  if(row) row.remove();
+  // Re-number stop labels
+  document.querySelectorAll('#extra-stops .stop-row label').forEach((lbl,i)=>{
+    lbl.textContent = `Extra stop ${i+1}`;
+  });
+  updateFarePreview();
+}
+
+/* ============================================================
+   LEGAL BANNER + FOOTER
+   ============================================================ */
+function renderLegalBanner(){
+  const settings = getSettings();
+  const banner = document.getElementById('legal-banner');
+  // If admin marked "we are licensed" in settings, hide the banner
+  if(settings.licensed === 'yes'){
+    banner.style.display = 'none';
+    return;
+  }
+  banner.style.display = '';
+  banner.innerHTML = `
+    <strong>⚠️ Prototype mode:</strong> This site is for demonstration. Waypoint is not yet licensed as a for-hire transportation service. Bookings are not legally binding contracts. Admin: turn off this banner in Admin → Settings once licensed.
+  `;
+}
+
+function renderFooter(){
+  const s = getSettings();
+  const biz = {
+    name: s.bizName || 'Waypoint Transfers',
+    phone: s.bizPhone || '(253) 555-0142',
+    email: s.bizEmail || 'zapic78@gmail.com',
+    addr: s.bizAddr || 'Kent, WA 98031',
+    hours: s.bizHours || '24/7 by appointment'
+  };
+  document.getElementById('footer-content').innerHTML = `
+    <div>
+      <h5>${escapeHtml(biz.name)}</h5>
+      <div>${escapeHtml(biz.addr)}</div>
+      <div style="margin-top:.4rem;">${escapeHtml(biz.hours)}</div>
+    </div>
+    <div>
+      <h5>Contact</h5>
+      <div>📞 <a href="tel:${escapeHtml(biz.phone.replace(/[^\d+]/g,''))}">${escapeHtml(biz.phone)}</a></div>
+      <div>✉️ <a href="mailto:${escapeHtml(biz.email)}">${escapeHtml(biz.email)}</a></div>
+    </div>
+    <div>
+      <h5>Service Area</h5>
+      <div>SeaTac transfers from anywhere in WA</div>
+      <div style="margin-top:.4rem;">Long-distance: Portland, Vancouver BC, Spokane, statewide</div>
+    </div>
+  `;
+  document.getElementById('footer-bottom').innerHTML = `
+    © ${new Date().getFullYear()} ${escapeHtml(biz.name)} · Prototype build
+  `;
+}
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+const FAQS = [
+  { q: 'How does fixed pricing work?',
+    a: 'You get a flat, all-in price before you book — including tolls, fees, and tips suggested upfront. No surge pricing. No surprise charges. The price you see is the price you pay.' },
+  { q: 'How far in advance should I book?',
+    a: 'For SeaTac transfers and short rides, at least 2-3 hours in advance is best. For long-distance trips (Portland, Bellingham, Spokane, Vancouver BC), please book at least 24 hours in advance so we can assign the right driver.' },
+  { q: 'What if my flight is delayed?',
+    a: 'We track your flight automatically when you give us your flight number in the booking notes. You get 60 minutes of free wait time at SeaTac, so short delays are no problem.' },
+  { q: 'Can I bring extra luggage, a child seat, or a pet?',
+    a: 'Yes — just mention it in the booking notes. Standard sedans fit 4 passengers and 4 normal bags. For more luggage or larger groups, select the Minivan vehicle class.' },
+  { q: 'Do you go to Canada or Oregon?',
+    a: 'Yes. We do cross-border runs to Vancouver BC and trips down to Portland. Use the "Custom Long-Distance" service type. For Canada runs, all passengers must have valid passports.' },
+  { q: 'How do I pay?',
+    a: 'Payment is collected after the ride is completed. Currently we accept payment in person via card or cash. Online prepay coming soon.' },
+  { q: 'What is your cancellation policy?',
+    a: 'Free cancellation up to 4 hours before your scheduled pickup. Within 4 hours, a 50% cancellation fee applies. No-shows are charged the full fare.' },
+  { q: 'Are your drivers vetted?',
+    a: 'Yes. Every Waypoint driver is reviewed personally before being allowed to take rides — including driving record check, vehicle inspection, and commercial insurance verification.' }
+];
+function renderFAQ(){
+  document.getElementById('faq-list').innerHTML = FAQS.map((f,i)=>`
+    <div class="faq-item" id="faq-${i}">
+      <div class="faq-q" onclick="toggleFaq(${i})">
+        <span>${escapeHtml(f.q)}</span>
+        <span class="arrow">▾</span>
+      </div>
+      <div class="faq-a">${escapeHtml(f.a)}</div>
+    </div>
+  `).join('');
+}
+function toggleFaq(i){
+  document.getElementById('faq-'+i).classList.toggle('open');
+}
+
+/* ============================================================
+   BOOKING CONFIRMATION MODAL
+   ============================================================ */
+function showConfirmation(ride){
+  const driver = state.drivers.find(d=>d.id===ride.assignedDriverId);
+  const s = getSettings();
+  const confNum = ride.id.toUpperCase().replace('RIDE_','WP-');
+  const card = document.getElementById('confirmation-card');
+  card.innerHTML = `
+    <h3>🎉 Booking confirmed!</h3>
+    <p style="font-size:.85rem; color:var(--ink-soft); margin:.2rem 0 0;">Save this confirmation. We'll be in touch to confirm your driver.</p>
+    <div class="conf-number">${confNum}</div>
+    <div class="conf-row"><span class="l">Service</span><span class="v">${SERVICE_LABEL[ride.serviceType]}</span></div>
+    <div class="conf-row"><span class="l">Pickup</span><span class="v">${escapeHtml(ride.pickup)}</span></div>
+    ${ride.dropoff ? `<div class="conf-row"><span class="l">Drop-off</span><span class="v">${escapeHtml(ride.dropoff)}</span></div>` : ''}
+    ${(ride.extraStops||[]).length ? `<div class="conf-row"><span class="l">Extra stops</span><span class="v">${ride.extraStops.length}</span></div>` : ''}
+    <div class="conf-row"><span class="l">Date · Time</span><span class="v">${ride.date} · ${ride.time}</span></div>
+    <div class="conf-row"><span class="l">Vehicle</span><span class="v">${ride.vehicleClass}</span></div>
+    ${ride.serviceType==='hourly' ? `<div class="conf-row"><span class="l">Hours booked</span><span class="v">${ride.hours} hrs</span></div>` : `<div class="conf-row"><span class="l">Distance</span><span class="v">${ride.distanceMiles} mi · ~${ride.durationMinutes} min</span></div>`}
+    ${driver ? `<div class="conf-row"><span class="l">Driver</span><span class="v">${escapeHtml(driver.name)}</span></div>` : `<div class="conf-row"><span class="l">Driver</span><span class="v">Being assigned</span></div>`}
+    <div class="conf-row" style="border-top:2px solid var(--ink); padding-top:.7rem; margin-top:.5rem;">
+      <span class="l" style="font-size:.9rem; color:var(--ink); font-weight:600;">Fixed price</span>
+      <span class="v" style="font-size:1.2rem;">${money(ride.price)}</span>
+    </div>
+    <div style="margin-top:1rem; padding:.75rem; background:var(--paper-dim); font-size:.8rem; line-height:1.45;">
+      Questions? Call <strong>${escapeHtml(s.bizPhone||'(253) 555-0142')}</strong> or email <strong>${escapeHtml(s.bizEmail||'zapic78@gmail.com')}</strong>.
+    </div>
+    <button class="btn btn-primary" style="margin-top:1rem; width:100%;" onclick="closeConfirmation()">Done</button>
+  `;
+  document.getElementById('confirmation-overlay').classList.add('show');
+}
+function closeConfirmation(){
+  document.getElementById('confirmation-overlay').classList.remove('show');
+}
+
+/* ============================================================
+   CITY DROPDOWN + SERVICE TYPE FIELD TOGGLE
+   ============================================================ */
+function populateCityDropdown(){
+  const sel = document.getElementById('b-city');
+  // Clear existing options except the first two (placeholder + custom)
+  const placeholder = sel.options[0];
+  const custom = sel.options[sel.options.length-1];
+  sel.innerHTML = '';
+  sel.appendChild(placeholder);
+  WA_CITIES.forEach(c=>{
+    const opt = document.createElement('option');
+    opt.value = c.name;
+    opt.textContent = `${c.name} (~${c.miles} mi)`;
+    opt.dataset.miles = c.miles;
+    sel.appendChild(opt);
+  });
+  sel.appendChild(custom);
+}
+
+function onCityChange(){
+  const sel = document.getElementById('b-city');
+  const val = sel.value;
+  const distanceField = document.getElementById('distance-field');
+  const distanceInput = document.getElementById('b-distance');
+
+  if(val === 'custom'){
+    distanceField.style.display = '';
+    distanceInput.value = '';
+    distanceInput.focus();
+  } else if(val === ''){
+    distanceField.style.display = 'none';
+    distanceInput.value = '';
+  } else {
+    // Real city picked — auto-fill miles, hide manual field
+    const city = WA_CITIES.find(c=>c.name===val);
+    if(city){
+      distanceInput.value = city.miles;
+      distanceField.style.display = 'none';
+    }
+  }
+  updateFarePreview();
+}
+
+function onServiceChange(){
+  const service = document.getElementById('b-service').value;
+  const cityField = document.getElementById('city-field');
+  const distanceField = document.getElementById('distance-field');
+  const trafficField = document.getElementById('traffic-field');
+  const hourlyFields = document.getElementById('hourly-fields');
+  const cityInput = document.getElementById('b-city');
+  const pickupField = document.getElementById('b-pickup');
+  const dropoffField = document.getElementById('b-dropoff');
+
+  if(service === 'hourly'){
+    cityField.style.display = 'none';
+    distanceField.style.display = 'none';
+    trafficField.style.display = 'none';
+    hourlyFields.style.display = '';
+    // Drop-off is optional for hourly (you return to pickup)
+    dropoffField.removeAttribute('required');
+    dropoffField.placeholder = 'Drop-off (optional for hourly)';
+  } else if(service === 'seatac'){
+    cityField.style.display = '';
+    trafficField.style.display = '';
+    hourlyFields.style.display = 'none';
+    dropoffField.setAttribute('required','');
+    dropoffField.placeholder = 'Start typing destination...';
+    if(cityInput.value === 'custom'){
+      distanceField.style.display = '';
+    } else {
+      distanceField.style.display = 'none';
+    }
+  } else {
+    cityField.style.display = 'none';
+    distanceField.style.display = '';
+    trafficField.style.display = '';
+    hourlyFields.style.display = 'none';
+    dropoffField.setAttribute('required','');
+    dropoffField.placeholder = 'Start typing destination...';
+  }
+  updateFarePreview();
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(async function init(){
+  await loadState();
+  populateCityDropdown();
+  renderLegalBanner();
+  renderFooter();
+  setView('home');
+  initLiq();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,710 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Waypoint Transfers</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0B1F3A;--navy-light:#1A3354;--gold:#C8972A;--gold-light:#E8B84B;--off-white:#F7F5F0;--text:#0B1F3A;--text-muted:#5A6478;--border:#DDD9CF;--success:#1D7A4A;--danger:#C0392B;--card:#FFFFFF;--bg:#F7F5F0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+nav{background:var(--navy);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100}
+.nav-logo{color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;gap:7px;cursor:pointer}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;gap:2px}
+.nav-btn{background:none;border:none;color:rgba(255,255,255,.7);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:13px;transition:all .15s}
+.nav-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+.nav-btn.active{background:rgba(255,255,255,.15);color:#fff;font-weight:600}
+.nav-cta{background:var(--gold);color:var(--navy);border:none;padding:7px 16px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer}
+.nav-cta:hover{background:var(--gold-light)}
+.nav-user{display:flex;align-items:center;gap:8px}
+.nav-user-name{color:rgba(255,255,255,.8);font-size:13px}
+.nav-logout{background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.7);padding:5px 10px;border-radius:5px;cursor:pointer;font-size:12px}
+.nav-logout:hover{background:rgba(255,255,255,.2);color:#fff}
+
+.section{display:none;min-height:calc(100vh - 58px)}
+.section.active{display:block}
+
+/* HERO */
+.hero{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-light) 100%);padding:4rem 1.5rem 3rem;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);font-size:12px;padding:4px 12px;border-radius:20px;margin-bottom:1.2rem}
+.hero h1{color:#fff;font-size:clamp(1.8rem,4.5vw,3rem);font-weight:800;line-height:1.1;margin-bottom:.8rem}
+.hero h1 span{color:var(--gold)}
+.hero p{color:rgba(255,255,255,.65);font-size:1rem;max-width:480px;margin:0 auto 2rem}
+.booking-card{background:#fff;border-radius:14px;padding:1.75rem;max-width:600px;margin:0 auto;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.booking-card h2{font-size:16px;font-weight:700;margin-bottom:1.25rem;color:var(--navy)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.field label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
+.field input,.field select{padding:9px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:14px;color:var(--text);background:#fff;transition:border .15s;width:100%}
+.field input:focus,.field select:focus{outline:none;border-color:var(--navy)}
+.fare-display{background:var(--off-white);border-radius:9px;padding:.9rem 1.1rem;margin:.9rem 0;display:flex;align-items:center;justify-content:space-between}
+.fare-label{font-size:12px;color:var(--text-muted)}
+.fare-amount{font-size:26px;font-weight:800;color:var(--navy)}
+.btn-primary{background:var(--navy);color:#fff;border:none;padding:12px 22px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;width:100%;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-primary:hover{background:var(--navy-light)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-gold{background:var(--gold);color:var(--navy);border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.btn-gold:hover{background:var(--gold-light)}
+.btn-outline{background:none;color:var(--navy);border:1.5px solid var(--border);padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;width:100%}
+.btn-outline:hover{border-color:var(--navy)}
+
+/* PILLARS */
+.pillars{background:#fff;padding:2.5rem 1.5rem}
+.pillars-inner{max-width:860px;margin:0 auto}
+.pillars h2{text-align:center;font-size:1.4rem;font-weight:700;margin-bottom:1.75rem;color:var(--navy)}
+.pillars-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.25rem}
+.pillar{text-align:center;padding:1.25rem}
+.pillar-icon{width:48px;height:48px;background:var(--navy);border-radius:11px;display:flex;align-items:center;justify-content:center;margin:0 auto .9rem;color:var(--gold);font-size:20px}
+.pillar h3{font-size:14px;font-weight:700;margin-bottom:.3rem;color:var(--navy)}
+.pillar p{font-size:12px;color:var(--text-muted);line-height:1.5}
+
+/* ROUTES */
+.routes-section{background:var(--off-white);padding:2.5rem 1.5rem}
+.routes-inner{max-width:860px;margin:0 auto}
+.routes-inner h2{font-size:1.4rem;font-weight:700;margin-bottom:.4rem;color:var(--navy)}
+.routes-inner p{color:var(--text-muted);font-size:13px;margin-bottom:1.5rem}
+.routes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+.route-card{background:#fff;border-radius:11px;padding:1.1rem;border:1px solid var(--border);cursor:pointer;transition:all .2s}
+.route-card:hover{border-color:var(--navy);box-shadow:0 4px 14px rgba(11,31,58,.1)}
+.route-price{font-size:22px;font-weight:800;color:var(--navy)}
+.route-to{font-size:14px;font-weight:700;color:var(--navy);margin:.3rem 0}
+.route-from{font-size:12px;color:var(--text-muted)}
+.route-tag{display:inline-flex;align-items:center;gap:3px;background:var(--off-white);padding:2px 7px;border-radius:4px;font-size:11px;color:var(--text-muted);margin-top:.5rem;margin-right:4px}
+
+/* CONFIRM */
+.confirm-wrap{max-width:500px;margin:2.5rem auto;padding:0 1.25rem}
+.confirm-card{background:#fff;border-radius:14px;padding:1.75rem;border:1px solid var(--border)}
+.confirm-header{display:flex;align-items:center;gap:11px;margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.confirm-icon{width:44px;height:44px;background:#E8F5ED;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--success);font-size:20px;flex-shrink:0}
+.confirm-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--off-white);font-size:13px}
+.confirm-row:last-of-type{border-bottom:none}
+.confirm-key{color:var(--text-muted)}
+.confirm-val{font-weight:600;color:var(--navy)}
+.booking-id{background:var(--navy);color:var(--gold);font-size:20px;font-weight:800;letter-spacing:2px;text-align:center;padding:.7rem;border-radius:7px;margin:1rem 0;font-family:monospace}
+
+/* AUTH */
+.auth-wrap{max-width:420px;margin:3rem auto;padding:0 1.25rem}
+.auth-card{background:#fff;border-radius:14px;padding:2rem;border:1px solid var(--border)}
+.auth-card h2{font-size:1.2rem;font-weight:700;margin-bottom:.4rem;color:var(--navy)}
+.auth-card p{font-size:13px;color:var(--text-muted);margin-bottom:1.5rem}
+.auth-toggle{display:flex;gap:8px;margin-bottom:1.5rem}
+.auth-tab{flex:1;padding:8px;border-radius:7px;border:1.5px solid var(--border);background:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--text-muted);transition:all .15s}
+.auth-tab.active{border-color:var(--navy);background:var(--navy);color:#fff}
+.auth-error{background:#FEE2E2;color:#991B1B;font-size:13px;padding:9px 12px;border-radius:7px;margin-bottom:1rem;display:none}
+.auth-success{background:#D1FAE5;color:#065F46;font-size:13px;padding:9px 12px;border-radius:7px;margin-bottom:1rem;display:none}
+
+/* DRIVER DASH */
+.dash-wrap{max-width:860px;margin:0 auto;padding:1.75rem 1.25rem}
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem}
+.dash-header h2{font-size:1.3rem;font-weight:700;color:var(--navy)}
+.status-toggle{display:flex;align-items:center;gap:9px;font-size:13px}
+.toggle{position:relative;width:42px;height:23px}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:#ccc;border-radius:12px;cursor:pointer;transition:.3s}
+.toggle input:checked+.toggle-slider{background:var(--success)}
+.toggle-slider:before{content:'';position:absolute;width:17px;height:17px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle input:checked+.toggle-slider:before{transform:translateX(19px)}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.75rem}
+.stat-card{background:#fff;border-radius:11px;padding:.9rem;border:1px solid var(--border);text-align:center}
+.stat-num{font-size:22px;font-weight:800;color:var(--navy)}
+.stat-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.trips-list{display:flex;flex-direction:column;gap:9px}
+.trip-item{background:#fff;border-radius:11px;padding:1.1rem;border:1px solid var(--border);display:grid;grid-template-columns:1fr auto;gap:.9rem;align-items:start}
+.trip-route{font-size:14px;font-weight:600;color:var(--navy)}
+.trip-meta{font-size:12px;color:var(--text-muted);margin-top:2px}
+.trip-fare{font-size:19px;font-weight:800;color:var(--navy);text-align:right}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-top:3px}
+.badge-pending{background:#FEF3CD;color:#856404}
+.badge-active{background:#D1FAE5;color:#065F46}
+.badge-done{background:#F0F0F0;color:#666}
+.btn-sm{font-size:12px;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;font-weight:600;transition:all .15s}
+.btn-accept{background:var(--navy);color:#fff}
+.btn-decline{background:#F5F5F5;color:#666;margin-left:5px}
+
+/* DISPATCH */
+.dispatch-wrap{max-width:960px;margin:0 auto;padding:1.75rem 1.25rem}
+.dispatch-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem}
+.dispatch-header h2{font-size:1.3rem;font-weight:700;color:var(--navy)}
+.dispatch-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.75rem}
+.dispatch-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.dispatch-col h3{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.9rem}
+.booking-item{background:#fff;border-radius:9px;padding:1rem 1.1rem;border:1px solid var(--border);margin-bottom:7px}
+.booking-route{font-size:13px;font-weight:600;color:var(--navy)}
+.booking-detail{font-size:12px;color:var(--text-muted);margin-top:2px}
+.booking-actions{display:flex;gap:6px;margin-top:.65rem;align-items:center;justify-content:space-between}
+.driver-item{background:#fff;border-radius:9px;padding:.9rem 1.1rem;border:1px solid var(--border);margin-bottom:7px;display:flex;align-items:center;gap:10px}
+.driver-avatar{width:36px;height:36px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:12px;font-weight:700;flex-shrink:0}
+.driver-name{font-size:13px;font-weight:600;color:var(--navy)}
+.driver-status{font-size:11px;color:var(--text-muted)}
+.assign-btn{background:var(--gold);color:var(--navy);border:none;font-size:12px;font-weight:700;padding:4px 11px;border-radius:5px;cursor:pointer;margin-left:auto}
+
+/* MISC */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:11px 18px;border-radius:9px;font-size:13px;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;max-width:280px}
+.toast.show{transform:translateY(0);opacity:1}
+.loader{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:2.5rem 1rem;color:var(--text-muted);font-size:13px}
+.empty-state i{font-size:32px;display:block;margin-bottom:.5rem;opacity:.4}
+.section-pad{padding:2rem 1.5rem;max-width:860px;margin:0 auto}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <i class="ti ti-route" aria-hidden="true"></i>
+    Waypoint<span>Transfers</span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn active" id="nav-home" onclick="showPage('home')">Home</button>
+    <button class="nav-btn" id="nav-book" onclick="showPage('book')">Book a Ride</button>
+    <button class="nav-btn" id="nav-driver" onclick="requireAuth('driver')">Driver Portal</button>
+    <button class="nav-btn" id="nav-dispatch" onclick="showPage('dispatch')">Dispatch</button>
+  </div>
+  <div id="nav-right">
+    <button class="nav-cta" onclick="showPage('book')">Book Now</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="section active">
+  <div class="hero">
+    <div class="hero-badge"><i class="ti ti-map-pin" aria-hidden="true"></i> Serving all of Washington State</div>
+    <h1>SeaTac transfers.<br><span>Fixed price. Every time.</span></h1>
+    <p>Door-to-door car service to SeaTac from anywhere in WA. Vetted drivers, no surge pricing.</p>
+    <div class="booking-card">
+      <h2><i class="ti ti-route" style="color:var(--gold);margin-right:5px" aria-hidden="true"></i>Get your fare instantly</h2>
+      <div class="field-row">
+        <div class="field">
+          <label>Pickup city</label>
+          <select id="hero-pickup" onchange="calcHeroFare()">
+            <option value="">Select pickup…</option>
+            <option value="kent">Kent, WA</option>
+            <option value="seattle">Seattle, WA</option>
+            <option value="tacoma">Tacoma, WA</option>
+            <option value="bellingham">Bellingham, WA</option>
+            <option value="olympia">Olympia, WA</option>
+            <option value="everett">Everett, WA</option>
+            <option value="spokane">Spokane, WA</option>
+            <option value="portland">Portland, OR</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Drop-off</label>
+          <select id="hero-dropoff" onchange="calcHeroFare()">
+            <option value="seatac">SeaTac Airport ✈️</option>
+            <option value="bellevue">Bellevue, WA</option>
+            <option value="tacoma">Tacoma, WA</option>
+            <option value="portland">Portland, OR</option>
+            <option value="vancouver">Vancouver, BC</option>
+          </select>
+        </div>
+      </div>
+      <div class="fare-display" id="hero-fare-display" style="display:none">
+        <div>
+          <div class="fare-label">Your fixed fare</div>
+          <div class="fare-amount" id="hero-fare-num">—</div>
+          <div style="font-size:11px;color:var(--text-muted)">Tolls · wait time · fees included</div>
+        </div>
+        <button class="btn-gold" onclick="prefillBook()">Book this ride →</button>
+      </div>
+      <button class="btn-primary" onclick="showPage('book')" id="hero-book-btn">
+        <i class="ti ti-calendar" aria-hidden="true"></i> Schedule a ride
+      </button>
+    </div>
+  </div>
+
+  <div class="pillars">
+    <div class="pillars-inner">
+      <h2>Why Waypoint</h2>
+      <div class="pillars-grid">
+        <div class="pillar"><div class="pillar-icon"><i class="ti ti-receipt" aria-hidden="true"></i></div><h3>Fixed price upfront</h3><p>See your exact fare before you book. Tolls and fees included, always.</p></div>
+        <div class="pillar"><div class="pillar-icon"><i class="ti ti-shield-check" aria-hidden="true"></i></div><h3>Vetted drivers</h3><p>Every driver is reviewed and approved before going live on the platform.</p></div>
+        <div class="pillar"><div class="pillar-icon"><i class="ti ti-clock" aria-hidden="true"></i></div><h3>Free wait time</h3><p>60 min free at SeaTac. 30 min on all long-distance trips. No rushing.</p></div>
+        <div class="pillar"><div class="pillar-icon"><i class="ti ti-map" aria-hidden="true"></i></div><h3>Statewide coverage</h3><p>SeaTac from anywhere in WA, plus Portland, Vancouver BC, and custom routes.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="routes-section">
+    <div class="routes-inner">
+      <h2>Popular routes</h2>
+      <p>Tap any route to book at the fixed price shown.</p>
+      <div class="routes-grid" id="routes-grid"></div>
+    </div>
+  </div>
+
+  <div style="background:var(--navy);padding:2.5rem 1.5rem;text-align:center">
+    <p style="color:rgba(255,255,255,.45);font-size:12px">Waypoint Transfers · Kent, WA 98031 · zapic78@gmail.com</p>
+    <p style="color:rgba(255,255,255,.2);font-size:11px;margin-top:.75rem">PROTOTYPE — not yet licensed to operate as a for-hire transportation service</p>
+  </div>
+</div>
+
+<!-- BOOK -->
+<div id="page-book" class="section">
+  <div id="book-form-wrap">
+    <div style="background:var(--navy);padding:1.75rem;text-align:center">
+      <h2 style="color:#fff;font-size:1.4rem;font-weight:800">Schedule your ride</h2>
+      <p style="color:rgba(255,255,255,.55);font-size:13px">Fixed price confirmed before payment</p>
+    </div>
+    <div style="max-width:580px;margin:1.75rem auto;padding:0 1.25rem">
+      <div style="background:#fff;border-radius:14px;padding:1.75rem;border:1px solid var(--border)">
+        <div class="field"><label>Full name</label><input type="text" id="b-name" placeholder="Your full name"/></div>
+        <div class="field"><label>Phone number</label><input type="tel" id="b-phone" placeholder="(253) 555-0000"/></div>
+        <div class="field-row">
+          <div class="field"><label>Pickup city</label>
+            <select id="b-pickup" onchange="calcFare()">
+              <option value="">Select…</option>
+              <option value="kent">Kent, WA</option>
+              <option value="seattle">Seattle, WA</option>
+              <option value="tacoma">Tacoma, WA</option>
+              <option value="bellingham">Bellingham, WA</option>
+              <option value="olympia">Olympia, WA</option>
+              <option value="everett">Everett, WA</option>
+              <option value="spokane">Spokane, WA</option>
+              <option value="portland">Portland, OR</option>
+            </select>
+          </div>
+          <div class="field"><label>Drop-off</label>
+            <select id="b-dropoff" onchange="calcFare()">
+              <option value="seatac">SeaTac Airport ✈️</option>
+              <option value="bellevue">Bellevue, WA</option>
+              <option value="tacoma">Tacoma, WA</option>
+              <option value="portland">Portland, OR</option>
+              <option value="vancouver">Vancouver, BC</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>Full pickup address</label><input type="text" id="b-address" placeholder="123 Main St, Kent, WA 98030"/></div>
+        <div class="field-row">
+          <div class="field"><label>Date</label><input type="date" id="b-date"/></div>
+          <div class="field"><label>Time</label><input type="time" id="b-time"/></div>
+        </div>
+        <div class="field"><label>Passengers</label>
+          <select id="b-pax">
+            <option value="1">1 passenger</option>
+            <option value="2">2 passengers</option>
+            <option value="3">3 passengers</option>
+            <option value="4">4 passengers</option>
+            <option value="5">5+ (van required)</option>
+          </select>
+        </div>
+        <div class="field"><label>Notes (optional)</label><input type="text" id="b-notes" placeholder="Flight number, luggage, accessibility needs…"/></div>
+        <div class="fare-display" id="fare-display" style="display:none">
+          <div>
+            <div class="fare-label">Fixed fare</div>
+            <div class="fare-amount" id="fare-num">$0</div>
+            <div style="font-size:11px;color:var(--text-muted)">All-inclusive · no surge</div>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);text-align:right" id="fare-wait"></div>
+        </div>
+        <button class="btn-primary" onclick="submitBooking()" id="book-submit-btn" style="margin-top:1rem">
+          <i class="ti ti-check" aria-hidden="true"></i> Confirm booking
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="book-confirm-wrap" style="display:none">
+    <div class="confirm-wrap">
+      <div class="confirm-card">
+        <div class="confirm-header">
+          <div class="confirm-icon"><i class="ti ti-check" aria-hidden="true"></i></div>
+          <div>
+            <div style="font-size:15px;font-weight:700;color:var(--navy)">Booking confirmed</div>
+            <div style="font-size:12px;color:var(--text-muted)">Your driver will contact you 24 hrs before pickup</div>
+          </div>
+        </div>
+        <div class="booking-id" id="confirm-id">WT-0000</div>
+        <div id="confirm-details"></div>
+        <button class="btn-primary" style="margin-top:1.1rem" onclick="showPage('home')">
+          <i class="ti ti-home" aria-hidden="true"></i> Back to home
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div id="page-auth" class="section">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <h2>Driver portal</h2>
+      <p>Sign in or create your driver account</p>
+      <div class="auth-toggle">
+        <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign in</button>
+        <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Create account</button>
+      </div>
+      <div class="auth-error" id="auth-error"></div>
+      <div class="auth-success" id="auth-success"></div>
+      <div id="signup-fields" style="display:none">
+        <div class="field"><label>Full name</label><input type="text" id="auth-name" placeholder="Your full name"/></div>
+        <div class="field"><label>Phone</label><input type="tel" id="auth-phone" placeholder="(253) 555-0000"/></div>
+      </div>
+      <div class="field"><label>Email</label><input type="email" id="auth-email" placeholder="you@email.com"/></div>
+      <div class="field"><label>Password</label><input type="password" id="auth-password" placeholder="Min 6 characters"/></div>
+      <button class="btn-primary" onclick="handleAuth()" id="auth-btn">
+        <i class="ti ti-login" aria-hidden="true"></i> Sign in
+      </button>
+      <button class="btn-outline" style="margin-top:.75rem" onclick="showPage('home')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- DRIVER DASH -->
+<div id="page-driver" class="section">
+  <div class="dash-wrap">
+    <div class="dash-header">
+      <div>
+        <h2>Driver portal</h2>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:2px" id="driver-subtitle">Loading…</p>
+      </div>
+      <div class="status-toggle">
+        <span style="font-size:12px;color:var(--text-muted)">Offline</span>
+        <label class="toggle"><input type="checkbox" id="online-toggle" onchange="toggleOnline()"><span class="toggle-slider"></span></label>
+        <span style="font-size:12px;font-weight:600" id="online-label">Go online</span>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num" id="d-trips">—</div><div class="stat-label">Total trips</div></div>
+      <div class="stat-card"><div class="stat-num" id="d-earnings">—</div><div class="stat-label">Total earnings</div></div>
+      <div class="stat-card"><div class="stat-num" id="d-rating">—</div><div class="stat-label">Rating</div></div>
+      <div class="stat-card"><div class="stat-num" id="d-accept">—</div><div class="stat-label">Acceptance</div></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem">
+      <h3 style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Assigned trips</h3>
+      <button class="btn-sm btn-accept" onclick="loadDriverTrips()" style="display:flex;align-items:center;gap:4px"><i class="ti ti-refresh" style="font-size:12px" aria-hidden="true"></i> Refresh</button>
+    </div>
+    <div class="trips-list" id="trips-list"></div>
+  </div>
+</div>
+
+<!-- DISPATCH -->
+<div id="page-dispatch" class="section">
+  <div class="dispatch-wrap">
+    <div class="dispatch-header">
+      <div>
+        <h2>Dispatch panel</h2>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:2px">Waypoint Transfers · Live overview</p>
+      </div>
+      <button class="btn-sm btn-accept" onclick="loadDispatch()" style="display:flex;align-items:center;gap:5px">
+        <i class="ti ti-refresh" style="font-size:12px" aria-hidden="true"></i> Refresh
+      </button>
+    </div>
+    <div class="dispatch-stats">
+      <div class="stat-card"><div class="stat-num" id="dc-pending">—</div><div class="stat-label">Pending bookings</div></div>
+      <div class="stat-card"><div class="stat-num" id="dc-active">—</div><div class="stat-label">Active trips</div></div>
+      <div class="stat-card"><div class="stat-num" id="dc-drivers">—</div><div class="stat-label">Online drivers</div></div>
+    </div>
+    <div class="dispatch-grid">
+      <div class="dispatch-col"><h3>All bookings</h3><div id="dispatch-bookings"></div></div>
+      <div class="dispatch-col"><h3>Drivers</h3><div id="dispatch-drivers"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL='https://nfegnpkrazeubimrdkur.supabase.co';
+const SUPABASE_KEY='sb_publishable_VLUBqL5LYqOtZfjp4ovTXw__M8sp5ir';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const FARES={kent:{seatac:55,bellevue:65,tacoma:65,portland:280,vancouver:320},seattle:{seatac:75,bellevue:55,tacoma:85,portland:295,vancouver:335},tacoma:{seatac:70,bellevue:80,tacoma:0,portland:260,vancouver:360},bellingham:{seatac:185,bellevue:195,tacoma:210,portland:380,vancouver:120},olympia:{seatac:110,bellevue:120,tacoma:75,portland:220,vancouver:420},everett:{seatac:90,bellevue:75,tacoma:120,portland:340,vancouver:275},spokane:{seatac:520,bellevue:530,tacoma:545,portland:480,vancouver:480},portland:{seatac:310,bellevue:310,tacoma:280,portland:0,vancouver:580}};
+const CNAMES={kent:'Kent, WA',seattle:'Seattle, WA',tacoma:'Tacoma, WA',bellingham:'Bellingham, WA',olympia:'Olympia, WA',everett:'Everett, WA',spokane:'Spokane, WA',portland:'Portland, OR',seatac:'SeaTac Airport',bellevue:'Bellevue, WA',vancouver:'Vancouver, BC'};
+const WAIT={seatac:'60 min free wait at airport',bellevue:'30 min free wait',tacoma:'30 min free wait',portland:'30 min free wait',vancouver:'30 min free wait'};
+const POPULAR=[{from:'kent',to:'seatac',dist:'22 mi'},{from:'seattle',to:'seatac',dist:'14 mi'},{from:'bellingham',to:'seatac',dist:'88 mi'},{from:'olympia',to:'seatac',dist:'62 mi'},{from:'everett',to:'seatac',dist:'30 mi'},{from:'tacoma',to:'seatac',dist:'34 mi'},{from:'kent',to:'portland',dist:'176 mi'},{from:'bellingham',to:'vancouver',dist:'58 mi'}];
+
+let currentUser=null;
+let currentDriver=null;
+let authMode='login';
+
+// --- INIT ---
+async function init(){
+  buildRoutes();
+  const today=new Date().toISOString().split('T')[0];
+  document.getElementById('b-date').value=today;
+  document.getElementById('b-time').value='08:00';
+  const {data:{session}}=await sb.auth.getSession();
+  if(session){
+    currentUser=session.user;
+    await loadDriverProfile();
+    updateNavForUser();
+  }
+  sb.auth.onAuthStateChange(async(event,session)=>{
+    if(session){currentUser=session.user;await loadDriverProfile();updateNavForUser();}
+    else{currentUser=null;currentDriver=null;updateNavForUser();}
+  });
+}
+
+function updateNavForUser(){
+  const nr=document.getElementById('nav-right');
+  if(currentUser&&currentDriver){
+    nr.innerHTML=`<div class="nav-user"><span class="nav-user-name"><i class="ti ti-steering-wheel" style="font-size:14px;vertical-align:-2px" aria-hidden="true"></i> ${currentDriver.full_name.split(' ')[0]}</span><button class="nav-logout" onclick="signOut()">Sign out</button></div>`;
+  } else {
+    nr.innerHTML=`<button class="nav-cta" onclick="showPage('book')">Book Now</button>`;
+  }
+}
+
+// --- AUTH ---
+function switchTab(mode){
+  authMode=mode;
+  document.getElementById('tab-login').classList.toggle('active',mode==='login');
+  document.getElementById('tab-signup').classList.toggle('active',mode==='signup');
+  document.getElementById('signup-fields').style.display=mode==='signup'?'block':'none';
+  document.getElementById('auth-btn').innerHTML=mode==='login'?'<i class="ti ti-login" aria-hidden="true"></i> Sign in':'<i class="ti ti-user-plus" aria-hidden="true"></i> Create account';
+  document.getElementById('auth-error').style.display='none';
+  document.getElementById('auth-success').style.display='none';
+}
+
+async function handleAuth(){
+  const email=document.getElementById('auth-email').value.trim();
+  const password=document.getElementById('auth-password').value;
+  const errEl=document.getElementById('auth-error');
+  const sucEl=document.getElementById('auth-success');
+  const btn=document.getElementById('auth-btn');
+  errEl.style.display='none';sucEl.style.display='none';
+  if(!email||!password){showAuthError('Please enter email and password');return}
+  btn.innerHTML='<span class="loader"></span> Please wait…';
+  btn.disabled=true;
+  if(authMode==='login'){
+    const{error}=await sb.auth.signInWithPassword({email,password});
+    if(error){showAuthError(error.message);btn.innerHTML='<i class="ti ti-login" aria-hidden="true"></i> Sign in';btn.disabled=false;return}
+    showPage('driver');
+  } else {
+    const name=document.getElementById('auth-name').value.trim();
+    const phone=document.getElementById('auth-phone').value.trim();
+    if(!name){showAuthError('Please enter your full name');btn.innerHTML='<i class="ti ti-user-plus" aria-hidden="true"></i> Create account';btn.disabled=false;return}
+    const{data,error}=await sb.auth.signUp({email,password});
+    if(error){showAuthError(error.message);btn.innerHTML='<i class="ti ti-user-plus" aria-hidden="true"></i> Create account';btn.disabled=false;return}
+    if(data.user){
+      await sb.from('drivers').insert({id:data.user.id,full_name:name,phone:phone||null});
+      sucEl.textContent='Account created! You can now sign in.';
+      sucEl.style.display='block';
+      switchTab('login');
+    }
+  }
+  btn.innerHTML=authMode==='login'?'<i class="ti ti-login" aria-hidden="true"></i> Sign in':'<i class="ti ti-user-plus" aria-hidden="true"></i> Create account';
+  btn.disabled=false;
+}
+
+function showAuthError(msg){
+  const e=document.getElementById('auth-error');
+  e.textContent=msg;e.style.display='block';
+}
+
+async function signOut(){
+  await sb.auth.signOut();
+  currentUser=null;currentDriver=null;
+  showPage('home');
+  showToast('Signed out');
+}
+
+async function loadDriverProfile(){
+  if(!currentUser)return;
+  const{data}=await sb.from('drivers').select('*').eq('id',currentUser.id).single();
+  currentDriver=data;
+}
+
+function requireAuth(page){
+  if(currentUser&&currentDriver){showPage(page);}
+  else{showPage('auth');}
+}
+
+// --- FARE CALC ---
+function getFare(f,t){return(FARES[f]||{})[t]||0}
+function calcHeroFare(){
+  const f=document.getElementById('hero-pickup').value;
+  const t=document.getElementById('hero-dropoff').value||'seatac';
+  const fd=document.getElementById('hero-fare-display');
+  const bb=document.getElementById('hero-book-btn');
+  if(f&&t){const fare=getFare(f,t);if(fare){document.getElementById('hero-fare-num').textContent='$'+fare;fd.style.display='flex';bb.style.display='none';return}}
+  fd.style.display='none';bb.style.display='flex';
+}
+function calcFare(){
+  const f=document.getElementById('b-pickup').value;
+  const t=document.getElementById('b-dropoff').value;
+  const fd=document.getElementById('fare-display');
+  if(f&&t){const fare=getFare(f,t);if(fare){document.getElementById('fare-num').textContent='$'+fare;document.getElementById('fare-wait').textContent=WAIT[t]||'';fd.style.display='flex';return}}
+  fd.style.display='none';
+}
+function prefillBook(){
+  document.getElementById('b-pickup').value=document.getElementById('hero-pickup').value;
+  document.getElementById('b-dropoff').value=document.getElementById('hero-dropoff').value;
+  showPage('book');calcFare();
+}
+function quickBook(from,to){
+  document.getElementById('b-pickup').value=from;
+  document.getElementById('b-dropoff').value=to;
+  showPage('book');calcFare();
+}
+
+// --- BOOKING SUBMIT ---
+let bookSeq=1000;
+async function submitBooking(){
+  const name=document.getElementById('b-name').value.trim();
+  const phone=document.getElementById('b-phone').value.trim();
+  const pickup=document.getElementById('b-pickup').value;
+  const dropoff=document.getElementById('b-dropoff').value;
+  const address=document.getElementById('b-address').value.trim();
+  const date=document.getElementById('b-date').value;
+  const time=document.getElementById('b-time').value;
+  const pax=document.getElementById('b-pax').value;
+  const notes=document.getElementById('b-notes').value.trim();
+  if(!name){showToast('Please enter your name');return}
+  if(!pickup){showToast('Please select a pickup city');return}
+  if(!date||!time){showToast('Please choose date and time');return}
+  const fare=getFare(pickup,dropoff);
+  const btn=document.getElementById('book-submit-btn');
+  btn.innerHTML='<span class="loader"></span> Saving…';btn.disabled=true;
+  bookSeq++;
+  const id='WT-'+bookSeq;
+  const{error}=await sb.from('bookings').insert({
+    id,passenger_name:name,passenger_phone:phone||null,
+    pickup_city:pickup,dropoff_city:dropoff,pickup_address:address||null,
+    trip_date:date,trip_time:time,passengers:parseInt(pax),
+    notes:notes||null,fare,status:'pending'
+  });
+  btn.innerHTML='<i class="ti ti-check" aria-hidden="true"></i> Confirm booking';btn.disabled=false;
+  if(error){showToast('Error saving booking: '+error.message);return}
+  const d=document.getElementById('confirm-details');
+  d.innerHTML=[['Booking ID',id],['Passenger',name],['Pickup',CNAMES[pickup]],['Drop-off',CNAMES[dropoff]],['Date & time',date+' at '+time],['Passengers',pax],['Fixed fare','$'+fare]].map(([k,v])=>`<div class="confirm-row"><span class="confirm-key">${k}</span><span class="confirm-val">${v}</span></div>`).join('');
+  document.getElementById('confirm-id').textContent=id;
+  document.getElementById('book-form-wrap').style.display='none';
+  document.getElementById('book-confirm-wrap').style.display='block';
+  showToast('Booking '+id+' saved to database!');
+}
+
+// --- DRIVER DASH ---
+async function loadDriverDash(){
+  if(!currentDriver)return;
+  document.getElementById('driver-subtitle').textContent=currentDriver.full_name+' · '+currentDriver.cdl_class+' · ⭐ '+currentDriver.rating;
+  document.getElementById('d-trips').textContent=currentDriver.trips_count||0;
+  document.getElementById('d-earnings').textContent='$'+(currentDriver.earnings||0).toLocaleString();
+  document.getElementById('d-rating').textContent=currentDriver.rating||'5.0';
+  document.getElementById('d-accept').textContent=(currentDriver.acceptance_rate||100)+'%';
+  document.getElementById('online-toggle').checked=currentDriver.is_online||false;
+  document.getElementById('online-label').textContent=currentDriver.is_online?'Online':'Go online';
+  await loadDriverTrips();
+}
+
+async function loadDriverTrips(){
+  const list=document.getElementById('trips-list');
+  list.innerHTML='<div class="empty-state"><span class="loader" style="border-color:var(--border);border-top-color:var(--navy)"></span></div>';
+  const{data,error}=await sb.from('bookings').select('*').eq('assigned_driver_id',currentUser.id).order('trip_date',{ascending:true});
+  if(error){list.innerHTML='<div class="empty-state">Error loading trips</div>';return}
+  if(!data||data.length===0){list.innerHTML='<div class="empty-state"><i class="ti ti-calendar-off" aria-hidden="true"></i>No assigned trips yet</div>';return}
+  list.innerHTML=data.map(t=>`
+    <div class="trip-item">
+      <div>
+        <div class="trip-route">${CNAMES[t.pickup_city]||t.pickup_city} → ${CNAMES[t.dropoff_city]||t.dropoff_city}</div>
+        <div class="trip-meta">${t.trip_date} · ${t.trip_time} · ${t.passenger_name}</div>
+        <div><span class="badge ${t.status==='active'?'badge-active':t.status==='completed'?'badge-done':'badge-pending'}">${t.status}</span></div>
+        ${t.status==='pending'?`<div style="margin-top:7px"><button class="btn-sm btn-accept" onclick="updateTripStatus('${t.id}','active')">Accept</button><button class="btn-sm btn-decline" onclick="updateTripStatus('${t.id}','declined')">Decline</button></div>`:''}
+        ${t.status==='active'?`<div style="margin-top:7px"><button class="btn-sm btn-accept" onclick="updateTripStatus('${t.id}','completed')">Mark complete</button></div>`:''}
+      </div>
+      <div><div class="trip-fare">$${t.fare}</div><div style="font-size:11px;color:var(--text-muted)">Fixed</div></div>
+    </div>`).join('');
+}
+
+async function updateTripStatus(id,status){
+  const{error}=await sb.from('bookings').update({status}).eq('id',id);
+  if(error){showToast('Error: '+error.message);return}
+  showToast('Trip '+id+' updated to '+status);
+  await loadDriverTrips();
+}
+
+async function toggleOnline(){
+  const on=document.getElementById('online-toggle').checked;
+  document.getElementById('online-label').textContent=on?'Online':'Go online';
+  await sb.from('drivers').update({is_online:on}).eq('id',currentUser.id);
+  showToast(on?'You\'re now online':'You\'re offline');
+}
+
+// --- DISPATCH ---
+async function loadDispatch(){
+  const{data:bookings}=await sb.from('bookings').select('*').order('created_at',{ascending:false});
+  const{data:drivers}=await sb.from('drivers').select('*');
+  const pending=(bookings||[]).filter(b=>b.status==='pending').length;
+  const active=(bookings||[]).filter(b=>b.status==='active').length;
+  const online=(drivers||[]).filter(d=>d.is_online).length;
+  document.getElementById('dc-pending').textContent=pending;
+  document.getElementById('dc-active').textContent=active;
+  document.getElementById('dc-drivers').textContent=online;
+  const bEl=document.getElementById('dispatch-bookings');
+  if(!bookings||bookings.length===0){bEl.innerHTML='<div class="empty-state"><i class="ti ti-inbox" aria-hidden="true"></i>No bookings yet</div>';}
+  else{bEl.innerHTML=bookings.map(b=>`
+    <div class="booking-item">
+      <div class="booking-route">${CNAMES[b.pickup_city]||b.pickup_city} → ${CNAMES[b.dropoff_city]||b.dropoff_city}</div>
+      <div class="booking-detail">${b.passenger_name} · ${b.trip_date} ${b.trip_time} · <strong>$${b.fare}</strong></div>
+      <div class="booking-actions">
+        <span class="badge ${b.status==='pending'?'badge-pending':b.status==='active'?'badge-active':'badge-done'}">${b.status}</span>
+        ${b.status==='pending'&&!b.assigned_driver_id&&drivers&&drivers.length>0?`<select id="assign-${b.id}" style="font-size:12px;padding:3px 6px;border-radius:5px;border:1px solid var(--border)"><option value="">Assign driver…</option>${(drivers||[]).map(d=>`<option value="${d.id}">${d.full_name}</option>`).join('')}</select><button class="btn-sm btn-accept" onclick="assignDriver('${b.id}')">Assign</button>`:''}
+        ${b.assigned_driver_id?`<span style="font-size:11px;color:var(--text-muted)">Driver assigned</span>`:''}
+      </div>
+    </div>`).join('');}
+  const dEl=document.getElementById('dispatch-drivers');
+  if(!drivers||drivers.length===0){dEl.innerHTML='<div class="empty-state"><i class="ti ti-users" aria-hidden="true"></i>No drivers yet</div>';}
+  else{dEl.innerHTML=drivers.map(d=>`
+    <div class="driver-item">
+      <div class="driver-avatar">${d.full_name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase()}</div>
+      <div>
+        <div class="driver-name">${d.full_name}</div>
+        <div class="driver-status">${d.is_online?'🟢 Online':'⚫ Offline'} · ⭐ ${d.rating} · ${d.trips_count} trips</div>
+      </div>
+    </div>`).join('');}
+}
+
+async function assignDriver(bookingId){
+  const sel=document.getElementById('assign-'+bookingId);
+  const driverId=sel.value;
+  if(!driverId){showToast('Select a driver first');return}
+  const{error}=await sb.from('bookings').update({assigned_driver_id:driverId,status:'pending'}).eq('id',bookingId);
+  if(error){showToast('Error: '+error.message);return}
+  showToast('Driver assigned!');
+  await loadDispatch();
+}
+
+// --- ROUTES ---
+function buildRoutes(){
+  document.getElementById('routes-grid').innerHTML=POPULAR.map(r=>{
+    const f=getFare(r.from,r.to);
+    return`<div class="route-card" onclick="quickBook('${r.from}','${r.to}')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div class="route-from">${CNAMES[r.from]}</div>
+        <div class="route-price">$${f}</div>
+      </div>
+      <div class="route-to">→ ${CNAMES[r.to]}</div>
+      <div>
+        <span class="route-tag"><i class="ti ti-route" style="font-size:11px" aria-hidden="true"></i>${r.dist}</span>
+        <span class="route-tag"><i class="ti ti-clock" style="font-size:11px" aria-hidden="true"></i>${WAIT[r.to].split(' ').slice(0,2).join(' ')}</span>
+      </div>
+    </div>`;}).join('');
+}
+
+// --- NAV ---
+function showPage(page){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const nb=document.getElementById('nav-'+page);
+  if(nb)nb.classList.add('active');
+  if(page==='book'){document.getElementById('book-form-wrap').style.display='block';document.getElementById('book-confirm-wrap').style.display='none';}
+  if(page==='driver'){if(currentUser&&currentDriver)loadDriverDash();else{showPage('auth');return}}
+  if(page==='dispatch')loadDispatch();
+  window.scrollTo(0,0);
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+init();
+</script>
+</body>
+</html>

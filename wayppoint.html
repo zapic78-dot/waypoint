@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wayppoint — Transfers, rides, and delivery worldwide</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --accent: #06b6d4;
+    --positive: #10b981;
+    --black: #111827;
+    --grey-1: #f9fafb;
+    --grey-2: #e5e7eb;
+    --grey-4: #9ca3af;
+    --grey-6: #4b5563;
+    --yellow: #fbbf24;
+    --white: #ffffff;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--black);
+    background: var(--white);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
+  /* Top promo bar */
+  .promo-bar {
+    background: var(--black);
+    color: var(--white);
+    padding: 12px 16px;
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    justify-content: center;
+    scrollbar-width: none;
+  }
+  .promo-bar::-webkit-scrollbar { display: none; }
+  .promo-btn {
+    border: 1px solid rgba(255,255,255,0.4);
+    color: var(--white);
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+  }
+  .promo-btn:hover { background: rgba(255,255,255,0.1); }
+
+  /* Header */
+  .header {
+    background: var(--white);
+    border-bottom: 1px solid var(--grey-2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .logo {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-dot {
+    width: 10px; height: 10px; background: var(--accent); border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(6,182,212,0.15);
+  }
+  .header-nav { display: flex; gap: 20px; align-items: center; font-size: 14px; }
+  .header-nav a:hover { color: var(--primary); }
+  .header-settings { display: flex; gap: 8px; align-items: center; }
+  .header-settings button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px 10px;
+    font-size: 14px;
+    color: var(--black);
+    border-radius: 6px;
+  }
+  .header-settings button:hover { background: var(--grey-1); }
+  .login-btn {
+    background: var(--primary) !important;
+    color: var(--white) !important;
+    padding: 8px 16px !important;
+    font-weight: 500;
+  }
+  .login-btn:hover { background: var(--primary-dark) !important; }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    min-height: 560px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
+    color: var(--white);
+    padding: 60px 0 80px;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(6,182,212,0.3) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(37,99,235,0.4) 0%, transparent 50%);
+    opacity: 0.7;
+  }
+  .hero-content { position: relative; z-index: 1; }
+  .hero h1 {
+    font-size: clamp(28px, 4.5vw, 48px);
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.15;
+    max-width: 850px;
+    margin: 0 auto 32px;
+    letter-spacing: -1px;
+  }
+
+  /* Booking form */
+  .form-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .type-toggle {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 6px;
+    display: flex;
+    gap: 6px;
+  }
+  .type-toggle button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--grey-6);
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+  .type-toggle button.active {
+    background: var(--primary);
+    color: var(--white);
+  }
+  .type-toggle svg { width: 20px; height: 20px; }
+  .booking-form {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: var(--black);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  }
+  .input-row {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .input-field {
+    position: relative;
+    background: var(--grey-1);
+    border-radius: 10px;
+    padding: 12px 16px 12px 44px;
+    border: 1px solid transparent;
+    transition: border 0.2s;
+  }
+  .input-field:focus-within { border-color: var(--primary); background: var(--white); }
+  .input-field label {
+    display: block;
+    font-size: 12px;
+    color: var(--grey-6);
+    margin-bottom: 2px;
+  }
+  .input-field input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-size: 15px;
+    color: var(--black);
+  }
+  .input-field svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px; height: 20px;
+    color: var(--primary);
+  }
+  .swap-btn {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--white);
+    border: 1px solid var(--grey-2);
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .swap-btn:hover { background: var(--grey-1); }
+  .form-extras {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .submit-btn {
+    background: var(--positive);
+    color: var(--white);
+    border: none;
+    padding: 14px 24px;
+    font-size: 17px;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .submit-btn:hover { background: #059669; }
+  .submit-btn:active { transform: scale(0.98); }
+
+  .hero-subtitle {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 16px;
+    opacity: 0.9;
+  }
+  .chips {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin-top: 20px;
+    padding: 0 16px;
+    scrollbar-width: none;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    background: rgba(255,255,255,0.95);
+    color: var(--black);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .chip .check {
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  /* Section common */
+  section { padding: 64px 0; }
+  .section-title {
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .section-subtitle {
+    text-align: center;
+    color: var(--grey-6);
+    font-size: 18px;
+    margin-bottom: 40px;
+  }
+
+  /* Reviews */
+  .reviews-scroll {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 8px 16px;
+    scrollbar-width: none;
+    scroll-snap-type: x mandatory;
+  }
+  .reviews-scroll::-webkit-scrollbar { display: none; }
+  .review {
+    flex: 0 0 340px;
+    background: var(--white);
+    border: 1px solid var(--grey-2);
+    border-radius: 16px;
+    padding: 24px;
+    scroll-snap-align: start;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .review:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+  .review-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .review-author { font-weight: 700; font-size: 17px; }
+  .review-source {
+    font-size: 11px;
+    color: var(--grey-4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .stars { color: var(--yellow); margin-bottom: 12px; font-size: 18px; }
+  .review-text {
+    color: var(--grey-6);
+    font-size: 14px;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Stats */
+  .stats {
+    background: var(--grey-1);
+    padding: 48px 0;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    text-align: center;
+  }
+  .stat-num {
+    color: var(--primary);
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+  .stat-label {
+    color: var(--grey-6);
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  /* Fleet */
+  .fleet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+  }
+  .fleet-card {
+    background: var(--white);
+    border: 1px solid var(--grey-2);
+    border-radius: 12px;
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .fleet-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 8px 20px rgba(37,99,235,0.12);
+    transform: translateY(-3px);
+  }
+  .fleet-icon {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    font-size: 48px;
+  }
+  .fleet-name { font-weight: 600; font-size: 15px; }
+
+  /* App banner */
+  .app-banner {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    border-radius: 24px;
+    padding: 48px;
+    color: var(--white);
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 32px;
+    align-items: center;
+    margin: 32px 16px;
+    max-width: 1168px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .app-banner h2 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .app-banner h2 span { color: var(--accent); }
+  .app-banner p { opacity: 0.9; margin-bottom: 24px; }
+  .app-features {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+  .app-features div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+  }
+  .app-features .check { color: var(--accent); font-weight: 700; }
+  .download-btn {
+    background: var(--white);
+    color: var(--primary);
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 600;
+    display: inline-block;
+    transition: transform 0.1s;
+  }
+  .download-btn:hover { transform: scale(1.03); }
+  .phone-mock {
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+  }
+  .phone-mock-icon { font-size: 64px; margin-bottom: 8px; }
+
+  /* Footer */
+  footer {
+    background: var(--black);
+    color: var(--grey-2);
+    padding: 48px 0 24px;
+    margin-top: 64px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+  .footer-col h4 {
+    color: var(--white);
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  .footer-col a {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: var(--grey-4);
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--white); }
+  .footer-bottom {
+    border-top: 1px solid #1f2937;
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--grey-4);
+  }
+  .social { display: flex; gap: 8px; }
+  .social a {
+    width: 36px; height: 36px;
+    background: #1f2937;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    transition: background 0.2s;
+  }
+  .social a:hover { background: var(--primary); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero { padding: 40px 0 60px; min-height: auto; }
+    .header-nav { display: none; }
+    .form-extras { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr; gap: 24px; }
+    .app-banner { grid-template-columns: 1fr; padding: 32px 24px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+    .section-title { font-size: 26px; }
+    section { padding: 48px 0; }
+  }
+  @media (min-width: 600px) {
+    .input-row { flex-direction: row; }
+    .input-field { flex: 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Promo bar -->
+<div class="promo-bar">
+  <a href="#" class="promo-btn">✨ Experiences</a>
+  <a href="#" class="promo-btn">🚗 Car hire</a>
+  <a href="#" class="promo-btn">⛵ Yacht charter</a>
+  <a href="#" class="promo-btn">🏨 Hotels</a>
+</div>
+
+<!-- Header -->
+<header class="header">
+  <div class="container header-inner">
+    <div class="logo">
+      <span class="logo-dot"></span>
+      Wayppoint
+    </div>
+    <nav class="header-nav">
+      <a href="#">Support</a>
+      <a href="#">Destinations</a>
+      <a href="#">For drivers</a>
+      <a href="#">For business</a>
+      <a href="#">Blog</a>
+      <a href="#">FAQ</a>
+    </nav>
+    <div class="header-settings">
+      <button>US$</button>
+      <button>km</button>
+      <button>🇬🇧 EN</button>
+      <button class="login-btn">Log in</button>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container hero-content">
+    <h1>Best prices from the best drivers in 180+ countries</h1>
+
+    <div class="form-wrap">
+      <div class="type-toggle">
+        <button class="active" data-type="ride">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          Ride
+        </button>
+        <button data-type="hourly">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Per hour
+        </button>
+      </div>
+
+      <form class="booking-form" onsubmit="event.preventDefault(); alert('Searching for offers...');">
+        <div class="input-row">
+          <div class="input-field">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <label>From</label>
+            <input type="text" placeholder="Address, airport, hotel" id="from">
+          </div>
+          <div class="input-field">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <label>To</label>
+            <input type="text" placeholder="Address, airport, hotel" id="to">
+          </div>
+        </div>
+        <div class="form-extras">
+          <div class="input-field">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <label>Date & time</label>
+            <input type="datetime-local">
+          </div>
+          <div class="input-field">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <label>Passengers</label>
+            <input type="number" min="1" max="50" value="1">
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Get offers →</button>
+      </form>
+    </div>
+
+    <p class="hero-subtitle">Compare driver offers on our marketplace. Unbeatable prices on private transfers.</p>
+
+    <div class="chips">
+      <span class="chip"><span class="check">✓</span> Premium vehicles, economy prices</span>
+      <span class="chip"><span class="check">✓</span> Tender-based pricing</span>
+      <span class="chip"><span class="check">✓</span> See your car before paying</span>
+      <span class="chip"><span class="check">✓</span> Free cancellation</span>
+      <span class="chip"><span class="check">✓</span> 60 min free waiting</span>
+      <span class="chip"><span class="check">✓</span> 200,000+ vehicles</span>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div>
+        <div class="stat-num">10M+</div>
+        <div class="stat-label">Happy customers</div>
+      </div>
+      <div>
+        <div class="stat-num">180+</div>
+        <div class="stat-label">Countries covered</div>
+      </div>
+      <div>
+        <div class="stat-num">4.9 ★</div>
+        <div class="stat-label">Average rating</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Reviews -->
+<section>
+  <div class="container">
+    <h2 class="section-title">Traveler reviews</h2>
+    <p class="section-subtitle">Millions trust us with their trips. Here's what they say.</p>
+  </div>
+  <div class="reviews-scroll">
+    <div class="review">
+      <div class="review-header">
+        <div class="review-author">Shanta M.</div>
+        <div class="review-source">Tripadvisor</div>
+      </div>
+      <div class="stars">★★★★★</div>
+      <p class="review-text">Excellent service! The local team was on top of things and the transfers went very smoothly — and much cheaper than using any public taxi between the emirates.</p>
+    </div>
+    <div class="review">
+      <div class="review-header">
+        <div class="review-author">Colm</div>
+        <div class="review-source">Google Play</div>
+      </div>
+      <div class="stars">★★★★★</div>
+      <p class="review-text">Used Wayppoint in Rome and Barcelona. Driver waited at the airport just in time. Also picked us up from the hotel earlier than booked. Price was very good compared to local taxi. Recommended!</p>
+    </div>
+    <div class="review">
+      <div class="review-header">
+        <div class="review-author">Patti H.</div>
+        <div class="review-source">App Store</div>
+      </div>
+      <div class="stars">★★★★★</div>
+      <p class="review-text">Booked a 10-hour car ride in Morocco. Driver was super friendly, professional, had water and WiFi. We hired him again the next day. Highly recommend this company!</p>
+    </div>
+    <div class="review">
+      <div class="review-header">
+        <div class="review-author">Alexandra</div>
+        <div class="review-source">Wayppoint</div>
+      </div>
+      <div class="stars">★★★★★</div>
+      <p class="review-text">Used this transfer twice in Japan. Amazing service with great drivers. Cars are clean, driving was calm and safe. The team confirmed details in advance — great communication.</p>
+    </div>
+    <div class="review">
+      <div class="review-header">
+        <div class="review-author">Luke</div>
+        <div class="review-source">App Store</div>
+      </div>
+      <div class="stars">★★★★★</div>
+      <p class="review-text">We were so impressed with the vehicle and the professionalism of the drivers. Would 100% use this company again!</p>
+    </div>
+    <div class="review">
+      <div class="review-header">
+        <div class="review-author">Helen S.</div>
+        <div class="review-source">Review Centre</div>
+      </div>
+      <div class="stars">★★★★★</div>
+      <p class="review-text">Fabulous service! Picked up at Genova airport, name on sign, and driven right to my cousin's door down a narrow street. Bottled water provided. Definitely will use again.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Fleet -->
+<section style="background: var(--grey-1);">
+  <div class="container">
+    <h2 class="section-title">Choose your class</h2>
+    <p class="section-subtitle">From everyday comfort to VIP — pick the perfect match for your trip</p>
+    <div class="fleet-grid">
+      <div class="fleet-card"><div class="fleet-icon">🚗</div><div class="fleet-name">Economy</div></div>
+      <div class="fleet-card"><div class="fleet-icon">🚙</div><div class="fleet-name">Comfort</div></div>
+      <div class="fleet-card"><div class="fleet-icon">🚘</div><div class="fleet-name">Business</div></div>
+      <div class="fleet-card"><div class="fleet-icon">🏎️</div><div class="fleet-name">Premium</div></div>
+      <div class="fleet-card"><div class="fleet-icon">🚖</div><div class="fleet-name">VIP</div></div>
+      <div class="fleet-card"><div class="fleet-icon">🚙</div><div class="fleet-name">SUV</div></div>
+      <div class="fleet-card"><div class="fleet-icon">🚐</div><div class="fleet-name">Van</div></div>
+      <div class="fleet-card"><div class="fleet-icon">🚌</div><div class="fleet-name">Minibus</div></div>
+      <div class="fleet-card"><div class="fleet-icon">🚍</div><div class="fleet-name">Bus</div></div>
+      <div class="fleet-card"><div class="fleet-icon">📦</div><div class="fleet-name">Parcel</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- App banner -->
+<div class="app-banner">
+  <div>
+    <h2>Download <span>Wayppoint</span></h2>
+    <p>Book transfers on the go with our award-winning mobile app</p>
+    <div class="app-features">
+      <div><span class="check">✓</span> Easy booking</div>
+      <div><span class="check">✓</span> Real-time tracking</div>
+      <div><span class="check">✓</span> Offline mode</div>
+      <div><span class="check">✓</span> 24/7 support chat</div>
+    </div>
+    <a href="#" class="download-btn">Download app</a>
+  </div>
+  <div class="phone-mock">
+    <div class="phone-mock-icon">📱</div>
+    <div style="font-size: 18px; font-weight: 600;">4.9 ★ rated</div>
+    <div style="opacity: 0.8; font-size: 14px;">Loved by 10M+ travelers</div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="logo" style="color: var(--white); margin-bottom: 16px;">
+          <span class="logo-dot"></span> Wayppoint
+        </div>
+        <p style="font-size: 14px; color: var(--grey-4); max-width: 320px;">
+          The international service for booking transfers, rides, and chauffeured car rental in 180+ countries worldwide.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <a href="#">Airport transfer</a>
+        <a href="#">VIP transfer</a>
+        <a href="#">Bus rental</a>
+        <a href="#">Car rental</a>
+        <a href="#">Yacht charter</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">Support</a>
+        <a href="#">Destinations</a>
+        <a href="#">For drivers</a>
+        <a href="#">For business</a>
+        <a href="#">Blog</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Terms of use</a>
+        <a href="#">Privacy policy</a>
+        <a href="#">Partnership agreement</a>
+        <a href="#">FAQ</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 Wayppoint. All rights reserved.</div>
+      <div class="social">
+        <a href="#" aria-label="Twitter">𝕏</a>
+        <a href="#" aria-label="Facebook">f</a>
+        <a href="#" aria-label="Instagram">ig</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Toggle ride/hourly
+  document.querySelectorAll('.type-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.type-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Fleet card click → scroll to form
+  document.querySelectorAll('.fleet-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelector('.hero').scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('from').focus();
+    });
+  });
+</script>
+
+</body>
+</html>

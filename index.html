@@ -19,7 +19,19 @@
     --yellow: #fbbf24;
     --white: #ffffff;
   }
-  body {
+<script>
+  function initAutocomplete() {
+    const options = {
+      fields: ["formatted_address", "geometry", "name"],
+      types: ["geocode", "establishment"]
+    };
+    new google.maps.places.Autocomplete(document.getElementById("from"), options);
+    new google.maps.places.Autocomplete(document.getElementById("to"), options);
+  }
+</script>
+<script async
+  src="https://maps.googleapis.com/maps/api/js?key=libraries=places&callback=initAutocomplete">
+</script>  body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     color: var(--black);
     background: var(--white);

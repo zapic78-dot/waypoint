@@ -819,7 +819,58 @@
   </div>
 </footer>
 
-<script>
+<script><script>
+  const LOCATIONIQ_KEY = 'sb_secret_bWQO8r_zShn2RbESCHpU_g_MrMUMOeB';
+
+  function setupAutocomplete(inputId) {
+    const input = document.getElementById(inputId);
+    const list = document.createElement('div');
+    list.style.cssText = 'position:absolute;top:100%;left:0;right:0;background:white;border:1px solid #e5e7eb;border-radius:8px;max-height:260px;overflow-y:auto;z-index:1000;margin-top:6px;box-shadow:0 8px 24px rgba(0,0,0,0.12);display:none;';
+    input.parentElement.style.position = 'relative';
+    input.parentElement.appendChild(list);
+
+    let timeout;
+    input.addEventListener('input', () => {
+      clearTimeout(timeout);
+      const q = input.value.trim();
+      if (q.length < 3) { list.style.display = 'none'; return; }
+
+      timeout = setTimeout(async () => {
+        try {
+          const url = `https://api.locationiq.com/v1/autocomplete?key=${LOCATIONIQ_KEY}&q=${encodeURIComponent(q)}&limit=6&dedupe=1`;
+          const res = await fetch(url);
+          if (!res.ok) { list.style.display = 'none'; return; }
+          const data = await res.json();
+          list.innerHTML = '';
+          data.forEach(item => {
+            const div = document.createElement('div');
+            div.textContent = item.display_name;
+            div.style.cssText = 'padding:10px 14px;cursor:pointer;font-size:14px;border-bottom:1px solid #f3f4f6;color:#111827;';
+            div.onmouseenter = () => div.style.background = '#f9fafb';
+            div.onmouseleave = () => div.style.background = 'white';
+            div.onclick = () => {
+              input.value = item.display_name;
+              input.dataset.lat = item.lat;
+              input.dataset.lon = item.lon;
+              list.style.display = 'none';
+            };
+            list.appendChild(div);
+          });
+          list.style.display = data.length ? 'block' : 'none';
+        } catch (e) {
+          list.style.display = 'none';
+        }
+      }, 300);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!input.parentElement.contains(e.target)) list.style.display = 'none';
+    });
+  }
+
+  setupAutocomplete('from');
+  setupAutocomplete('to');
+</script>
   // Toggle ride/hourly
   document.querySelectorAll('.type-toggle button').forEach(btn => {
     btn.addEventListener('click', () => {

@@ -18,20 +18,46 @@
     --grey-6: #4b5563;
     --yellow: #fbbf24;
     --white: #ffffff;
+  }<script>
+  function setupAutocomplete(inputId) {
+    const input = document.getElementById(inputId);
+    const list = document.createElement('div');
+    list.style.cssText = 'position:absolute;background:white;border:1px solid #e5e7eb;border-radius:8px;max-height:240px;overflow-y:auto;z-index:1000;width:100%;margin-top:4px;box-shadow:0 4px 12px rgba(0,0,0,0.1);display:none;';
+    input.parentElement.style.position = 'relative';
+    input.parentElement.appendChild(list);
+
+    let timeout;
+    input.addEventListener('input', () => {
+      clearTimeout(timeout);
+      const q = input.value.trim();
+      if (q.length < 3) { list.style.display = 'none'; return; }
+      timeout = setTimeout(async () => {
+        const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=6`);
+        const data = await res.json();
+        list.innerHTML = '';
+        data.features.forEach(f => {
+          const p = f.properties;
+          const label = [p.name, p.city, p.country].filter(Boolean).join(', ');
+          const item = document.createElement('div');
+          item.textContent = label;
+          item.style.cssText = 'padding:10px 14px;cursor:pointer;font-size:14px;border-bottom:1px solid #f3f4f6;';
+          item.onmouseenter = () => item.style.background = '#f9fafb';
+          item.onmouseleave = () => item.style.background = 'white';
+          item.onclick = () => { input.value = label; list.style.display = 'none'; };
+          list.appendChild(item);
+        });
+        list.style.display = data.features.length ? 'block' : 'none';
+      }, 300);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!input.parentElement.contains(e.target)) list.style.display = 'none';
+    });
   }
-<script>
-  function initAutocomplete() {
-    const options = {
-      fields: ["formatted_address", "geometry", "name"],
-      types: ["geocode", "establishment"]
-    };
-    new google.maps.places.Autocomplete(document.getElementById("from"), options);
-    new google.maps.places.Autocomplete(document.getElementById("to"), options);
-  }
+  setupAutocomplete('from');
+  setupAutocomplete('to');
 </script>
-<script async
-  src="https://maps.googleapis.com/maps/api/js?key=sb_secret_bWQO8r_zShn2RbESCHpU_g_MrMUMOeBjkl&libraries=places&callback=initAutocomplete">
-</script>  body {
+ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     color: var(--black);
     background: var(--white);

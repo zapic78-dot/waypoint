@@ -8,414 +8,129 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --primary: #2563eb;
-    --primary-dark: #1d4ed8;
-    --positive: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --black: #111827;
-    --grey-1: #f9fafb;
-    --grey-2: #e5e7eb;
-    --grey-4: #9ca3af;
-    --grey-6: #4b5563;
-    --white: #ffffff;
+    --primary: #2563eb; --primary-dark: #1d4ed8; --positive: #10b981;
+    --warning: #f59e0b; --danger: #ef4444; --black: #111827;
+    --grey-1: #f9fafb; --grey-2: #e5e7eb; --grey-4: #9ca3af; --grey-6: #4b5563; --white: #ffffff;
   }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: var(--black);
-    background: var(--grey-1);
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* LOGIN SCREEN */
-  .login-screen {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
-    padding: 20px;
-  }
-  .login-card {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 40px 32px;
-    width: 100%;
-    max-width: 420px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  }
-  .login-logo {
-    text-align: center;
-    margin-bottom: 8px;
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--primary);
-    letter-spacing: -0.5px;
-  }
-  .login-subtitle {
-    text-align: center;
-    color: var(--grey-6);
-    font-size: 14px;
-    margin-bottom: 28px;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: var(--black); background: var(--grey-1); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%); padding: 20px; }
+  .login-card { background: var(--white); border-radius: 16px; padding: 40px 32px; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  .login-logo { text-align: center; margin-bottom: 8px; font-size: 28px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
+  .login-subtitle { text-align: center; color: var(--grey-6); font-size: 14px; margin-bottom: 28px; }
   .login-form { display: flex; flex-direction: column; gap: 14px; }
   .login-form label { font-size: 13px; color: var(--grey-6); font-weight: 500; }
-  .login-form input {
-    padding: 12px 14px;
-    border: 1px solid var(--grey-2);
-    border-radius: 8px;
-    font-size: 15px;
-    font-family: inherit;
-    outline: none;
-    width: 100%;
-  }
+  .login-form input { padding: 12px 14px; border: 1px solid var(--grey-2); border-radius: 8px; font-size: 15px; font-family: inherit; outline: none; width: 100%; }
   .login-form input:focus { border-color: var(--primary); }
-  .login-btn {
-    background: var(--primary);
-    color: var(--white);
-    border: none;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 8px;
-    transition: background 0.2s;
-  }
+  .login-btn { background: var(--primary); color: var(--white); border: none; padding: 12px; font-size: 16px; font-weight: 600; border-radius: 8px; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
   .login-btn:hover { background: var(--primary-dark); }
   .login-btn:disabled { background: var(--grey-2); cursor: not-allowed; }
-  .login-error {
-    background: #fee2e2;
-    color: #991b1b;
-    padding: 10px 12px;
-    border-radius: 8px;
-    font-size: 13px;
-    display: none;
-  }
+  .login-error { background: #fee2e2; color: #991b1b; padding: 10px 12px; border-radius: 8px; font-size: 13px; display: none; }
   .login-error.show { display: block; }
-
-  /* DASHBOARD */
   .dashboard { display: none; min-height: 100vh; }
   .dashboard.active { display: block; }
-  .top-bar {
-    background: var(--white);
-    border-bottom: 1px solid var(--grey-2);
-    padding: 14px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  .top-bar-logo {
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .top-bar-logo .dot {
-    width: 10px;
-    height: 10px;
-    background: #06b6d4;
-    border-radius: 50%;
-    box-shadow: 0 0 0 4px rgba(6,182,212,0.15);
-  }
+  .top-bar { background: var(--white); border-bottom: 1px solid var(--grey-2); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+  .top-bar-logo { font-size: 20px; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+  .top-bar-logo .dot { width: 10px; height: 10px; background: #06b6d4; border-radius: 50%; box-shadow: 0 0 0 4px rgba(6,182,212,0.15); }
   .top-bar-right { display: flex; align-items: center; gap: 14px; }
-  .user-badge {
-    font-size: 13px;
-    color: var(--grey-6);
-  }
+  .user-badge { font-size: 13px; color: var(--grey-6); }
   .user-badge strong { color: var(--black); }
-  .logout-btn {
-    background: transparent;
-    border: 1px solid var(--grey-2);
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+  .logout-btn { background: transparent; border: 1px solid var(--grey-2); padding: 6px 14px; border-radius: 6px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
   .logout-btn:hover { border-color: var(--danger); color: var(--danger); }
-
   .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+  .page-title { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+  .page-subtitle { color: var(--grey-6); font-size: 14px; margin-bottom: 24px; }
 
-  .page-title {
-    font-size: 26px;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .page-subtitle {
-    color: var(--grey-6);
-    font-size: 14px;
-    margin-bottom: 24px;
-  }
+  /* Alert banner for awaiting offers */
+  .alert-banner { background: linear-gradient(135deg, #fef3c7, #fde68a); border-left: 4px solid var(--warning); border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; transition: transform 0.15s; }
+  .alert-banner:hover { transform: translateX(2px); }
+  .alert-banner .alert-text { font-size: 14px; color: #78350f; font-weight: 600; }
+  .alert-banner .alert-text strong { font-size: 18px; color: #92400e; }
+  .alert-banner .alert-arrow { color: #92400e; font-size: 20px; font-weight: 700; }
 
-  /* STATS */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-    margin-bottom: 24px;
-  }
-  .stat-card {
-    background: var(--white);
-    border: 1px solid var(--grey-2);
-    border-radius: 12px;
-    padding: 18px;
-  }
-  .stat-card .stat-label {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--grey-6);
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-  .stat-card .stat-value {
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--black);
-  }
+  .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 24px; }
+  .stat-card { background: var(--white); border: 1px solid var(--grey-2); border-radius: 12px; padding: 18px; cursor: pointer; transition: transform 0.15s; }
+  .stat-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+  .stat-card .stat-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--grey-6); font-weight: 600; margin-bottom: 6px; }
+  .stat-card .stat-value { font-size: 28px; font-weight: 800; color: var(--black); }
   .stat-card.pending .stat-value { color: var(--warning); }
+  .stat-card.offers .stat-value { color: var(--danger); }
   .stat-card.confirmed .stat-value { color: var(--primary); }
   .stat-card.completed .stat-value { color: var(--positive); }
   .stat-card.revenue .stat-value { color: var(--positive); }
+  .stat-card.offers { border-color: var(--warning); border-width: 2px; }
 
-  /* FILTERS */
-  .filter-bar {
-    background: var(--white);
-    border: 1px solid var(--grey-2);
-    border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 14px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .filter-btn {
-    padding: 6px 14px;
-    border: 1px solid var(--grey-2);
-    background: var(--white);
-    border-radius: 999px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+  .filter-bar { background: var(--white); border: 1px solid var(--grey-2); border-radius: 12px; padding: 14px; margin-bottom: 14px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .filter-btn { padding: 6px 14px; border: 1px solid var(--grey-2); background: var(--white); border-radius: 999px; font-size: 13px; cursor: pointer; transition: all 0.2s; position: relative; }
   .filter-btn:hover { border-color: var(--primary); }
-  .filter-btn.active {
-    background: var(--primary);
-    color: var(--white);
-    border-color: var(--primary);
-  }
-  .refresh-btn {
-    margin-left: auto;
-    background: var(--primary);
-    color: var(--white);
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    cursor: pointer;
-    font-weight: 500;
-  }
+  .filter-btn.active { background: var(--primary); color: var(--white); border-color: var(--primary); }
+  .filter-btn .badge { display: inline-block; background: var(--danger); color: white; border-radius: 10px; padding: 1px 7px; font-size: 11px; margin-left: 6px; font-weight: 700; }
+  .refresh-btn { margin-left: auto; background: var(--primary); color: var(--white); border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; }
   .refresh-btn:hover { background: var(--primary-dark); }
 
-  /* BOOKINGS TABLE */
-  .bookings-table-wrap {
-    background: var(--white);
-    border: 1px solid var(--grey-2);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  thead {
-    background: var(--grey-1);
-  }
-  th {
-    text-align: left;
-    padding: 12px 14px;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--grey-6);
-    font-weight: 600;
-    border-bottom: 1px solid var(--grey-2);
-  }
-  td {
-    padding: 14px;
-    font-size: 14px;
-    border-bottom: 1px solid var(--grey-2);
-    vertical-align: top;
-  }
+  .bookings-table-wrap { background: var(--white); border: 1px solid var(--grey-2); border-radius: 12px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: var(--grey-1); }
+  th { text-align: left; padding: 12px 14px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--grey-6); font-weight: 600; border-bottom: 1px solid var(--grey-2); }
+  td { padding: 14px; font-size: 14px; border-bottom: 1px solid var(--grey-2); vertical-align: top; }
   tbody tr:hover { background: var(--grey-1); }
   tbody tr:last-child td { border-bottom: none; }
+  tbody tr.has-offers { background: #fffbeb; }
+  tbody tr.has-offers:hover { background: #fef3c7; }
 
-  .status-badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
+  .status-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
   .status-pending { background: #fef3c7; color: #92400e; }
   .status-confirmed { background: #dbeafe; color: #1e40af; }
-  .status-completed { background: #d1fae5; color: #065f46; }
+  .status-verified { background: #ede9fe; color: #5b21b6; }
+  .status-driver_assigned, .status-assigned { background: #d1fae5; color: #065f46; }
+  .status-en_route { background: #dbeafe; color: #1e40af; }
+  .status-arrived_pickup { background: #e0e7ff; color: #4338ca; }
+  .status-in_progress { background: #d1fae5; color: #065f46; }
+  .status-completed { background: #f3f4f6; color: #4b5563; }
   .status-cancelled { background: #fee2e2; color: #991b1b; }
+
+  .offer-pill { display: inline-block; background: var(--danger); color: white; border-radius: 999px; padding: 2px 8px; font-size: 10px; font-weight: 700; margin-left: 6px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
 
   .row-customer { font-weight: 600; }
   .row-meta { font-size: 12px; color: var(--grey-6); margin-top: 2px; }
   .row-route { font-size: 13px; }
   .row-route .arrow { color: var(--grey-4); margin: 0 4px; }
-
-  .action-btn {
-    padding: 5px 10px;
-    border: 1px solid var(--grey-2);
-    background: var(--white);
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-    margin-right: 4px;
-    transition: all 0.2s;
-  }
+  .action-btn { padding: 5px 10px; border: 1px solid var(--grey-2); background: var(--white); border-radius: 6px; font-size: 12px; cursor: pointer; margin-right: 4px; transition: all 0.2s; }
   .action-btn:hover { border-color: var(--primary); background: var(--grey-1); }
   .action-btn.primary { background: var(--primary); color: var(--white); border-color: var(--primary); }
   .action-btn.primary:hover { background: var(--primary-dark); }
+  .action-btn.success { background: var(--positive); color: var(--white); border-color: var(--positive); }
+  .action-btn.success:hover { background: #059669; }
   .action-btn.danger { color: var(--danger); border-color: #fecaca; }
   .action-btn.danger:hover { background: #fee2e2; }
-
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--grey-6);
-  }
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--grey-6); }
   .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
+  .loading { text-align: center; padding: 40px; color: var(--grey-6); }
 
-  .loading {
-    text-align: center;
-    padding: 40px;
-    color: var(--grey-6);
-  }
-
-  /* DETAIL MODAL */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 1000;
-    display: none;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 20px;
-    overflow-y: auto;
-  }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; }
   .modal-overlay.active { display: flex; }
-  .modal {
-    background: var(--white);
-    border-radius: 16px;
-    max-width: 600px;
-    width: 100%;
-    overflow: hidden;
-    margin-top: 40px;
-  }
-  .modal-header {
-    padding: 18px 20px;
-    border-bottom: 1px solid var(--grey-2);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  .modal { background: var(--white); border-radius: 16px; max-width: 640px; width: 100%; overflow: hidden; margin-top: 40px; }
+  .modal-header { padding: 18px 20px; border-bottom: 1px solid var(--grey-2); display: flex; justify-content: space-between; align-items: center; }
   .modal-title { font-size: 18px; font-weight: 700; }
-  .modal-close {
-    background: transparent;
-    border: none;
-    font-size: 26px;
-    cursor: pointer;
-    color: var(--grey-6);
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-  }
+  .modal-close { background: transparent; border: none; font-size: 26px; cursor: pointer; color: var(--grey-6); width: 32px; height: 32px; border-radius: 50%; }
   .modal-close:hover { background: var(--grey-1); }
-  .modal-body { padding: 20px; }
-  .detail-row {
-    display: grid;
-    grid-template-columns: 130px 1fr;
-    gap: 12px;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--grey-1);
-    font-size: 14px;
-  }
+  .modal-body { padding: 20px; max-height: 70vh; overflow-y: auto; }
+  .detail-row { display: grid; grid-template-columns: 130px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--grey-1); font-size: 14px; }
   .detail-row:last-child { border-bottom: none; }
-  .detail-label {
-    color: var(--grey-6);
-    font-weight: 500;
-  }
+  .detail-label { color: var(--grey-6); font-weight: 500; }
   .detail-value { color: var(--black); }
-  .modal-actions {
-    padding: 16px 20px;
-    border-top: 1px solid var(--grey-2);
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    background: var(--grey-1);
-  }
+  .modal-actions { padding: 16px 20px; border-top: 1px solid var(--grey-2); display: flex; gap: 8px; flex-wrap: wrap; background: var(--grey-1); }
 
-  /* PAGE TABS */
-  .page-tabs {
-    display: flex;
-    gap: 4px;
-    border-bottom: 1px solid var(--grey-2);
-    margin-bottom: 24px;
-    overflow-x: auto;
-  }
-  .page-tab {
-    padding: 10px 18px;
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--grey-6);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s;
-  }
+  .page-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--grey-2); margin-bottom: 24px; overflow-x: auto; }
+  .page-tab { padding: 10px 18px; background: transparent; border: none; border-bottom: 2px solid transparent; font-size: 14px; font-weight: 600; color: var(--grey-6); cursor: pointer; white-space: nowrap; transition: all 0.2s; }
   .page-tab:hover { color: var(--black); }
   .page-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
-  .page-tab .count {
-    display: inline-block;
-    background: var(--warning);
-    color: var(--white);
-    border-radius: 10px;
-    padding: 1px 7px;
-    font-size: 11px;
-    margin-left: 6px;
-  }
+  .page-tab .count { display: inline-block; background: var(--warning); color: var(--white); border-radius: 10px; padding: 1px 7px; font-size: 11px; margin-left: 6px; }
   .page-section { display: none; }
   .page-section.active { display: block; }
 
-  /* DRIVER CARDS */
-  .driver-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 14px;
-  }
-  .driver-card {
-    background: var(--white);
-    border: 1px solid var(--grey-2);
-    border-radius: 12px;
-    padding: 16px;
-  }
+  .driver-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+  .driver-card { background: var(--white); border: 1px solid var(--grey-2); border-radius: 12px; padding: 16px; }
   .driver-card.pending { border-color: var(--warning); border-width: 1.5px; }
   .driver-card .dc-name { font-size: 16px; font-weight: 700; }
   .driver-card .dc-email { font-size: 13px; color: var(--grey-6); margin-bottom: 6px; }
@@ -424,64 +139,32 @@
   .driver-card .dc-actions { display: flex; gap: 6px; margin-top: 10px; }
   .driver-card .dc-actions .action-btn { flex: 1; text-align: center; }
 
-  /* DRIVER OFFERS BLOCK */
-  .offers-block {
-    background: var(--grey-1);
-    border-radius: 10px;
-    padding: 12px;
-    margin-top: 14px;
-  }
-  .offers-block h4 { font-size: 13px; text-transform: uppercase; color: var(--grey-6); margin-bottom: 10px; letter-spacing: 0.5px; }
-  .offer-row {
-    background: var(--white);
-    border: 1px solid var(--grey-2);
-    border-radius: 8px;
-    padding: 10px 12px;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-  }
+  .offers-block { background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 10px; padding: 14px; margin-top: 14px; border-left: 4px solid var(--warning); }
+  .offers-block h4 { font-size: 14px; text-transform: uppercase; color: #92400e; margin-bottom: 10px; letter-spacing: 0.5px; font-weight: 700; }
+  .offer-row { background: var(--white); border: 1px solid var(--grey-2); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
   .offer-row:last-child { margin-bottom: 0; }
-  .offer-row .o-driver { font-size: 13px; }
-  .offer-row .o-driver strong { display: block; }
-  .offer-row .o-price { font-size: 16px; font-weight: 700; color: var(--positive); }
-  .offer-row.accepted { border-color: var(--positive); background: #f0fdf4; }
+  .offer-row.accepted { border-color: var(--positive); background: #f0fdf4; border-width: 2px; }
+  .offer-row.rejected { opacity: 0.5; }
+  .offer-driver-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .offer-driver-info { flex: 1; }
+  .offer-driver-name { font-weight: 700; font-size: 15px; color: var(--black); }
+  .offer-driver-meta { font-size: 12px; color: var(--grey-6); margin-top: 2px; }
+  .offer-price-box { text-align: right; }
+  .offer-price { font-size: 22px; font-weight: 800; color: var(--positive); line-height: 1; }
+  .offer-status-label { font-size: 11px; text-transform: uppercase; color: var(--grey-6); margin-top: 2px; }
+  .offer-controls { margin-top: 10px; display: flex; gap: 8px; align-items: center; }
+  .offer-price-input { flex: 1; padding: 8px 10px; border: 1px solid var(--grey-2); border-radius: 6px; font-size: 14px; }
+  .offer-controls label { font-size: 12px; color: var(--grey-6); white-space: nowrap; }
 
-  /* Add Driver form */
-  .add-form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
+  .add-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .add-form-grid .full { grid-column: 1 / -1; }
   .form-field { display: flex; flex-direction: column; gap: 4px; }
   .form-field label { font-size: 12px; color: var(--grey-6); font-weight: 500; }
-  .form-field input, .form-field select {
-    padding: 10px 12px;
-    border: 1px solid var(--grey-2);
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: inherit;
-    outline: none;
-  }
+  .form-field input, .form-field select { padding: 10px 12px; border: 1px solid var(--grey-2); border-radius: 8px; font-size: 14px; font-family: inherit; outline: none; }
   .form-field input:focus, .form-field select:focus { border-color: var(--primary); }
 
-  /* Status badges - extended */
-  .status-verified { background: #ede9fe; color: #5b21b6; }
-  .status-assigned { background: #fef3c7; color: #92400e; }
-  .status-en_route, .status-en-route { background: #dbeafe; color: #1e40af; }
-  .status-arrived_pickup, .status-arrived-pickup { background: #e0e7ff; color: #4338ca; }
-  .status-in_progress, .status-in-progress { background: #d1fae5; color: #065f46; }
-
-  @media (max-width: 800px) {
-    .stats-row { grid-template-columns: 1fr 1fr; }
-    .container { padding: 14px; }
-    th, td { padding: 10px 8px; font-size: 13px; }
-    .row-meta { display: none; }
-    .add-form-grid { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 1000px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 800px) { .stats-row { grid-template-columns: 1fr 1fr; } .container { padding: 14px; } th, td { padding: 10px 8px; font-size: 13px; } .row-meta { display: none; } .add-form-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -493,29 +176,18 @@
     <div class="login-subtitle">Sign in to manage bookings</div>
     <div class="login-error" id="loginError"></div>
     <form class="login-form" id="loginForm" onsubmit="event.preventDefault(); doLogin();">
-      <div>
-        <label for="loginEmail">Email</label>
-        <input type="email" id="loginEmail" required autocomplete="username">
-      </div>
-      <div>
-        <label for="loginPassword">Password</label>
-        <input type="password" id="loginPassword" required autocomplete="current-password">
-      </div>
+      <div><label for="loginEmail">Email</label><input type="email" id="loginEmail" required autocomplete="username"></div>
+      <div><label for="loginPassword">Password</label><input type="password" id="loginPassword" required autocomplete="current-password"></div>
       <button type="submit" class="login-btn" id="loginBtn">Sign in</button>
     </form>
-    <p style="text-align:center;font-size:12px;color:var(--grey-4);margin-top:20px;">
-      Authorized personnel only.
-    </p>
+    <p style="text-align:center;font-size:12px;color:var(--grey-4);margin-top:20px;">Authorized personnel only.</p>
   </div>
 </div>
 
 <!-- DASHBOARD -->
 <div class="dashboard" id="dashboard">
   <div class="top-bar">
-    <div class="top-bar-logo">
-      <span class="dot"></span>
-      Wayppoint Admin
-    </div>
+    <div class="top-bar-logo"><span class="dot"></span> Wayppoint Admin</div>
     <div class="top-bar-right">
       <div class="user-badge">Signed in as <strong id="userEmail">—</strong> <span id="userRoleBadge"></span></div>
       <button class="logout-btn" onclick="doLogout()">Log out</button>
@@ -523,28 +195,37 @@
   </div>
 
   <div class="container">
-    <!-- PAGE TABS -->
     <div class="page-tabs">
-      <button class="page-tab active" data-section="bookings" onclick="switchSection('bookings')">📋 Bookings</button>
+      <button class="page-tab active" data-section="bookings" onclick="switchSection('bookings')">📋 Bookings <span id="bookingsActionCount" class="count" style="display:none;background:var(--danger);">0</span></button>
       <button class="page-tab" data-section="drivers" onclick="switchSection('drivers')">🚗 Drivers <span id="driversPendingCount" class="count" style="display:none;">0</span></button>
     </div>
 
-    <!-- BOOKINGS SECTION -->
     <div class="page-section active" id="section-bookings">
       <h1 class="page-title">Bookings</h1>
       <p class="page-subtitle">All ride requests from your customers, sorted by newest first.</p>
 
-      <!-- Stats -->
+      <!-- Alert banner shown when drivers have sent offers awaiting your approval -->
+      <div class="alert-banner" id="alertBanner" style="display:none;" onclick="setFilter('verified')">
+        <div class="alert-text">
+          🔔 <strong id="alertCount">0</strong> ride(s) have driver offers awaiting your approval
+        </div>
+        <div class="alert-arrow">→</div>
+      </div>
+
       <div class="stats-row">
-        <div class="stat-card pending">
-          <div class="stat-label">Pending</div>
+        <div class="stat-card pending" onclick="setFilter('pending')">
+          <div class="stat-label">Pending Review</div>
           <div class="stat-value" id="statPending">—</div>
         </div>
-        <div class="stat-card confirmed">
-          <div class="stat-label">Confirmed</div>
+        <div class="stat-card offers" onclick="setFilter('verified')">
+          <div class="stat-label">⚡ Driver Offers In</div>
+          <div class="stat-value" id="statOffers">—</div>
+        </div>
+        <div class="stat-card confirmed" onclick="setFilter('driver_assigned')">
+          <div class="stat-label">Assigned</div>
           <div class="stat-value" id="statConfirmed">—</div>
         </div>
-        <div class="stat-card completed">
+        <div class="stat-card completed" onclick="setFilter('completed')">
           <div class="stat-label">Completed</div>
           <div class="stat-value" id="statCompleted">—</div>
         </div>
@@ -554,32 +235,25 @@
         </div>
       </div>
 
-      <!-- Filters -->
       <div class="filter-bar">
         <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">All</button>
         <button class="filter-btn" data-filter="pending" onclick="setFilter('pending')">Pending</button>
-        <button class="filter-btn" data-filter="confirmed" onclick="setFilter('confirmed')">Confirmed</button>
-        <button class="filter-btn" data-filter="verified" onclick="setFilter('verified')">Released to Drivers</button>
-        <button class="filter-btn" data-filter="assigned" onclick="setFilter('assigned')">Assigned</button>
+        <button class="filter-btn" data-filter="verified" onclick="setFilter('verified')">Released to Drivers <span id="verifiedBadge" class="badge" style="display:none;">0</span></button>
+        <button class="filter-btn" data-filter="driver_assigned" onclick="setFilter('driver_assigned')">Assigned</button>
         <button class="filter-btn" data-filter="in_progress" onclick="setFilter('in_progress')">In Progress</button>
         <button class="filter-btn" data-filter="completed" onclick="setFilter('completed')">Completed</button>
         <button class="filter-btn" data-filter="cancelled" onclick="setFilter('cancelled')">Cancelled</button>
         <button class="refresh-btn" onclick="loadBookings()">🔄 Refresh</button>
       </div>
 
-      <!-- Table -->
       <div class="bookings-table-wrap">
-        <div id="bookingsContent">
-          <div class="loading">Loading bookings...</div>
-        </div>
+        <div id="bookingsContent"><div class="loading">Loading bookings...</div></div>
       </div>
     </div>
 
-    <!-- DRIVERS SECTION -->
     <div class="page-section" id="section-drivers">
       <h1 class="page-title">Drivers</h1>
       <p class="page-subtitle">Approve new drivers, manage existing ones, or add a driver manually.</p>
-
       <div class="filter-bar">
         <button class="filter-btn active" data-dfilter="all" onclick="setDriverFilter('all')">All</button>
         <button class="filter-btn" data-dfilter="pending" onclick="setDriverFilter('pending')">Pending Approval</button>
@@ -587,10 +261,7 @@
         <button class="refresh-btn" onclick="openAddDriverModal()" style="background: var(--positive); margin-right: 6px;">+ Add Driver</button>
         <button class="refresh-btn" onclick="loadDrivers()">🔄 Refresh</button>
       </div>
-
-      <div id="driversContent">
-        <div class="loading">Loading drivers...</div>
-      </div>
+      <div id="driversContent"><div class="loading">Loading drivers...</div></div>
     </div>
   </div>
 </div>
@@ -617,52 +288,20 @@
     <div class="modal-body">
       <p style="font-size:13px;color:var(--grey-6);margin-bottom:16px;">Create a driver account on their behalf. They'll log in to driver.html with the credentials you set here.</p>
       <div class="add-form-grid">
-        <div class="form-field full">
-          <label>Full Name *</label>
-          <input type="text" id="adFullName" placeholder="John Smith">
-        </div>
-        <div class="form-field">
-          <label>Email *</label>
-          <input type="email" id="adEmail" placeholder="driver@example.com">
-        </div>
-        <div class="form-field">
-          <label>Phone</label>
-          <input type="tel" id="adPhone" placeholder="+1 555 123 4567">
-        </div>
-        <div class="form-field full">
-          <label>Temporary Password * (min 6 chars)</label>
-          <input type="text" id="adPassword" placeholder="Share this with the driver">
-        </div>
-        <div class="form-field">
-          <label>Vehicle Make</label>
-          <input type="text" id="adVMake" placeholder="Ford">
-        </div>
-        <div class="form-field">
-          <label>Vehicle Model</label>
-          <input type="text" id="adVModel" placeholder="Escape">
-        </div>
-        <div class="form-field">
-          <label>Year</label>
-          <input type="text" id="adVYear" placeholder="2021">
-        </div>
-        <div class="form-field">
-          <label>License Plate</label>
-          <input type="text" id="adVPlate" placeholder="ABC 1234">
-        </div>
-        <div class="form-field">
-          <label>Vehicle Class</label>
+        <div class="form-field full"><label>Full Name *</label><input type="text" id="adFullName" placeholder="John Smith"></div>
+        <div class="form-field"><label>Email *</label><input type="email" id="adEmail" placeholder="driver@example.com"></div>
+        <div class="form-field"><label>Phone</label><input type="tel" id="adPhone" placeholder="+1 555 123 4567"></div>
+        <div class="form-field full"><label>Temporary Password * (min 6 chars)</label><input type="text" id="adPassword" placeholder="Share this with the driver"></div>
+        <div class="form-field"><label>Vehicle Make</label><input type="text" id="adVMake" placeholder="Ford"></div>
+        <div class="form-field"><label>Vehicle Model</label><input type="text" id="adVModel" placeholder="Escape"></div>
+        <div class="form-field"><label>Year</label><input type="text" id="adVYear" placeholder="2021"></div>
+        <div class="form-field"><label>License Plate</label><input type="text" id="adVPlate" placeholder="ABC 1234"></div>
+        <div class="form-field"><label>Vehicle Class</label>
           <select id="adVClass">
-            <option value="Standard">Standard</option>
-            <option value="Comfort">Comfort</option>
-            <option value="Business">Business</option>
-            <option value="SUV">SUV</option>
-            <option value="Van">Van</option>
+            <option value="Standard">Standard</option><option value="Comfort">Comfort</option><option value="Business">Business</option><option value="SUV">SUV</option><option value="Van">Van</option>
           </select>
         </div>
-        <div class="form-field">
-          <label>License Number</label>
-          <input type="text" id="adLicense" placeholder="DL number">
-        </div>
+        <div class="form-field"><label>License Number</label><input type="text" id="adLicense" placeholder="DL number"></div>
         <div class="form-field full" style="flex-direction:row;align-items:center;gap:8px;">
           <input type="checkbox" id="adApproveNow" checked style="width:auto;">
           <label for="adApproveNow" style="margin:0;">Approve immediately (driver can start accepting rides)</label>
@@ -677,7 +316,6 @@
 </div>
 
 <script>
-  // ============ SUPABASE CONFIG ============
   const SUPABASE_URL = 'https://vodiyakxjekusndirtwm.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable__zcqj4jF2PYdg3GQy3OntQ_wIUojHtF';
   const { createClient } = supabase;
@@ -686,191 +324,149 @@
   let currentUser = null;
   let currentRole = null;
   let allBookings = [];
+  let bookingsWithPendingOffers = new Set();   // booking ids that have at least 1 pending offer
   let currentFilter = 'all';
+  let offersSubscription = null;
 
-  // ============ AUTH ============
   async function doLogin() {
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
     const errorEl = document.getElementById('loginError');
     const btn = document.getElementById('loginBtn');
-
     errorEl.classList.remove('show');
-    btn.disabled = true;
-    btn.textContent = 'Signing in...';
-
+    btn.disabled = true; btn.textContent = 'Signing in...';
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      errorEl.textContent = error.message || 'Login failed. Check your email and password.';
-      errorEl.classList.add('show');
-      btn.disabled = false;
-      btn.textContent = 'Sign in';
-      return;
-    }
-
+    if (error) { errorEl.textContent = error.message || 'Login failed.'; errorEl.classList.add('show'); btn.disabled = false; btn.textContent = 'Sign in'; return; }
     await afterLogin(data.user);
   }
 
   async function afterLogin(user) {
-    // Fetch role from profiles
-    const { data: profile, error: profErr } = await sb
-      .from('profiles')
-      .select('role, full_name')
-      .eq('id', user.id)
-      .single();
-
+    const { data: profile, error: profErr } = await sb.from('profiles').select('role, full_name').eq('id', user.id).single();
     if (profErr || !profile) {
       const errorEl = document.getElementById('loginError');
-      errorEl.textContent = 'No profile found for your account. Contact the administrator.';
-      errorEl.classList.add('show');
-      await sb.auth.signOut();
-      document.getElementById('loginBtn').disabled = false;
-      document.getElementById('loginBtn').textContent = 'Sign in';
-      return;
+      errorEl.textContent = 'No profile found. Contact administrator.'; errorEl.classList.add('show');
+      await sb.auth.signOut(); document.getElementById('loginBtn').disabled = false; document.getElementById('loginBtn').textContent = 'Sign in'; return;
     }
-
     if (profile.role !== 'admin' && profile.role !== 'staff') {
       const errorEl = document.getElementById('loginError');
-      errorEl.textContent = 'Your account does not have access to the admin panel.';
-      errorEl.classList.add('show');
-      await sb.auth.signOut();
-      document.getElementById('loginBtn').disabled = false;
-      document.getElementById('loginBtn').textContent = 'Sign in';
-      return;
+      errorEl.textContent = 'Your account does not have admin access.'; errorEl.classList.add('show');
+      await sb.auth.signOut(); document.getElementById('loginBtn').disabled = false; document.getElementById('loginBtn').textContent = 'Sign in'; return;
     }
-
-    currentUser = user;
-    currentRole = profile.role;
-
+    currentUser = user; currentRole = profile.role;
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('dashboard').classList.add('active');
     document.getElementById('userEmail').textContent = user.email;
-    document.getElementById('userRoleBadge').textContent =
-      profile.role === 'admin' ? '· 👑 Admin' : '· 👤 Staff';
+    document.getElementById('userRoleBadge').textContent = profile.role === 'admin' ? '· 👑 Admin' : '· 👤 Staff';
 
-    loadBookings();
+    await loadBookings();
+    setupRealtime();
   }
 
-  async function doLogout() {
-    await sb.auth.signOut();
-    location.reload();
+  async function doLogout() { await sb.auth.signOut(); location.reload(); }
+
+  // Real-time: when a driver_offer is inserted/updated, refresh
+  function setupRealtime() {
+    if (offersSubscription) sb.removeChannel(offersSubscription);
+    offersSubscription = sb.channel('admin-offers')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'driver_offers' }, () => { loadBookings(); })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => { loadBookings(); })
+      .subscribe();
   }
 
-  // ============ LOAD BOOKINGS ============
   async function loadBookings() {
     const content = document.getElementById('bookingsContent');
-    content.innerHTML = '<div class="loading">Loading bookings...</div>';
+    if (allBookings.length === 0) content.innerHTML = '<div class="loading">Loading bookings...</div>';
 
-    const { data, error } = await sb
-      .from('bookings')
-      .select('*')
-      .order('created_at', { ascending: false });
+    // Load bookings + pending offers in parallel
+    const [bookingsRes, offersRes] = await Promise.all([
+      sb.from('bookings').select('*').order('created_at', { ascending: false }),
+      sb.from('driver_offers').select('booking_id').eq('status', 'pending')
+    ]);
 
-    if (error) {
-      content.innerHTML = `<div class="empty-state"><div class="emoji">⚠️</div><div>Error loading bookings: ${error.message}</div></div>`;
-      return;
-    }
+    if (bookingsRes.error) { content.innerHTML = `<div class="empty-state"><div class="emoji">⚠️</div><div>Error: ${bookingsRes.error.message}</div></div>`; return; }
+    allBookings = bookingsRes.data || [];
+    bookingsWithPendingOffers = new Set((offersRes.data || []).map(o => o.booking_id));
 
-    allBookings = data || [];
     updateStats();
     renderBookings();
   }
 
   function updateStats() {
     const pending = allBookings.filter(b => b.status === 'pending').length;
-    const confirmed = allBookings.filter(b => b.status === 'confirmed').length;
+    const verifiedWithOffers = allBookings.filter(b => b.status === 'verified' && bookingsWithPendingOffers.has(b.id)).length;
+    const assigned = allBookings.filter(b => b.status === 'driver_assigned' || b.status === 'assigned').length;
     const completed = allBookings.filter(b => b.status === 'completed').length;
-    const revenue = allBookings
-      .filter(b => b.status === 'completed')
-      .reduce((sum, b) => sum + (Number(b.price_usd) || 0), 0);
+    const revenue = allBookings.filter(b => b.status === 'completed').reduce((s, b) => s + (Number(b.price_usd) || 0), 0);
 
     document.getElementById('statPending').textContent = pending;
-    document.getElementById('statConfirmed').textContent = confirmed;
+    document.getElementById('statOffers').textContent = verifiedWithOffers;
+    document.getElementById('statConfirmed').textContent = assigned;
     document.getElementById('statCompleted').textContent = completed;
     document.getElementById('statRevenue').textContent = '$' + revenue.toFixed(0);
+
+    // Alert banner
+    const banner = document.getElementById('alertBanner');
+    const actionCount = document.getElementById('bookingsActionCount');
+    const verifiedBadge = document.getElementById('verifiedBadge');
+    if (verifiedWithOffers > 0) {
+      banner.style.display = 'flex';
+      document.getElementById('alertCount').textContent = verifiedWithOffers;
+      actionCount.style.display = 'inline-block'; actionCount.textContent = verifiedWithOffers;
+      verifiedBadge.style.display = 'inline-block'; verifiedBadge.textContent = verifiedWithOffers;
+    } else {
+      banner.style.display = 'none';
+      actionCount.style.display = 'none';
+      verifiedBadge.style.display = 'none';
+    }
   }
 
   function setFilter(f) {
     currentFilter = f;
-    document.querySelectorAll('.filter-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.filter === f);
-    });
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
     renderBookings();
   }
 
   function renderBookings() {
     const content = document.getElementById('bookingsContent');
-    const filtered = currentFilter === 'all'
-      ? allBookings
-      : allBookings.filter(b => b.status === currentFilter);
+    let filtered = currentFilter === 'all' ? allBookings : allBookings.filter(b => {
+      if (currentFilter === 'driver_assigned') return b.status === 'driver_assigned' || b.status === 'assigned';
+      return b.status === currentFilter;
+    });
 
     if (filtered.length === 0) {
       content.innerHTML = `<div class="empty-state"><div class="emoji">📭</div><div>No ${currentFilter === 'all' ? '' : currentFilter} bookings yet.</div></div>`;
       return;
     }
 
-    let html = `
-      <table>
-        <thead>
-          <tr>
-            <th>Customer</th>
-            <th>Route</th>
-            <th>When</th>
-            <th>Vehicle</th>
-            <th>Price</th>
-            <th>Status</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-    `;
-
+    let html = `<table><thead><tr><th>Customer</th><th>Route</th><th>When</th><th>Vehicle</th><th>Price</th><th>Status</th><th></th></tr></thead><tbody>`;
     filtered.forEach(b => {
       const created = new Date(b.created_at).toLocaleString();
       const pickup = b.pickup_datetime ? new Date(b.pickup_datetime).toLocaleString() : '—';
+      const hasOffers = bookingsWithPendingOffers.has(b.id);
+      const offerBadge = hasOffers ? '<span class="offer-pill">NEW OFFERS</span>' : '';
       html += `
-        <tr>
-          <td>
-            <div class="row-customer">${escapeHtml(b.passenger_name)}</div>
-            <div class="row-meta">${escapeHtml(b.passenger_email)}<br>${escapeHtml(b.passenger_phone)}</div>
-          </td>
-          <td>
-            <div class="row-route">
-              <strong>${escapeHtml(b.pickup_address)}</strong>
-              <span class="arrow">→</span>
-              ${escapeHtml(b.dropoff_address || '—')}
-            </div>
-            <div class="row-meta">${b.distance_miles ? b.distance_miles + ' mi' : ''} ${b.duration_minutes ? '· ~' + b.duration_minutes + ' min' : ''}</div>
-          </td>
+        <tr class="${hasOffers ? 'has-offers' : ''}">
+          <td><div class="row-customer">${escapeHtml(b.passenger_name)}</div><div class="row-meta">${escapeHtml(b.passenger_email)}<br>${escapeHtml(b.passenger_phone)}</div></td>
+          <td><div class="row-route"><strong>${escapeHtml(b.pickup_address)}</strong> <span class="arrow">→</span> ${escapeHtml(b.dropoff_address || '—')}</div><div class="row-meta">${b.distance_miles ? b.distance_miles + ' mi' : ''} ${b.duration_minutes ? '· ~' + b.duration_minutes + ' min' : ''}</div></td>
           <td>${pickup}<div class="row-meta">Booked: ${created}</div></td>
           <td>${escapeHtml(b.vehicle_type)}<div class="row-meta">${b.trip_type}</div></td>
           <td><strong>$${b.price_usd}</strong></td>
-          <td><span class="status-badge status-${b.status}">${b.status}</span></td>
-          <td><button class="action-btn primary" onclick="openDetail('${b.id}')">View</button></td>
-        </tr>
-      `;
+          <td><span class="status-badge status-${b.status}">${(b.status || '').replace('_', ' ')}</span>${offerBadge}</td>
+          <td><button class="action-btn ${hasOffers ? 'success' : 'primary'}" onclick="openDetail('${b.id}')">${hasOffers ? 'Review Offers' : 'View'}</button></td>
+        </tr>`;
     });
-
     html += '</tbody></table>';
     content.innerHTML = html;
   }
 
   function escapeHtml(s) {
     if (s === null || s === undefined) return '';
-    return String(s)
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
+    return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
   }
 
-  // ============ DETAIL MODAL ============
   async function openDetail(id) {
     const b = allBookings.find(x => x.id === id);
     if (!b) return;
-
     const body = document.getElementById('detailBody');
     body.innerHTML = `
       <div class="detail-row"><div class="detail-label">Customer</div><div class="detail-value">${escapeHtml(b.passenger_name)}</div></div>
@@ -885,66 +481,65 @@
       <div class="detail-row"><div class="detail-label">Passengers</div><div class="detail-value">${b.adults || 0} adults, ${b.children || 0} children, ${b.luggage || 0} luggage</div></div>
       <div class="detail-row"><div class="detail-label">Extras</div><div class="detail-value">${escapeHtml(b.extras || '—')}</div></div>
       <div class="detail-row"><div class="detail-label">Comment</div><div class="detail-value">${escapeHtml(b.comment || '—')}</div></div>
-      <div class="detail-row"><div class="detail-label">Promo code</div><div class="detail-value">${escapeHtml(b.promo_code || '—')}</div></div>
-      <div class="detail-row"><div class="detail-label">Price</div><div class="detail-value"><strong style="font-size:18px;color:var(--positive);">$${b.price_usd}</strong></div></div>
-      <div class="detail-row"><div class="detail-label">Status</div><div class="detail-value"><span class="status-badge status-${b.status}">${b.status}</span></div></div>
+      <div class="detail-row"><div class="detail-label">Customer Price</div><div class="detail-value"><strong style="font-size:16px;">$${b.price_usd}</strong></div></div>
+      <div class="detail-row"><div class="detail-label">Status</div><div class="detail-value"><span class="status-badge status-${b.status}">${(b.status||'').replace('_',' ')}</span></div></div>
       <div class="detail-row"><div class="detail-label">Booked at</div><div class="detail-value">${new Date(b.created_at).toLocaleString()}</div></div>
+      ${b.driver_name ? `<div class="detail-row"><div class="detail-label">Assigned Driver</div><div class="detail-value"><strong>${escapeHtml(b.driver_name)}</strong> · ${escapeHtml(b.driver_phone || '')} · ${escapeHtml(b.driver_vehicle || '')}</div></div>` : ''}
       <div id="offersContainer"></div>
     `;
 
-    // Load driver offers if booking has been released or assigned
-    if (['verified','assigned','en_route','arrived_pickup','in_progress','completed'].includes(b.status)) {
+    // Load driver offers
+    if (['verified','assigned','driver_assigned','en_route','arrived_pickup','in_progress','completed'].includes(b.status)) {
       const offers = await loadOffersForBooking(b.id);
       const container = document.getElementById('offersContainer');
       if (offers.length > 0) {
-        let oh = '<div class="offers-block"><h4>Driver Offers (' + offers.length + ')</h4>';
+        let oh = `<div class="offers-block"><h4>🔔 Driver Offers (${offers.length})</h4>`;
         offers.forEach(o => {
           const dName = o.driver?.full_name || 'Unknown';
           const dPhone = o.driver?.phone || '';
-          const dVehicle = o.driver?.vehicle_make ? `${o.driver.vehicle_make} ${o.driver.vehicle_model || ''}` : '';
+          const dVehicle = o.driver?.vehicle_make ? `${o.driver.vehicle_make} ${o.driver.vehicle_model || ''} ${o.driver.vehicle_year || ''}`.trim() : '';
+          const dPlate = o.driver?.vehicle_plate ? ' · ' + o.driver.vehicle_plate : '';
           const isAccepted = o.status === 'accepted';
           const isRejected = o.status === 'rejected';
+          const canReview = o.status === 'pending' && (b.status === 'verified');
           oh += `
-            <div class="offer-row ${isAccepted ? 'accepted' : ''}" style="${isRejected ? 'opacity:0.5;' : ''}">
-              <div class="o-driver">
-                <strong>${escapeHtml(dName)}</strong>
-                ${dPhone ? escapeHtml(dPhone) + ' · ' : ''}${escapeHtml(dVehicle)}
-                <div style="font-size:11px;color:var(--grey-6);margin-top:2px;">${o.status.toUpperCase()} · sent ${new Date(o.created_at).toLocaleString()}</div>
+            <div class="offer-row ${isAccepted ? 'accepted' : ''} ${isRejected ? 'rejected' : ''}">
+              <div class="offer-driver-row">
+                <div class="offer-driver-info">
+                  <div class="offer-driver-name">${escapeHtml(dName)}</div>
+                  <div class="offer-driver-meta">📞 ${escapeHtml(dPhone)} · 🚗 ${escapeHtml(dVehicle + dPlate)}</div>
+                  <div class="offer-status-label">${o.status.toUpperCase()} · sent ${new Date(o.created_at).toLocaleString()}</div>
+                </div>
+                <div class="offer-price-box">
+                  <div class="offer-price">$${o.offered_price}</div>
+                  <div class="offer-status-label">Driver's price</div>
+                </div>
               </div>
-              <div style="text-align:right;">
-                <div class="o-price">$${o.offered_price}</div>
-                ${(!isAccepted && !isRejected && b.status === 'verified') ?
-                  `<button class="action-btn primary" style="margin-top:4px;" onclick="acceptOffer('${o.id}','${b.id}','${o.driver_id}',${o.offered_price})">Accept</button>` : ''}
-              </div>
-            </div>
-          `;
+              ${canReview ? `
+                <div class="offer-controls">
+                  <label>Final price for customer:</label>
+                  <input type="number" class="offer-price-input" id="finalPrice_${o.id}" value="${o.offered_price}" step="1">
+                  <button class="action-btn success" onclick="acceptOffer('${o.id}','${b.id}','${o.driver_id}')">✓ Approve & Send to Customer</button>
+                  <button class="action-btn danger" onclick="rejectOffer('${o.id}','${b.id}')">✕ Reject</button>
+                </div>` : ''}
+            </div>`;
         });
         oh += '</div>';
         container.innerHTML = oh;
       } else if (b.status === 'verified') {
-        container.innerHTML = '<div class="offers-block"><h4>Driver Offers</h4><div style="font-size:13px;color:var(--grey-6);text-align:center;padding:14px;">No driver offers yet. Waiting for drivers to bid…</div></div>';
+        container.innerHTML = '<div class="offers-block"><h4>Driver Offers</h4><div style="font-size:13px;color:#92400e;text-align:center;padding:14px;">No driver offers yet. Waiting for drivers to respond…</div></div>';
       }
     }
 
     const actions = document.getElementById('detailActions');
     const buttons = [];
-
-    // Workflow:
-    // pending → confirmed (admin handles directly) OR verified (release to drivers)
-    // verified → assigned (after admin picks a driver offer)
-    // assigned → driver lifecycle handles
     if (b.status === 'pending') {
-      buttons.push(`<button class="action-btn primary" onclick="updateStatus('${b.id}', 'verified')" title="Release to driver pool for offers">🚗 Release to Drivers</button>`);
-      buttons.push(`<button class="action-btn" onclick="updateStatus('${b.id}', 'confirmed')">✓ Confirm (handle myself)</button>`);
+      buttons.push(`<button class="action-btn primary" onclick="updateStatus('${b.id}', 'verified')">🚗 Confirm & Release to Drivers</button>`);
     }
     if (b.status === 'verified') {
       buttons.push(`<button class="action-btn" onclick="updateStatus('${b.id}', 'pending')">↶ Pull back</button>`);
     }
-    if (b.status === 'confirmed') {
-      buttons.push(`<button class="action-btn primary" onclick="updateStatus('${b.id}', 'completed')">✓ Mark completed</button>`);
-      buttons.push(`<button class="action-btn" onclick="updateStatus('${b.id}', 'verified')">🚗 Release to Drivers</button>`);
-    }
-    if (['assigned','en_route','arrived_pickup','in_progress'].includes(b.status)) {
+    if (['driver_assigned','assigned','en_route','arrived_pickup','in_progress'].includes(b.status)) {
       buttons.push(`<button class="action-btn primary" onclick="updateStatus('${b.id}', 'completed')">✓ Mark completed</button>`);
     }
     if (!['cancelled','completed'].includes(b.status)) {
@@ -955,81 +550,43 @@
     }
     buttons.push(`<button class="action-btn" onclick="closeDetail()">Close</button>`);
     actions.innerHTML = buttons.join('');
-
     document.getElementById('detailModal').classList.add('active');
   }
 
-  function closeDetail() {
-    document.getElementById('detailModal').classList.remove('active');
-  }
+  function closeDetail() { document.getElementById('detailModal').classList.remove('active'); }
 
   async function updateStatus(id, newStatus) {
     const update = { status: newStatus };
-    // Track timestamps for lifecycle events
-    if (newStatus === 'verified') update.verified_at = new Date().toISOString();
-    if (newStatus === 'completed') update.completed_at = update.completed_at || new Date().toISOString();
-
-    const { error } = await sb
-      .from('bookings')
-      .update(update)
-      .eq('id', id);
-
-    if (error) {
-      alert('Failed to update: ' + error.message);
-      return;
-    }
-
-    closeDetail();
-    await loadBookings();
+    if (newStatus === 'verified') update.admin_confirmed_at = new Date().toISOString();
+    if (newStatus === 'completed') update.completed_at = new Date().toISOString();
+    const { error } = await sb.from('bookings').update(update).eq('id', id);
+    if (error) return alert('Failed to update: ' + error.message);
+    closeDetail(); await loadBookings();
   }
 
-  // ============ PAGE SECTIONS ============
   function switchSection(name) {
-    document.querySelectorAll('.page-tab').forEach(t => {
-      t.classList.toggle('active', t.dataset.section === name);
-    });
-    document.querySelectorAll('.page-section').forEach(s => {
-      s.classList.toggle('active', s.id === 'section-' + name);
-    });
+    document.querySelectorAll('.page-tab').forEach(t => t.classList.toggle('active', t.dataset.section === name));
+    document.querySelectorAll('.page-section').forEach(s => s.classList.toggle('active', s.id === 'section-' + name));
     if (name === 'drivers') loadDrivers();
   }
 
-  // ============ DRIVERS ============
-  let allDrivers = [];
-  let driverFilter = 'all';
+  let allDrivers = []; let driverFilter = 'all';
 
   async function loadDrivers() {
     const content = document.getElementById('driversContent');
     content.innerHTML = '<div class="loading">Loading drivers...</div>';
-
-    const { data, error } = await sb
-      .from('profiles')
-      .select('*')
-      .eq('role', 'driver')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      content.innerHTML = `<div class="empty-state"><div class="emoji">⚠️</div><div>Error: ${error.message}</div></div>`;
-      return;
-    }
-
+    const { data, error } = await sb.from('profiles').select('*').eq('role', 'driver').order('created_at', { ascending: false });
+    if (error) { content.innerHTML = `<div class="empty-state"><div class="emoji">⚠️</div><div>Error: ${error.message}</div></div>`; return; }
     allDrivers = data || [];
     const pendingCount = allDrivers.filter(d => !d.approved).length;
     const pill = document.getElementById('driversPendingCount');
-    if (pendingCount > 0) {
-      pill.textContent = pendingCount;
-      pill.style.display = 'inline-block';
-    } else {
-      pill.style.display = 'none';
-    }
+    if (pendingCount > 0) { pill.textContent = pendingCount; pill.style.display = 'inline-block'; } else { pill.style.display = 'none'; }
     renderDrivers();
   }
 
   function setDriverFilter(f) {
     driverFilter = f;
-    document.querySelectorAll('[data-dfilter]').forEach(b => {
-      b.classList.toggle('active', b.dataset.dfilter === f);
-    });
+    document.querySelectorAll('[data-dfilter]').forEach(b => b.classList.toggle('active', b.dataset.dfilter === f));
     renderDrivers();
   }
 
@@ -1038,18 +595,11 @@
     let list = allDrivers;
     if (driverFilter === 'pending') list = allDrivers.filter(d => !d.approved);
     if (driverFilter === 'approved') list = allDrivers.filter(d => d.approved);
-
-    if (list.length === 0) {
-      content.innerHTML = `<div class="empty-state"><div class="emoji">📭</div><div>No drivers ${driverFilter !== 'all' ? '(' + driverFilter + ')' : ''} yet.</div></div>`;
-      return;
-    }
-
+    if (list.length === 0) { content.innerHTML = `<div class="empty-state"><div class="emoji">📭</div><div>No drivers ${driverFilter !== 'all' ? '(' + driverFilter + ')' : ''} yet.</div></div>`; return; }
     let html = '<div class="driver-grid">';
     list.forEach(d => {
       const vehicleStr = d.vehicle_make ? `${d.vehicle_make} ${d.vehicle_model || ''} ${d.vehicle_year || ''}`.trim() : 'No vehicle set';
-      const statusBadge = d.approved
-        ? '<span class="status-badge status-completed">Approved</span>'
-        : '<span class="status-badge status-pending">Pending</span>';
+      const statusBadge = d.approved ? '<span class="status-badge status-completed">Approved</span>' : '<span class="status-badge status-pending">Pending</span>';
       html += `
         <div class="driver-card ${d.approved ? '' : 'pending'}">
           <div class="dc-name">${escapeHtml(d.full_name || '—')}</div>
@@ -1059,39 +609,27 @@
           <div class="dc-info">Class: <strong>${escapeHtml(d.vehicle_class || 'Standard')}</strong></div>
           <div class="dc-info">${statusBadge}</div>
           <div class="dc-actions">
-            ${d.approved
-              ? `<button class="action-btn danger" onclick="setDriverApproval('${d.id}', false)">Revoke Access</button>`
-              : `<button class="action-btn primary" onclick="setDriverApproval('${d.id}', true)">✓ Approve</button>`
-            }
+            ${d.approved ? `<button class="action-btn danger" onclick="setDriverApproval('${d.id}', false)">Revoke Access</button>` : `<button class="action-btn primary" onclick="setDriverApproval('${d.id}', true)">✓ Approve</button>`}
           </div>
-        </div>
-      `;
+        </div>`;
     });
     html += '</div>';
     content.innerHTML = html;
   }
 
   async function setDriverApproval(driverId, approved) {
-    const { error } = await sb.from('profiles')
-      .update({ approved })
-      .eq('id', driverId);
+    const { error } = await sb.from('profiles').update({ approved }).eq('id', driverId);
     if (error) return alert('Failed: ' + error.message);
     await loadDrivers();
   }
 
-  // ============ ADD DRIVER MANUALLY ============
   function openAddDriverModal() {
-    ['adFullName','adEmail','adPhone','adPassword','adVMake','adVModel','adVYear','adVPlate','adLicense'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
+    ['adFullName','adEmail','adPhone','adPassword','adVMake','adVModel','adVYear','adVPlate','adLicense'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('adVClass').value = 'Standard';
     document.getElementById('adApproveNow').checked = true;
     document.getElementById('addDriverModal').classList.add('active');
   }
-
-  function closeAddDriver() {
-    document.getElementById('addDriverModal').classList.remove('active');
-  }
+  function closeAddDriver() { document.getElementById('addDriverModal').classList.remove('active'); }
 
   async function submitAddDriver() {
     const fullName = document.getElementById('adFullName').value.trim();
@@ -1105,122 +643,91 @@
     const vClass = document.getElementById('adVClass').value;
     const license = document.getElementById('adLicense').value.trim();
     const approveNow = document.getElementById('adApproveNow').checked;
-
-    if (!fullName || !email || !password) return alert('Name, email and password are required.');
-    if (password.length < 6) return alert('Password must be at least 6 characters.');
-
-    const btn = document.getElementById('adSubmitBtn');
-    btn.disabled = true;
-    btn.textContent = 'Creating...';
-
-    // Save current admin session so we can restore it after signUp logs us in as the new driver
+    if (!fullName || !email || !password) return alert('Name, email and password required.');
+    if (password.length < 6) return alert('Password must be 6+ chars.');
+    const btn = document.getElementById('adSubmitBtn'); btn.disabled = true; btn.textContent = 'Creating...';
     const { data: { session: adminSession } } = await sb.auth.getSession();
-
-    // Create the auth user via signUp (works without service-role key)
-    const { data: signUpData, error: signUpError } = await sb.auth.signUp({
-      email,
-      password
-    });
-
-    if (signUpError) {
-      btn.disabled = false;
-      btn.textContent = 'Create Driver Account';
-      return alert('Failed to create account: ' + signUpError.message);
-    }
-
+    const { data: signUpData, error: signUpError } = await sb.auth.signUp({ email, password });
+    if (signUpError) { btn.disabled = false; btn.textContent = 'Create Driver Account'; return alert('Failed: ' + signUpError.message); }
     const newUserId = signUpData.user?.id;
-    if (!newUserId) {
-      btn.disabled = false;
-      btn.textContent = 'Create Driver Account';
-      return alert('Account creation returned no user ID. Check Supabase Auth settings.');
-    }
-
-    // Insert profile row (signUp may have logged us in as the new driver temporarily, which is fine for the insert)
+    if (!newUserId) { btn.disabled = false; btn.textContent = 'Create Driver Account'; return alert('No user ID returned.'); }
     const { error: profileError } = await sb.from('profiles').insert({
-      id: newUserId,
-      email,
-      role: 'driver',
-      approved: approveNow,
-      full_name: fullName,
-      phone,
-      vehicle_make: vMake || null,
-      vehicle_model: vModel || null,
-      vehicle_year: vYear || null,
-      vehicle_plate: vPlate || null,
-      vehicle_class: vClass,
-      license_number: license || null
+      id: newUserId, email, role: 'driver', approved: approveNow, full_name: fullName, phone,
+      vehicle_make: vMake || null, vehicle_model: vModel || null, vehicle_year: vYear || null,
+      vehicle_plate: vPlate || null, vehicle_class: vClass, license_number: license || null
     });
-
-    // Restore admin session regardless
-    if (adminSession) {
-      await sb.auth.setSession({
-        access_token: adminSession.access_token,
-        refresh_token: adminSession.refresh_token
-      });
-    }
-
-    btn.disabled = false;
-    btn.textContent = 'Create Driver Account';
-
-    if (profileError) {
-      return alert('Account created but profile setup failed: ' + profileError.message + '\nFix in SQL: INSERT INTO profiles for user ' + newUserId);
-    }
-
+    if (adminSession) await sb.auth.setSession({ access_token: adminSession.access_token, refresh_token: adminSession.refresh_token });
+    btn.disabled = false; btn.textContent = 'Create Driver Account';
+    if (profileError) return alert('Account created but profile setup failed: ' + profileError.message);
     closeAddDriver();
-    alert(`Driver created!\n\nEmail: ${email}\nPassword: ${password}\n\nShare these credentials with the driver. They can log in at driver.html`);
+    alert(`Driver created!\n\nEmail: ${email}\nPassword: ${password}\n\nShare with the driver.`);
     await loadDrivers();
   }
 
-  // ============ DRIVER OFFERS (shown in booking detail) ============
   async function loadOffersForBooking(bookingId) {
-    const { data, error } = await sb
-      .from('driver_offers')
-      .select('*')
-      .eq('booking_id', bookingId)
-      .order('created_at', { ascending: true });
+    const { data, error } = await sb.from('driver_offers').select('*').eq('booking_id', bookingId).order('created_at', { ascending: true });
     if (error) { console.error(error); return []; }
-
-    // Enrich with driver profile info
     if (!data || data.length === 0) return [];
     const driverIds = [...new Set(data.map(o => o.driver_id))];
-    const { data: profiles } = await sb
-      .from('profiles')
-      .select('id, full_name, phone, vehicle_make, vehicle_model, vehicle_plate, vehicle_class')
-      .in('id', driverIds);
+    const { data: profiles } = await sb.from('profiles').select('id, full_name, phone, vehicle_make, vehicle_model, vehicle_year, vehicle_plate, vehicle_class').in('id', driverIds);
     const profileMap = {};
     (profiles || []).forEach(p => { profileMap[p.id] = p; });
-
     return data.map(o => ({ ...o, driver: profileMap[o.driver_id] || {} }));
   }
 
-  async function acceptOffer(offerId, bookingId, driverId, offeredPrice) {
-    if (!confirm(`Assign this driver to the booking at $${offeredPrice}?`)) return;
+  // ============ THE BIG FIX: acceptOffer now populates driver snapshot fields ============
+  async function acceptOffer(offerId, bookingId, driverId) {
+    // Get the price the admin entered (possibly overridden)
+    const priceInput = document.getElementById('finalPrice_' + offerId);
+    const finalPrice = parseFloat(priceInput.value);
+    if (!finalPrice || finalPrice <= 0) return alert('Please enter a valid final price.');
 
-    // Mark this offer accepted, others rejected
+    if (!confirm(`Approve this driver and send to customer at $${finalPrice}?\nThe customer will see the driver's name, phone, and vehicle.`)) return;
+
+    // Fetch full driver profile for snapshot fields
+    const { data: driver, error: dErr } = await sb.from('profiles')
+      .select('full_name, phone, vehicle_make, vehicle_model, vehicle_year, vehicle_plate, vehicle_class')
+      .eq('id', driverId).single();
+    if (dErr) return alert('Could not load driver profile: ' + dErr.message);
+
+    const vehicleParts = [driver.vehicle_make, driver.vehicle_model, driver.vehicle_year].filter(Boolean).join(' ');
+    const driverVehicle = vehicleParts + (driver.vehicle_plate ? ' · ' + driver.vehicle_plate : '');
+
+    // Mark accepted offer + reject others
     await sb.from('driver_offers').update({ status: 'accepted' }).eq('id', offerId);
     await sb.from('driver_offers').update({ status: 'rejected' }).eq('booking_id', bookingId).neq('id', offerId);
 
-    // Assign driver on booking
+    // Update booking — set snapshot fields so customer sees driver info
     const { error } = await sb.from('bookings').update({
       assigned_driver_id: driverId,
-      status: 'assigned',
+      driver_id: driverId,
+      status: 'driver_assigned',
       assigned_at: new Date().toISOString(),
-      price_usd: offeredPrice
+      driver_assigned_at: new Date().toISOString(),
+      price_usd: finalPrice,
+      driver_name: driver.full_name || null,
+      driver_phone: driver.phone || null,
+      driver_vehicle: driverVehicle || null
     }).eq('id', bookingId);
 
     if (error) return alert('Failed to assign: ' + error.message);
     closeDetail();
     await loadBookings();
+    alert('✓ Driver approved and customer notified!');
   }
 
-  // ============ STARTUP: check existing session ============
+  async function rejectOffer(offerId, bookingId) {
+    if (!confirm('Reject this driver\'s offer?')) return;
+    const { error } = await sb.from('driver_offers').update({ status: 'rejected' }).eq('id', offerId);
+    if (error) return alert('Failed: ' + error.message);
+    closeDetail();
+    openDetail(bookingId);
+  }
+
   (async function init() {
     const { data: { session } } = await sb.auth.getSession();
-    if (session && session.user) {
-      await afterLogin(session.user);
-    }
+    if (session && session.user) await afterLogin(session.user);
   })();
 </script>
-
 </body>
 </html>

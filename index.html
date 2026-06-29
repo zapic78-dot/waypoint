@@ -52,6 +52,9 @@
   .header-settings button:hover { background: var(--grey-1); }
   .login-btn { background: var(--primary) !important; color: var(--white) !important; padding: 8px 16px !important; font-weight: 500; }
   .login-btn:hover { background: var(--primary-dark) !important; }
+  .user-greet { font-size: 14px; color: var(--grey-6); padding: 6px 10px; }
+  .user-greet strong { color: var(--primary); }
+  .logout-btn { color: var(--grey-6) !important; }
 
   /* Hero */
   .hero { position: relative; min-height: 560px; background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%); color: var(--white); padding: 60px 0 80px; overflow: hidden; }
@@ -85,6 +88,28 @@
   section { padding: 64px 0; }
   .section-title { text-align: center; margin-bottom: 8px; font-size: 32px; font-weight: 700; letter-spacing: -0.5px; }
   .section-subtitle { text-align: center; color: var(--grey-6); font-size: 18px; margin-bottom: 40px; }
+
+  /* My Rides section */
+  .my-rides { background: var(--grey-1); padding: 40px 0; display: none; }
+  .my-rides.visible { display: block; }
+  .rides-list { display: grid; gap: 16px; max-width: 900px; margin: 0 auto; }
+  .ride-card { background: var(--white); border: 1px solid var(--grey-2); border-radius: 14px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .ride-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  .ride-route { font-weight: 600; font-size: 15px; flex: 1; min-width: 200px; }
+  .ride-route .arrow { color: var(--grey-4); margin: 0 6px; }
+  .status-badge { padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap; }
+  .status-pending { background: #fef3c7; color: #78350f; }
+  .status-admin_confirmed { background: #dbeafe; color: #1e40af; }
+  .status-driver_assigned { background: #d1fae5; color: #065f46; }
+  .status-completed { background: #e0e7ff; color: #3730a3; }
+  .status-cancelled { background: #fee2e2; color: #991b1b; }
+  .ride-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; font-size: 13px; color: var(--grey-6); margin-bottom: 12px; }
+  .ride-meta div strong { color: var(--black); display: block; font-size: 14px; }
+  .driver-box { background: linear-gradient(135deg, #d1fae5, #a7f3d0); border-radius: 10px; padding: 14px; margin-top: 12px; }
+  .driver-box h4 { font-size: 14px; color: #065f46; margin-bottom: 6px; }
+  .driver-box .driver-line { font-size: 14px; margin: 4px 0; }
+  .driver-box .driver-line strong { color: #065f46; }
+  .payment-notice { background: #fef3c7; border-left: 3px solid var(--yellow); padding: 12px; border-radius: 6px; margin-top: 12px; font-size: 13px; color: #78350f; }
 
   .reviews-scroll { display: flex; gap: 16px; overflow-x: auto; padding: 8px 16px; scrollbar-width: none; scroll-snap-type: x mandatory; }
   .reviews-scroll::-webkit-scrollbar { display: none; }
@@ -175,6 +200,19 @@
   .business-form input:focus, .business-form select:focus { border-color: var(--primary); }
   .promo-banner { background: linear-gradient(135deg, #fef3c7, #fde68a); padding: 14px; border-radius: 10px; font-size: 14px; color: #78350f; font-weight: 500; margin-bottom: 16px; }
 
+  /* AUTH FORM */
+  .auth-tabs { display: flex; gap: 8px; background: var(--grey-1); padding: 6px; border-radius: 10px; margin-bottom: 18px; }
+  .auth-tab { flex: 1; background: transparent; border: none; padding: 10px; font-size: 15px; font-weight: 600; cursor: pointer; border-radius: 8px; color: var(--grey-6); transition: all 0.2s; }
+  .auth-tab.active { background: var(--white); color: var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+  .auth-form { display: flex; flex-direction: column; gap: 12px; }
+  .auth-form input { padding: 12px 14px; border: 1px solid var(--grey-2); border-radius: 8px; font-size: 15px; font-family: inherit; outline: none; }
+  .auth-form input:focus { border-color: var(--primary); }
+  .auth-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .auth-error { background: #fee2e2; color: #991b1b; padding: 10px 14px; border-radius: 8px; font-size: 14px; display: none; }
+  .auth-error.visible { display: block; }
+  .auth-success { background: #d1fae5; color: #065f46; padding: 10px 14px; border-radius: 8px; font-size: 14px; display: none; }
+  .auth-success.visible { display: block; }
+
   @media (max-width: 768px) {
     .hero { padding: 40px 0 60px; min-height: auto; }
     .header-nav { display: none; }
@@ -185,6 +223,7 @@
     .section-title { font-size: 26px; }
     section { padding: 48px 0; }
     .social-grid { grid-template-columns: 1fr 1fr 1fr; }
+    .auth-row { grid-template-columns: 1fr; }
   }
   /* ============ BOOKING FLOW (3-step) ============ */
   .booking-flow { position: fixed; inset: 0; background: var(--white); z-index: 2000; display: none; flex-direction: column; overflow-y: auto; }
@@ -237,6 +276,7 @@
   .extra-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
   .checkbox-row { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; padding: 8px 0; cursor: pointer; }
   .checkbox-row input { width: auto; margin-top: 3px; }
+  .logged-in-banner { background: linear-gradient(135deg, #d1fae5, #a7f3d0); border-radius: 10px; padding: 12px 14px; font-size: 14px; color: #065f46; margin-bottom: 12px; }
   @media (max-width: 900px) {
     .step2-grid { grid-template-columns: 1fr; }
     .map-panel { position: relative; top: 0; height: 280px; min-height: 280px; }
@@ -272,14 +312,24 @@
       <a onclick="openModal('blog')">Blog</a>
       <a onclick="openModal('faq')">FAQ</a>
     </nav>
-    <div class="header-settings">
+    <div class="header-settings" id="headerSettings">
       <button onclick="openModal('comingSoon')">US$</button>
       <button onclick="openModal('comingSoon')">km</button>
       <button onclick="openModal('comingSoon')">🇬🇧 EN</button>
-      <button class="login-btn" onclick="openModal('login')">Log in</button>
+      <button class="login-btn" id="authButton" onclick="openModal('auth')">Log in / Sign up</button>
     </div>
   </div>
 </header>
+
+<!-- My Rides (only when logged in) -->
+<section class="my-rides" id="myRidesSection">
+  <div class="container">
+    <h2 class="section-title" style="font-size:26px;text-align:left;margin-bottom:18px;">🚗 My Rides</h2>
+    <div class="rides-list" id="ridesList">
+      <div style="text-align:center;color:var(--grey-6);padding:20px;">Loading your rides...</div>
+    </div>
+  </div>
+</section>
 
 <!-- Hero -->
 <section class="hero">
@@ -315,6 +365,9 @@
           <input type="datetime-local" id="datetime" required>
         </div>
         <button type="submit" class="submit-btn" id="submitBtn">Get offers →</button>
+        <p style="text-align:center;font-size:12px;color:var(--grey-6);margin-top:4px;" id="signupHint">
+          ✨ Sign up in 30 seconds to request your ride
+        </p>
       </form>
     </div>
     <p class="hero-subtitle">Compare driver offers on our marketplace. Unbeatable prices on private transfers.</p>
@@ -476,6 +529,10 @@
       <div class="step3-container">
         <h2>Your trip details</h2>
 
+        <div class="logged-in-banner" id="loggedInBanner" style="display:none;">
+          ✓ Signed in as <strong id="loggedInName"></strong> — your contact details are pre-filled below.
+        </div>
+
         <div class="step3-section">
           <div class="counter-row">
             <div class="counter-label">👤 Adults</div>
@@ -533,9 +590,9 @@
           </label>
         </div>
 
-        <button class="continue-btn" id="finalSubmitBtn" onclick="submitBooking()">Get offers →</button>
+        <button class="continue-btn" id="finalSubmitBtn" onclick="submitBooking()">Request my ride →</button>
         <p style="text-align:center;font-size:12px;color:var(--grey-6);margin-top:10px;">
-          You won't be charged yet. We'll send a confirmation with the final price by phone or email.
+          💳 Payment is collected after admin confirms your ride. You won't be charged yet.
         </p>
       </div>
     </div>
@@ -557,9 +614,357 @@
 <script>
   // ============ SUPABASE CONFIG (publishable key — safe to be here) ============
   const SUPABASE_URL = 'https://vodiyakxjekusndirtwm.supabase.co';
- const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvZGl5YWt4amVrdXNuZGlydHdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2MDUzNjksImV4cCI6MjA5ODE4MTM2OX0.hSNqKhoQa_pQ0GFxBE-7Un-5eeWuD1vTDQmbvVC3sFY';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvZGl5YWt4amVrdXNuZGlydHdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2MDUzNjksImV4cCI6MjA5ODE4MTM2OX0.hSNqKhoQa_pQ0GFxBE-7Un-5eeWuD1vTDQmbvVC3sFY';
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ============ CURRENT USER STATE ============
+  let currentUser = null;          // { id, email, first_name, last_name, phone }
+  let ridesSubscription = null;
+
+  // ============ AUTH UI ============
+  function buildAuthModal() {
+    return {
+      title: 'Welcome to Wayppoint',
+      body: `
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tabSignup" onclick="switchAuthTab('signup')">Sign up</button>
+          <button class="auth-tab" id="tabLogin" onclick="switchAuthTab('login')">Log in</button>
+        </div>
+
+        <div class="auth-error" id="authError"></div>
+        <div class="auth-success" id="authSuccess"></div>
+
+        <!-- SIGNUP -->
+        <form class="auth-form" id="signupForm" onsubmit="event.preventDefault(); handleSignup();">
+          <div class="auth-row">
+            <input type="text" id="signupFirstName" placeholder="First name *" required>
+            <input type="text" id="signupLastName" placeholder="Last name *" required>
+          </div>
+          <input type="email" id="signupEmail" placeholder="Email *" required>
+          <input type="tel" id="signupPhone" placeholder="Phone number * (e.g. +1 555 123 4567)" required>
+          <input type="password" id="signupPassword" placeholder="Password * (min 6 characters)" minlength="6" required>
+          <button type="submit" class="submit-btn" id="signupBtn">Create my account</button>
+          <p style="text-align:center;font-size:12px;color:var(--grey-6);margin-top:4px;">
+            By signing up you agree to our Terms and Privacy Policy
+          </p>
+        </form>
+
+        <!-- LOGIN -->
+        <form class="auth-form" id="loginForm" style="display:none;" onsubmit="event.preventDefault(); handleLogin();">
+          <input type="email" id="loginEmail" placeholder="Email *" required>
+          <input type="password" id="loginPassword" placeholder="Password *" required>
+          <button type="submit" class="submit-btn" id="loginBtn">Log in</button>
+        </form>
+      `
+    };
+  }
+
+  function switchAuthTab(which) {
+    document.getElementById('authError').classList.remove('visible');
+    document.getElementById('authSuccess').classList.remove('visible');
+    if (which === 'signup') {
+      document.getElementById('tabSignup').classList.add('active');
+      document.getElementById('tabLogin').classList.remove('active');
+      document.getElementById('signupForm').style.display = 'flex';
+      document.getElementById('loginForm').style.display = 'none';
+    } else {
+      document.getElementById('tabLogin').classList.add('active');
+      document.getElementById('tabSignup').classList.remove('active');
+      document.getElementById('loginForm').style.display = 'flex';
+      document.getElementById('signupForm').style.display = 'none';
+    }
+  }
+
+  function showAuthError(msg) {
+    const el = document.getElementById('authError');
+    el.textContent = msg;
+    el.classList.add('visible');
+    document.getElementById('authSuccess').classList.remove('visible');
+  }
+  function showAuthSuccess(msg) {
+    const el = document.getElementById('authSuccess');
+    el.textContent = msg;
+    el.classList.add('visible');
+    document.getElementById('authError').classList.remove('visible');
+  }
+
+  async function handleSignup() {
+    const firstName = document.getElementById('signupFirstName').value.trim();
+    const lastName = document.getElementById('signupLastName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const phone = document.getElementById('signupPhone').value.trim();
+    const password = document.getElementById('signupPassword').value;
+
+    if (!firstName || !lastName || !email || !phone || !password) {
+      showAuthError('Please fill in all fields.');
+      return;
+    }
+    if (password.length < 6) {
+      showAuthError('Password must be at least 6 characters.');
+      return;
+    }
+
+    const btn = document.getElementById('signupBtn');
+    btn.disabled = true;
+    btn.textContent = 'Creating your account...';
+
+    try {
+      // Create the auth user with profile data in metadata
+      const { data, error } = await sb.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            first_name: firstName,
+            last_name: lastName,
+            phone: phone,
+            role: 'customer'
+          }
+        }
+      });
+
+      if (error) {
+        showAuthError(error.message);
+        btn.disabled = false;
+        btn.textContent = 'Create my account';
+        return;
+      }
+
+      // Save profile row (in case trigger isn't set up)
+      if (data.user) {
+        await sb.from('profiles').upsert({
+          id: data.user.id,
+          first_name: firstName,
+          last_name: lastName,
+          phone: phone,
+          role: 'customer'
+        }, { onConflict: 'id' });
+      }
+
+      // If session exists (email confirm OFF in Supabase) → logged in immediately
+      if (data.session) {
+        currentUser = {
+          id: data.user.id,
+          email: data.user.email,
+          first_name: firstName,
+          last_name: lastName,
+          phone: phone
+        };
+        showAuthSuccess('Account created! You are now signed in.');
+        setTimeout(() => {
+          closeModal();
+          updateUIForUser();
+          loadMyRides();
+        }, 800);
+      } else {
+        showAuthSuccess('Account created! Please check your email to confirm, then log in.');
+        setTimeout(() => switchAuthTab('login'), 1500);
+        btn.disabled = false;
+        btn.textContent = 'Create my account';
+      }
+    } catch (e) {
+      console.error(e);
+      showAuthError('Something went wrong. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Create my account';
+    }
+  }
+
+  async function handleLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    if (!email || !password) {
+      showAuthError('Please enter your email and password.');
+      return;
+    }
+
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = true;
+    btn.textContent = 'Signing in...';
+
+    try {
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) {
+        showAuthError(error.message);
+        btn.disabled = false;
+        btn.textContent = 'Log in';
+        return;
+      }
+
+      await loadUserProfile(data.user);
+      showAuthSuccess('Welcome back!');
+      setTimeout(() => {
+        closeModal();
+        updateUIForUser();
+        loadMyRides();
+      }, 500);
+    } catch (e) {
+      console.error(e);
+      showAuthError('Something went wrong. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Log in';
+    }
+  }
+
+  async function loadUserProfile(authUser) {
+    // Try to fetch profile row
+    const { data: profile } = await sb
+      .from('profiles')
+      .select('first_name, last_name, phone')
+      .eq('id', authUser.id)
+      .maybeSingle();
+
+    const meta = authUser.user_metadata || {};
+    currentUser = {
+      id: authUser.id,
+      email: authUser.email,
+      first_name: profile?.first_name || meta.first_name || '',
+      last_name: profile?.last_name || meta.last_name || '',
+      phone: profile?.phone || meta.phone || ''
+    };
+  }
+
+  async function handleLogout() {
+    if (ridesSubscription) {
+      sb.removeChannel(ridesSubscription);
+      ridesSubscription = null;
+    }
+    await sb.auth.signOut();
+    currentUser = null;
+    updateUIForUser();
+    document.getElementById('myRidesSection').classList.remove('visible');
+  }
+
+  function updateUIForUser() {
+    const settings = document.getElementById('headerSettings');
+    const btn = document.getElementById('authButton');
+    const hint = document.getElementById('signupHint');
+
+    if (currentUser) {
+      // Replace login button with greet + logout
+      btn.remove();
+      // Avoid duplicates
+      document.querySelectorAll('.user-greet, .logout-btn').forEach(e => e.remove());
+      const greet = document.createElement('span');
+      greet.className = 'user-greet';
+      greet.innerHTML = `Hi, <strong>${escapeHtml(currentUser.first_name || 'there')}</strong>`;
+      const logout = document.createElement('button');
+      logout.className = 'logout-btn';
+      logout.textContent = 'Log out';
+      logout.onclick = handleLogout;
+      settings.appendChild(greet);
+      settings.appendChild(logout);
+
+      if (hint) hint.style.display = 'none';
+    } else {
+      // Restore login button if missing
+      if (!document.getElementById('authButton')) {
+        document.querySelectorAll('.user-greet, .logout-btn').forEach(e => e.remove());
+        const loginBtn = document.createElement('button');
+        loginBtn.className = 'login-btn';
+        loginBtn.id = 'authButton';
+        loginBtn.textContent = 'Log in / Sign up';
+        loginBtn.onclick = () => openModal('auth');
+        settings.appendChild(loginBtn);
+      }
+      if (hint) hint.style.display = 'block';
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // ============ MY RIDES ============
+  async function loadMyRides() {
+    if (!currentUser) return;
+    document.getElementById('myRidesSection').classList.add('visible');
+
+    const { data, error } = await sb
+      .from('bookings')
+      .select('*')
+      .eq('customer_id', currentUser.id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Load rides error:', error);
+      document.getElementById('ridesList').innerHTML =
+        `<div style="text-align:center;color:var(--grey-6);padding:20px;">Couldn't load rides yet.</div>`;
+      return;
+    }
+
+    renderRides(data || []);
+
+    // Real-time subscription so status updates appear live
+    if (ridesSubscription) sb.removeChannel(ridesSubscription);
+    ridesSubscription = sb
+      .channel('my-bookings-' + currentUser.id)
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'bookings', filter: `customer_id=eq.${currentUser.id}` },
+        () => loadMyRides()
+      )
+      .subscribe();
+  }
+
+  function renderRides(rides) {
+    const list = document.getElementById('ridesList');
+    if (!rides.length) {
+      list.innerHTML = `
+        <div style="text-align:center;color:var(--grey-6);padding:30px;background:white;border-radius:12px;">
+          <div style="font-size:48px;margin-bottom:10px;">🚗</div>
+          <div style="font-weight:600;color:var(--black);">No rides yet</div>
+          <div style="font-size:14px;margin-top:4px;">Request your first ride below!</div>
+        </div>`;
+      return;
+    }
+
+    list.innerHTML = rides.map(r => {
+      const status = r.status || 'pending';
+      const statusLabel = {
+        pending: 'Pending review',
+        admin_confirmed: 'Confirmed — finding driver',
+        driver_assigned: 'Driver assigned ✓',
+        completed: 'Completed',
+        cancelled: 'Cancelled'
+      }[status] || status;
+
+      let driverBox = '';
+      if (status === 'driver_assigned' && (r.driver_name || r.driver_phone || r.driver_vehicle)) {
+        driverBox = `
+          <div class="driver-box">
+            <h4>🚖 Your driver</h4>
+            ${r.driver_name ? `<div class="driver-line"><strong>Name:</strong> ${escapeHtml(r.driver_name)}</div>` : ''}
+            ${r.driver_phone ? `<div class="driver-line"><strong>Phone:</strong> <a href="tel:${escapeHtml(r.driver_phone)}" style="color:#065f46;text-decoration:underline;">${escapeHtml(r.driver_phone)}</a></div>` : ''}
+            ${r.driver_vehicle ? `<div class="driver-line"><strong>Vehicle:</strong> ${escapeHtml(r.driver_vehicle)}</div>` : ''}
+          </div>`;
+      }
+
+      let paymentBox = '';
+      if (status === 'admin_confirmed') {
+        paymentBox = `<div class="payment-notice">💳 Your ride is confirmed. Payment will be collected here once we add the payment step (coming soon).</div>`;
+      }
+
+      const when = r.pickup_datetime ? new Date(r.pickup_datetime).toLocaleString() : '—';
+
+      return `
+        <div class="ride-card">
+          <div class="ride-card-top">
+            <div class="ride-route">${escapeHtml(r.pickup_address || '')} <span class="arrow">→</span> ${escapeHtml(r.dropoff_address || '')}</div>
+            <span class="status-badge status-${status}">${statusLabel}</span>
+          </div>
+          <div class="ride-meta">
+            <div><strong>When</strong>${when}</div>
+            <div><strong>Vehicle</strong>${escapeHtml(r.vehicle_type || '—')}</div>
+            <div><strong>Distance</strong>${r.distance_miles ? r.distance_miles + ' mi' : '—'}</div>
+            <div><strong>Price</strong>$${r.price_usd || '—'}</div>
+          </div>
+          ${driverBox}
+          ${paymentBox}
+        </div>`;
+    }).join('');
+  }
 
   // ============ MODAL CONTENT ============
   const modals = {
@@ -640,102 +1045,63 @@
       title: 'FAQ',
       body: `
         <h3>What is Wayppoint?</h3>
-        <p>Wayppoint is a worldwide online marketplace connecting passengers and drivers for private transfers. Registered users can submit requests for transfers and delivery services, and receive offers directly from transportation service providers. These offers include actual photos of the vehicle, vehicle rating, and completed rides — all available before the user makes a payment.</p>
-
+        <p>Wayppoint is a worldwide online marketplace connecting passengers and drivers for private transfers. Registered users can submit requests for transfers and delivery services, and receive offers directly from transportation service providers.</p>
         <div class="disclaimer"><strong>DISCLAIMER:</strong> Wayppoint functions as a booking platform that facilitates connections between clients and independent transport service providers. Wayppoint serves solely as an intermediary, responsible only for facilitating the booking process.</div>
-
         <h3>How to order a ride?</h3>
         <ol>
-          <li>Choose your pick-up and destination points. For per-hour rides please specify start and end time.</li>
-          <li>Choose transport type, number of passengers, and add extra information if needed (child seats, luggage comments).</li>
-          <li>Specify your contact details to receive new offers from carriers.</li>
-          <li>When your ride request is placed, you will receive carrier offers with prices and vehicle info.</li>
+          <li>Sign up with your name, email, and phone (takes 30 seconds).</li>
+          <li>Choose your pick-up and destination points.</li>
+          <li>Choose transport type, number of passengers, and add extra information if needed.</li>
+          <li>Submit your request — admin will confirm, then a driver is assigned.</li>
+          <li>You'll see your driver's name, phone, and vehicle in "My Rides".</li>
         </ol>
-
-        <h3>Frequently asked questions</h3>
-        <div class="faq-item"><div class="faq-q">What is a per-hour car rental?</div><div class="faq-a">You can rent a chauffeured car on an hourly basis. A favourable option for business trips, sightseeing tours, or travel along your own route. Choose start and end date/time and provide trip details in the Comment field. For best pricing, include stops along the route, locations, time, and vehicle preferences.</div></div>
-        <div class="faq-item"><div class="faq-q">How to order a delivery service?</div><div class="faq-a">Specify delivery date, pick-up and destination points, dimensions and contents (for example, 10 kg suitcase, bouquet of flowers). Then choose an offer and specify details for your driver if necessary.</div></div>
-        <div class="faq-item"><div class="faq-q">How to order a ride as soon as possible?</div><div class="faq-a">You can order a ride immediately or ASAP. To help you choose the nearest driver, you can check the time left until the driver's arrival.</div></div>
-        <div class="faq-item"><div class="faq-q">What is included in the price?</div><div class="faq-a">Drivers offer their own prices. The price includes free waiting time (60 minutes at airports, sea or river port terminals; 30 minutes at railway stations; 15 minutes elsewhere), gasoline, and road tolls if any.</div></div>
-        <div class="faq-item"><div class="faq-q">What if the driver hasn't arrived?</div><div class="faq-a">First, try to contact your driver. Driver contact details are in the ride details in your personal account. If you can't reach the driver via phone or chat, please report this to the support team.</div></div>
-        <div class="faq-item"><div class="faq-q">Can I trust Wayppoint drivers?</div><div class="faq-a">Customers evaluate driver performance. We analyze user feedback and continue collaboration only if the contractor has a flawless record. Carrier offers also contain ratings so our customers can always choose the best.</div></div>
-        <div class="faq-item"><div class="faq-q">What if my flight is delayed?</div><div class="faq-a">Free waiting time at the airport is 60 minutes. If the delay is more than an hour, please contact our support team.</div></div>
-        <div class="faq-item"><div class="faq-q">How to ensure my luggage will fit?</div><div class="faq-a">Specify your luggage dimensions and number of pieces in the Comment field. For example, "2 ski bags 180 cm long and two suitcases." Drivers will see your requirements and you'll receive offers from drivers with appropriate vehicles. If you still hesitate, contact support.</div></div>
       `
     },
     privacy: {
       title: 'Privacy Policy',
-      body: `
-        <h3>1. General Provisions</h3>
-        <p>This Privacy Policy describes the procedure implemented by Wayppoint and its affiliates to collect and use personal data in relation to the use of the service for search of private passenger automobile transportation services. This Policy covers all persons providing information in connection with the use of the Service, including passengers, carriers, drivers, and other users.</p>
-        <p>Wayppoint reserves the right to make amendments to this Policy at any time. The new version comes into effect upon posting on the site. Continuing to use the Service confirms consent to the terms of the current Policy.</p>
-
-        <h3>2. Collection of Information</h3>
-        <p>When transfers are ordered through the Service, the information collected may include: name, email, telephone, social media details, login and password, current and previous personal account settings, device information and cookie files, addresses and current location, information on submitted transfer requests, loyalty card details, records of communication with support, and reviews/comments.</p>
-        <p>Wayppoint does not get access to or process payment information of users (bank cards, bank accounts) when booking transfers.</p>
-
-        <h3>3. Information Use and Transfer</h3>
-        <p>Wayppoint uses the provided information for communication with users, verifying personal account data, ensuring completion and payment of transfers, and for sending marketing messages. Information may be transferred to suppliers, consultants, marketing partners, research entities, payment processors, cloud storage providers, and affiliates — always in compliance with the Privacy Policy and applicable confidentiality regulations.</p>
-
-        <h3>4. Storage and Erasure</h3>
-        <p>Wayppoint keeps information in the user's personal account until it is deleted by the user or upon user request. To comply with legal, fiscal, and insurance requirements, information may be retained for 7 (seven) years after personal account deletion, after which it is deleted or anonymized.</p>
-
-        <h3>5. Access and Change of Information</h3>
-        <p>Users may change name, telephone number, and email in the personal account. Requests for receipt of user information, change of unreliable data, deletion of account, and refusal to receive marketing may be sent to <a href="mailto:info@wayppoint.com" style="color:var(--primary);">info@wayppoint.com</a>.</p>
-
-        <h3>6. Cookies</h3>
-        <p>The website uses cookies to deliver services conveniently. By using the website, the user agrees to placement of cookies. Cookies include: <strong>Performance cookies</strong> (collect anonymous usage info), <strong>Functionality cookies</strong> (remember user choices), and <strong>Advertising cookies</strong> (record user actions to deliver targeted content). Users can disable cookies in their browser settings.</p>
-
-        <h3>7. Applicable Law and Global Operating</h3>
-        <p>As the Service operates globally, personal data may be processed by Wayppoint, its partners, and service providers based in Europe, Asia Pacific, and the Americas under local legislation, which may differ from the user's country of residence. For users in the EEA, UK, and USA, applicable data protection laws (GDPR, DPA 2018, CCPA, etc.) govern processing.</p>
-
-        <div class="disclaimer">For any privacy-related questions, contact <a href="mailto:info@wayppoint.com" style="color:var(--primary);">info@wayppoint.com</a></div>
-      `
+      body: `<h3>1. General Provisions</h3><p>This Privacy Policy describes the procedure implemented by Wayppoint to collect and use personal data in relation to the use of the booking service. For privacy-related questions, contact <a href="mailto:info@wayppoint.com" style="color:var(--primary);">info@wayppoint.com</a></p>`
     },
     terms: {
       title: 'Terms of Use',
-      body: `<h3>Wayppoint Service Agreement</h3><p>By using Wayppoint, you agree to these terms. Wayppoint is an online marketplace connecting passengers with independent transport providers. We facilitate bookings but do not provide transport services directly.</p><p>Users must be 18+ to register. You agree to provide accurate information, pay agreed fares, and treat drivers respectfully. Drivers agree to comply with local regulations, maintain vehicle safety standards, and complete agreed transfers professionally.</p><p>Full terms available on request. For questions, contact <a href="mailto:info@wayppoint.com" style="color:var(--primary);">info@wayppoint.com</a></p>`
+      body: `<h3>Wayppoint Service Agreement</h3><p>By using Wayppoint, you agree to these terms. Wayppoint is an online marketplace connecting passengers with independent transport providers. We facilitate bookings but do not provide transport services directly.</p><p>Users must be 18+ to register. You agree to provide accurate information, pay agreed fares, and treat drivers respectfully.</p><p>For questions, contact <a href="mailto:info@wayppoint.com" style="color:var(--primary);">info@wayppoint.com</a></p>`
     },
     partnership: {
       title: 'Partnership Agreement',
-      body: `<h3>Wayppoint Partnership Agreement</h3><p>For carriers, agents, and business partners. By partnering with Wayppoint, you agree to maintain professional standards, accurate vehicle information, and timely service delivery. Wayppoint charges a service fee on completed bookings as outlined in your partnership tier.</p><p>To become a partner, contact <a href="mailto:partner@wayppoint.com" style="color:var(--primary);">partner@wayppoint.com</a></p>`
+      body: `<h3>Wayppoint Partnership Agreement</h3><p>For carriers, agents, and business partners. To become a partner, contact <a href="mailto:partner@wayppoint.com" style="color:var(--primary);">partner@wayppoint.com</a></p>`
     },
     airport: {
       title: 'Airport Transfer',
-      body: `<h3>Airport Transfers Made Easy</h3><p>Book a private airport transfer in 180+ countries. Fixed prices, professional drivers, 60 minutes free waiting time at airports.</p><ul><li>✓ Meet & greet at arrivals with name sign</li><li>✓ Flight tracking — driver knows if you're delayed</li><li>✓ Free cancellation</li><li>✓ Premium vehicles at economy prices</li></ul><button class="submit-btn" onclick="closeModal(); document.getElementById('from').focus();" style="margin-top:16px;">Book airport transfer →</button>`
+      body: `<h3>Airport Transfers Made Easy</h3><p>Book a private airport transfer. Fixed prices, professional drivers, 60 minutes free waiting time.</p><button class="submit-btn" onclick="closeModal(); document.getElementById('from').focus();" style="margin-top:16px;">Book airport transfer →</button>`
     },
     vip: {
       title: 'VIP Transfer',
-      body: `<h3>VIP & Premium Transfers</h3><p>Travel in style with our VIP fleet — luxury sedans, executive SUVs, and limousines with top-rated chauffeurs.</p><ul><li>✓ Mercedes S-Class, BMW 7 Series, Audi A8</li><li>✓ Professional uniformed chauffeurs</li><li>✓ Bottled water, WiFi, phone chargers</li><li>✓ Discreet, punctual service</li></ul><button class="submit-btn" onclick="closeModal(); selectVehicle('VIP');" style="margin-top:16px;">Book VIP transfer →</button>`
+      body: `<h3>VIP & Premium Transfers</h3><p>Travel in style with our VIP fleet — luxury sedans and executive SUVs with top-rated chauffeurs.</p>`
     },
     busrental: {
       title: 'Bus Rental',
-      body: `<h3>Bus & Minibus Rental</h3><p>For groups, tours, weddings, and corporate events. Minibuses (8–16 passengers) and full coaches (up to 50+).</p><ul><li>✓ Modern fleet with AC, WiFi, and luggage space</li><li>✓ Experienced drivers for any route</li><li>✓ Hourly or per-route pricing</li><li>✓ Multi-day tours available</li></ul><button class="submit-btn" onclick="closeModal(); selectVehicle('Bus');" style="margin-top:16px;">Book bus →</button>`
+      body: `<h3>Bus & Minibus Rental</h3><p>For groups, tours, weddings, and corporate events.</p>`
     },
     destinations: {
       title: 'Our Destinations',
-      body: `<h3>180+ Countries Worldwide</h3><p>Wayppoint operates in every major travel destination. Popular spots:</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;"><div>🇺🇸 United States</div><div>🇬🇧 United Kingdom</div><div>🇫🇷 France</div><div>🇮🇹 Italy</div><div>🇪🇸 Spain</div><div>🇩🇪 Germany</div><div>🇦🇪 UAE (Dubai)</div><div>🇯🇵 Japan</div><div>🇹🇭 Thailand</div><div>🇮🇩 Indonesia (Bali)</div><div>🇹🇷 Turkey</div><div>🇲🇽 Mexico</div><div>🇨🇦 Canada</div><div>🇦🇺 Australia</div><div>🇿🇦 South Africa</div><div>🇧🇷 Brazil</div></div><p style="margin-top:16px;">…and many more. Type your destination in the search box to check availability.</p>`
+      body: `<h3>180+ Countries Worldwide</h3><p>Wayppoint operates in every major travel destination.</p>`
     },
     blog: {
       title: 'Blog',
-      body: `<h3>Travel tips, driver stories, and updates</h3><div style="border:1px solid var(--grey-2);border-radius:10px;padding:16px;margin-bottom:12px;"><h4 style="margin-bottom:6px;">10 best airport transfer tips for first-time travelers</h4><p style="font-size:13px;color:var(--grey-6);">Save money, avoid stress, and arrive on time — our complete guide.</p></div><div style="border:1px solid var(--grey-2);border-radius:10px;padding:16px;margin-bottom:12px;"><h4 style="margin-bottom:6px;">How drivers can grow their business with Wayppoint</h4><p style="font-size:13px;color:var(--grey-6);">Real stories from drivers earning 2–3× more after joining our marketplace.</p></div><div style="border:1px solid var(--grey-2);border-radius:10px;padding:16px;"><h4 style="margin-bottom:6px;">The best destinations for corporate travel in 2026</h4><p style="font-size:13px;color:var(--grey-6);">Business-friendly cities, top hotels, and reliable transfer routes.</p></div>`
-    },
-    login: {
-      title: 'Log in or Sign up',
-      body: `<button class="modal-btn">📧 Continue with Email</button><button class="modal-btn">🔵 Continue with Google</button><button class="modal-btn">📘 Continue with Facebook</button><button class="modal-btn"> Continue with Apple</button><p style="text-align:center;color:var(--grey-6);font-size:13px;margin-top:16px;">By continuing you agree to our Terms and Privacy Policy</p>`
-    },
-    booked: {
-      title: 'Searching for offers...',
-      body: `<div style="text-align:center;padding:20px;"><div style="font-size:64px;margin-bottom:16px;">🔍</div><h3>We're finding the best offers for you!</h3><p style="margin:16px 0;">Drivers will send personalized offers with prices and vehicle photos within minutes. You'll receive notifications by email and in your account.</p><p style="background:#dbeafe;color:var(--primary);padding:12px;border-radius:8px;font-weight:500;">💡 Tip: Sign up to track all your offers in one place</p><button class="submit-btn" onclick="closeModal()" style="margin-top:16px;width:100%;">Got it</button></div>`
+      body: `<h3>Travel tips, driver stories, and updates</h3><div style="border:1px solid var(--grey-2);border-radius:10px;padding:16px;margin-bottom:12px;"><h4 style="margin-bottom:6px;">10 best airport transfer tips</h4><p style="font-size:13px;color:var(--grey-6);">Save money, avoid stress, and arrive on time.</p></div>`
     },
     comingSoon: {
       title: 'Coming Soon',
-      body: `<div style="text-align:center;padding:30px 20px;"><div style="font-size:64px;margin-bottom:16px;">🚧</div><h3>This feature is coming soon!</h3><p style="margin-top:12px;">We're working hard to bring this to you. Stay tuned!</p><button class="submit-btn" onclick="closeModal()" style="margin-top:20px;">Got it</button></div>`
+      body: `<div style="text-align:center;padding:30px 20px;"><div style="font-size:64px;margin-bottom:16px;">🚧</div><h3>This feature is coming soon!</h3><p style="margin-top:12px;">We're working hard to bring this to you.</p><button class="submit-btn" onclick="closeModal()" style="margin-top:20px;">Got it</button></div>`
     }
   };
 
   function openModal(key) {
-    const m = modals[key];
+    let m;
+    if (key === 'auth') {
+      m = buildAuthModal();
+    } else {
+      m = modals[key];
+    }
     if (!m) return;
     document.getElementById('modalTitle').textContent = m.title;
     document.getElementById('modalBody').innerHTML = m.body;
@@ -771,8 +1137,8 @@
   // ============ EMAILJS CONFIG ============
   emailjs.init({ publicKey: 'kYiPgLtyuWFpFbpo4' });
   const EMAILJS_SERVICE = 'waypoint001';
-  const EMAILJS_TEMPLATE_CUSTOMER = 'template_uyz5w3f';  // warm email to customer
-  const EMAILJS_TEMPLATE_OWNER = 'template_l3re80m';     // booking details to you
+  const EMAILJS_TEMPLATE_CUSTOMER = 'template_uyz5w3f';
+  const EMAILJS_TEMPLATE_OWNER = 'template_l3re80m';
 
   // ============ Photon Autocomplete + coordinate capture ============
   const coords = { from: null, to: null };
@@ -786,7 +1152,7 @@
     input.parentElement.appendChild(list);
     let timeout;
     input.addEventListener('input', () => {
-      coords[inputId] = null; // reset when typing
+      coords[inputId] = null;
       clearTimeout(timeout);
       const q = input.value.trim();
       if (q.length < 3) { list.style.display = 'none'; return; }
@@ -825,9 +1191,9 @@
   setupAutocomplete('from');
   setupAutocomplete('to');
 
-  // ============ Distance calculation (Haversine, free, no API) ============
+  // ============ Distance calc (Haversine fallback) ============
   function calculateDistanceMiles(lat1, lon1, lat2, lon2) {
-    const R = 3958.8; // miles
+    const R = 3958.8;
     const toRad = d => d * Math.PI / 180;
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
@@ -862,6 +1228,13 @@
   }
 
   async function startBookingFlow() {
+    // ============ GATE: must be logged in ============
+    if (!currentUser) {
+      alert('Please sign up or log in first to request a ride. It only takes 30 seconds!');
+      openModal('auth');
+      return;
+    }
+
     const tripType = document.querySelector('.type-toggle button.active').dataset.type;
     const fromInput = document.getElementById('from').value.trim();
     const toInput = document.getElementById('to').value.trim();
@@ -921,7 +1294,6 @@
 
   async function initRouteMap() {
     const { from, to } = bookingState;
-
     if (routeMap) { routeMap.remove(); routeMap = null; }
     routeMap = L.map('routeMap').setView([from.lat, from.lon], 11);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -937,14 +1309,12 @@
       const data = await res.json();
       if (data.routes && data.routes[0]) {
         const route = data.routes[0];
-        const coords = route.geometry.coordinates.map(c => [c[1], c[0]]);
+        const coordsLine = route.geometry.coordinates.map(c => [c[1], c[0]]);
         if (routeLayer) routeMap.removeLayer(routeLayer);
-        routeLayer = L.polyline(coords, { color: '#2563eb', weight: 5, opacity: 0.85 }).addTo(routeMap);
+        routeLayer = L.polyline(coordsLine, { color: '#2563eb', weight: 5, opacity: 0.85 }).addTo(routeMap);
         routeMap.fitBounds(routeLayer.getBounds(), { padding: [40, 40] });
-
         bookingState.distance = route.distance / 1609.34;
         bookingState.duration = Math.round(route.duration / 60);
-
         document.getElementById('mapInfo').style.display = 'block';
         document.getElementById('mapDistance').textContent = bookingState.distance.toFixed(1) + ' mi';
         document.getElementById('mapDuration').textContent = '~' + bookingState.duration + ' min';
@@ -957,7 +1327,6 @@
       const line = L.polyline([[from.lat, from.lon],[to.lat, to.lon]], { color: '#2563eb', weight: 4, dashArray: '8,8' }).addTo(routeMap);
       routeMap.fitBounds(line.getBounds(), { padding: [40, 40] });
     }
-
     renderVehicles();
   }
 
@@ -965,7 +1334,6 @@
     const d = bookingState.distance;
     const isHourly = bookingState.tripType === 'hourly';
     const standardPrice = isHourly ? 75 : (d <= 5 ? 30 : Math.round(30 + (d - 5) * 3));
-
     const vehicles = [
       { id: 'standard', name: 'Standard', icon: '🚗', cap: 'Up to 4 passengers · 3 bags', price: standardPrice, label: isHourly ? 'per hour est.' : 'total', available: true },
       { id: 'comfort', name: 'Comfort', icon: '🚙', cap: 'Up to 4 passengers · 4 bags', price: null, label: 'Coming soon', available: false },
@@ -973,7 +1341,6 @@
       { id: 'suv', name: 'SUV', icon: '🚙', cap: 'Up to 6 passengers · 5 bags', price: null, label: 'Coming soon', available: false },
       { id: 'van', name: 'Van', icon: '🚐', cap: 'Up to 8 passengers · 8 bags', price: null, label: 'Coming soon', available: false }
     ];
-
     const list = document.getElementById('vehicleList');
     list.innerHTML = '';
     vehicles.forEach(v => {
@@ -989,9 +1356,7 @@
           ${v.price !== null ? `<div class="v-price-num">$${v.price}</div><div class="v-price-label">${v.label}</div>` : `<div class="v-price-label">${v.label}</div>`}
         </div>
       `;
-      if (v.available) {
-        card.onclick = () => selectVehicleCard(v, card);
-      }
+      if (v.available) card.onclick = () => selectVehicleCard(v, card);
       list.appendChild(card);
     });
   }
@@ -1007,11 +1372,21 @@
     document.getElementById('step2').style.display = 'none';
     document.getElementById('step3').style.display = 'block';
     document.getElementById('flowProgress').textContent = 'Step 3 of 3 — Your details';
+
+    // Pre-fill contact info from logged-in user
+    if (currentUser) {
+      const fullName = (currentUser.first_name + ' ' + currentUser.last_name).trim();
+      document.getElementById('name').value = fullName;
+      document.getElementById('phone').value = currentUser.phone || '';
+      document.getElementById('email').value = currentUser.email || '';
+      document.getElementById('loggedInBanner').style.display = 'block';
+      document.getElementById('loggedInName').textContent = fullName;
+    }
   }
 
   function changeCount(field, delta) {
     const min = field === 'adults' ? 1 : 0;
-    const max = field === 'adults' ? 8 : 8;
+    const max = 8;
     bookingState.counts[field] = Math.max(min, Math.min(max, bookingState.counts[field] + delta));
     document.getElementById(field + 'Count').textContent = bookingState.counts[field];
   }
@@ -1025,6 +1400,13 @@
 
   // ============ Final booking submission ============
   async function submitBooking() {
+    if (!currentUser) {
+      alert('Please log in first.');
+      closeBookingFlow();
+      openModal('auth');
+      return;
+    }
+
     const name = document.getElementById('name').value.trim();
     const phone = document.getElementById('phone').value.trim();
     const email = document.getElementById('email').value.trim();
@@ -1044,8 +1426,8 @@
     const promoText = promo ? '\nPromo code: ' + promo : '';
     const fullComment = (comment ? comment + '\n' : '') + `Adults: ${bookingState.counts.adults}, Children: ${bookingState.counts.children}, Luggage: ${bookingState.counts.luggage}` + extraText + promoText;
 
-    // ============ 1. SAVE TO SUPABASE (the database) ============
     const bookingRecord = {
+      customer_id: currentUser.id,
       passenger_name: name,
       passenger_phone: phone,
       passenger_email: email,
@@ -1068,15 +1450,11 @@
 
     try {
       const { error: dbError } = await sb.from('bookings').insert([bookingRecord]);
-      if (dbError) {
-        console.error('Supabase save failed:', dbError);
-        // Continue anyway — don't block the customer
-      }
+      if (dbError) console.error('Supabase save failed:', dbError);
     } catch (e) {
       console.error('Database error:', e);
     }
 
-    // ============ 2. SEND EMAILS via EmailJS ============
     const params = {
       passenger_name: name,
       passenger_phone: phone,
@@ -1097,53 +1475,61 @@
         emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE_CUSTOMER, params),
         emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE_OWNER, params)
       ]);
-
-      closeBookingFlow();
-
-      modals.bookingConfirmed = {
-        title: 'Booking Received ✓',
-        body: `
-          <div style="text-align:center;padding:10px;">
-            <div style="font-size:72px;margin-bottom:12px;">✅</div>
-            <h3 style="color:var(--positive);font-size:22px;">Thank you, ${name}!</h3>
-            <p style="margin:14px 0;font-size:16px;">We have <strong>booked your ride</strong>. Please allow a little time for confirmation — you'll receive it shortly by <strong>phone</strong> or <strong>email</strong>.</p>
-            <div style="background:#dbeafe;border-radius:12px;padding:20px;margin:20px 0;text-align:left;">
-              <div style="color:var(--grey-6);font-size:13px;margin-bottom:4px;">ESTIMATED PRICE</div>
-              <div style="font-size:32px;font-weight:800;color:var(--primary);">$${bookingState.selectedVehicle.price}</div>
-              <div style="color:var(--grey-6);font-size:13px;margin-top:6px;">${bookingState.selectedVehicle.name} · ${bookingState.distance.toFixed(1)} mi · ~${bookingState.duration} min</div>
-            </div>
-            <div style="background:var(--grey-1);border-radius:12px;padding:16px;text-align:left;font-size:14px;">
-              <div style="margin-bottom:6px;"><strong>From:</strong> ${bookingState.fromText}</div>
-              <div style="margin-bottom:6px;"><strong>To:</strong> ${bookingState.toText}</div>
-              <div style="margin-bottom:6px;"><strong>When:</strong> ${new Date(bookingState.datetime).toLocaleString()}</div>
-              <div><strong>Passengers:</strong> ${totalPassengers}</div>
-            </div>
-            <button class="submit-btn" onclick="closeModal();location.reload();" style="margin-top:20px;width:100%;">Got it</button>
-          </div>
-        `
-      };
-      openModal('bookingConfirmed');
     } catch (err) {
-      // Even if emails fail, booking is already in database — still show success
-      closeBookingFlow();
-      modals.bookingConfirmed = {
-        title: 'Booking Received ✓',
-        body: `
-          <div style="text-align:center;padding:10px;">
-            <div style="font-size:72px;margin-bottom:12px;">✅</div>
-            <h3 style="color:var(--positive);font-size:22px;">Thank you, ${name}!</h3>
-            <p style="margin:14px 0;">Your booking has been received. We'll contact you shortly by phone or email to confirm.</p>
-            <button class="submit-btn" onclick="closeModal();location.reload();" style="margin-top:20px;width:100%;">Got it</button>
-          </div>
-        `
-      };
-      openModal('bookingConfirmed');
       console.error('Email error:', err);
     }
 
+    closeBookingFlow();
+
+    modals.bookingConfirmed = {
+      title: 'Booking Received ✓',
+      body: `
+        <div style="text-align:center;padding:10px;">
+          <div style="font-size:72px;margin-bottom:12px;">✅</div>
+          <h3 style="color:var(--positive);font-size:22px;">Thank you, ${escapeHtml(name)}!</h3>
+          <p style="margin:14px 0;font-size:16px;">Your ride request has been received. We'll review it shortly and confirm — you'll see live updates in <strong>My Rides</strong> above.</p>
+          <div style="background:#dbeafe;border-radius:12px;padding:20px;margin:20px 0;text-align:left;">
+            <div style="color:var(--grey-6);font-size:13px;margin-bottom:4px;">ESTIMATED PRICE</div>
+            <div style="font-size:32px;font-weight:800;color:var(--primary);">$${bookingState.selectedVehicle.price}</div>
+            <div style="color:var(--grey-6);font-size:13px;margin-top:6px;">${bookingState.selectedVehicle.name} · ${bookingState.distance.toFixed(1)} mi · ~${bookingState.duration} min</div>
+          </div>
+          <div style="background:#fef3c7;border-left:3px solid var(--yellow);padding:12px;border-radius:6px;text-align:left;font-size:13px;color:#78350f;">
+            💳 You won't be charged yet. Payment will be added in a future step after admin confirms your ride.
+          </div>
+          <button class="submit-btn" onclick="closeModal();" style="margin-top:20px;width:100%;">View my rides</button>
+        </div>
+      `
+    };
+    openModal('bookingConfirmed');
+
+    // Refresh rides list
+    loadMyRides();
+
     btn.disabled = false;
-    btn.textContent = 'Get offers →';
+    btn.textContent = 'Request my ride →';
   }
+
+  // ============ INIT: check existing session on page load ============
+  (async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session && session.user) {
+      await loadUserProfile(session.user);
+      updateUIForUser();
+      loadMyRides();
+    }
+
+    // Listen for auth state changes (e.g. email confirmation completing)
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        await loadUserProfile(session.user);
+        updateUIForUser();
+        loadMyRides();
+      } else if (event === 'SIGNED_OUT') {
+        currentUser = null;
+        updateUIForUser();
+      }
+    });
+  })();
 </script>
 
 </body>

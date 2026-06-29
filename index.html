@@ -114,6 +114,59 @@
   .driver-box .driver-line strong { color: #065f46; }
   .payment-notice { background: #fef3c7; border-left: 3px solid var(--yellow); padding: 12px; border-radius: 6px; margin-top: 12px; font-size: 13px; color: #78350f; }
 
+  /* FLOATING ACTIVE RIDE PILL (shopping-cart style) */
+  .active-ride-pill {
+    position: fixed; bottom: 20px; right: 20px; z-index: 950;
+    background: var(--white); border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.18);
+    padding: 14px 18px; display: none; align-items: center; gap: 12px;
+    cursor: pointer; max-width: 340px;
+    border: 2px solid var(--primary);
+    transition: transform 0.2s;
+    animation: slideInRight 0.4s ease-out;
+  }
+  @keyframes slideInRight { from { transform: translateX(120%); } to { transform: translateX(0); } }
+  .active-ride-pill:hover { transform: translateY(-3px); }
+  .active-ride-pill.visible { display: flex; }
+  .active-ride-pill .pill-icon { font-size: 32px; flex-shrink: 0; }
+  .active-ride-pill .pill-body { flex: 1; min-width: 0; }
+  .active-ride-pill .pill-status { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--primary); letter-spacing: 0.5px; }
+  .active-ride-pill .pill-title { font-size: 14px; font-weight: 600; margin-top: 2px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .active-ride-pill .pill-cta { font-size: 12px; color: var(--grey-6); margin-top: 2px; }
+  .active-ride-pill.pulse { animation: pulse-glow 2s infinite, slideInRight 0.4s ease-out; }
+  @keyframes pulse-glow { 0%,100% { box-shadow: 0 10px 40px rgba(37,99,235,0.4); } 50% { box-shadow: 0 10px 40px rgba(37,99,235,0.7); } }
+
+  /* CELEBRATION POPUP */
+  .celebrate-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 5000;
+    display: none; align-items: center; justify-content: center; padding: 20px;
+    animation: fadeIn 0.3s;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .celebrate-overlay.active { display: flex; }
+  .celebrate-modal {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    border-radius: 24px; max-width: 480px; width: 100%; padding: 36px 28px;
+    text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative; overflow: hidden;
+  }
+  @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .celebrate-emoji { font-size: 80px; margin-bottom: 12px; display: block; animation: bounce 1.2s infinite; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  .celebrate-title { font-size: 28px; font-weight: 800; color: #065f46; margin-bottom: 8px; }
+  .celebrate-sub { font-size: 16px; color: #047857; margin-bottom: 22px; }
+  .celebrate-card { background: white; border-radius: 14px; padding: 18px; text-align: left; margin-bottom: 18px; }
+  .celebrate-card .row { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; }
+  .celebrate-card .row .label { color: var(--grey-6); min-width: 80px; }
+  .celebrate-card .row .val { color: var(--black); font-weight: 600; }
+  .celebrate-card .row a { color: var(--primary); text-decoration: underline; }
+  .celebrate-price { background: var(--primary); color: white; border-radius: 12px; padding: 14px; margin-bottom: 18px; }
+  .celebrate-price .price-label { font-size: 12px; opacity: 0.85; text-transform: uppercase; }
+  .celebrate-price .price-num { font-size: 36px; font-weight: 800; line-height: 1; margin-top: 4px; }
+  .celebrate-btn { background: var(--positive); color: white; border: none; padding: 14px 32px; font-size: 16px; font-weight: 700; border-radius: 12px; cursor: pointer; width: 100%; transition: background 0.2s; }
+  .celebrate-btn:hover { background: #059669; }
+
   .reviews-scroll { display: flex; gap: 16px; overflow-x: auto; padding: 8px 16px; scrollbar-width: none; scroll-snap-type: x mandatory; }
   .reviews-scroll::-webkit-scrollbar { display: none; }
   .review { flex: 0 0 340px; background: var(--white); border: 1px solid var(--grey-2); border-radius: 16px; padding: 24px; scroll-snap-align: start; transition: box-shadow 0.2s, transform 0.2s; }
@@ -604,6 +657,31 @@
 </div>
 
 
+<!-- FLOATING ACTIVE RIDE PILL (shopping-cart style) -->
+<div class="active-ride-pill" id="activeRidePill" onclick="scrollToMyRides()">
+  <div class="pill-icon" id="pillIcon">🛒</div>
+  <div class="pill-body">
+    <div class="pill-status" id="pillStatus">Active ride</div>
+    <div class="pill-title" id="pillTitle">—</div>
+    <div class="pill-cta">Tap to view details</div>
+  </div>
+</div>
+
+<!-- CELEBRATION POPUP for driver-assigned -->
+<div class="celebrate-overlay" id="celebrateOverlay" onclick="if(event.target===this) closeCelebrate()">
+  <div class="celebrate-modal">
+    <span class="celebrate-emoji">🎉</span>
+    <div class="celebrate-title">Your ride is confirmed!</div>
+    <div class="celebrate-sub" id="celebrateSub">A driver has been assigned to you</div>
+    <div class="celebrate-price">
+      <div class="price-label">Final price</div>
+      <div class="price-num" id="celebratePrice">$0</div>
+    </div>
+    <div class="celebrate-card" id="celebrateCard"></div>
+    <button class="celebrate-btn" onclick="closeCelebrate()">View my ride</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this) closeModal()">
   <div class="modal">
     <div class="modal-header">
@@ -624,6 +702,65 @@
   // ============ CURRENT USER STATE ============
   let currentUser = null;          // { id, email, first_name, last_name, phone }
   let ridesSubscription = null;
+  let lastSeenStatusByRide = {};   // booking_id -> previous status (for detecting transitions)
+
+  function scrollToMyRides() {
+    const section = document.getElementById('myRidesSection');
+    if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function closeCelebrate() {
+    document.getElementById('celebrateOverlay').classList.remove('active');
+  }
+
+  function escapeHtmlInline(s) {
+    return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function showCelebrate(ride) {
+    document.getElementById('celebratePrice').textContent = '$' + (ride.price_usd || '—');
+    document.getElementById('celebrateSub').textContent =
+      'Driver ' + (ride.driver_name || 'has been assigned') + ' will pick you up';
+    const card = document.getElementById('celebrateCard');
+    card.innerHTML = `
+      <div class="row"><span class="label">🚖 Driver:</span><span class="val">${escapeHtmlInline(ride.driver_name || '—')}</span></div>
+      <div class="row"><span class="label">📞 Phone:</span><span class="val"><a href="tel:${escapeHtmlInline(ride.driver_phone || '')}">${escapeHtmlInline(ride.driver_phone || '—')}</a></span></div>
+      <div class="row"><span class="label">🚗 Vehicle:</span><span class="val">${escapeHtmlInline(ride.driver_vehicle || '—')}</span></div>
+      <div class="row"><span class="label">📍 From:</span><span class="val">${escapeHtmlInline(ride.pickup_address || '')}</span></div>
+      <div class="row"><span class="label">🏁 To:</span><span class="val">${escapeHtmlInline(ride.dropoff_address || '')}</span></div>
+      <div class="row"><span class="label">🕐 When:</span><span class="val">${ride.pickup_datetime ? new Date(ride.pickup_datetime).toLocaleString() : '—'}</span></div>
+    `;
+    document.getElementById('celebrateOverlay').classList.add('active');
+  }
+
+  function updateActiveRidePill(rides) {
+    const pill = document.getElementById('activeRidePill');
+    if (!pill) return;
+    // Find the most recent active ride (not completed/cancelled)
+    const active = rides.find(r => !['completed','cancelled'].includes(r.status));
+    if (!active) { pill.classList.remove('visible', 'pulse'); return; }
+
+    const statusMap = {
+      pending: { icon: '🛒', label: 'Pending review', cta: 'Awaiting admin' },
+      admin_confirmed: { icon: '⏳', label: 'Finding driver', cta: 'Drivers are bidding' },
+      verified: { icon: '⏳', label: 'Finding driver', cta: 'Drivers are bidding' },
+      driver_assigned: { icon: '✅', label: 'Driver assigned!', cta: active.driver_name || 'See driver info' },
+      assigned: { icon: '✅', label: 'Driver assigned!', cta: active.driver_name || 'See driver info' },
+      en_route: { icon: '🚗', label: 'Driver on the way', cta: 'Coming to pickup' },
+      arrived_pickup: { icon: '📍', label: 'Driver arrived!', cta: 'At pickup location' },
+      in_progress: { icon: '✨', label: 'Ride in progress', cta: 'Enjoy the trip' }
+    };
+    const info = statusMap[active.status] || { icon: '🛒', label: 'Active ride', cta: 'See details' };
+    document.getElementById('pillIcon').textContent = info.icon;
+    document.getElementById('pillStatus').textContent = info.label;
+    document.getElementById('pillTitle').textContent = (active.pickup_address || '').split(',')[0] + ' → ' + (active.dropoff_address || '').split(',')[0];
+    document.getElementById('pillCta') ? document.getElementById('pillCta').textContent = info.cta : null;
+    pill.querySelector('.pill-cta').textContent = info.cta;
+    pill.classList.add('visible');
+    // Pulse on the new-driver moment
+    if (['driver_assigned','assigned','arrived_pickup'].includes(active.status)) pill.classList.add('pulse');
+    else pill.classList.remove('pulse');
+  }
 
   // ============ AUTH UI ============
   function buildAuthModal() {
@@ -912,6 +1049,21 @@
   }
 
   function renderRides(rides) {
+    // Detect status transitions for celebration popup
+    const driverAssignedNow = ['driver_assigned','assigned'];
+    rides.forEach(r => {
+      const prev = lastSeenStatusByRide[r.id];
+      const cur = r.status;
+      // If transitioning INTO driver_assigned/assigned (and we previously saw a different status), celebrate
+      if (prev && prev !== cur && driverAssignedNow.includes(cur) && !driverAssignedNow.includes(prev)) {
+        showCelebrate(r);
+      }
+      lastSeenStatusByRide[r.id] = cur;
+    });
+
+    // Update floating pill
+    updateActiveRidePill(rides);
+
     const list = document.getElementById('ridesList');
     if (!rides.length) {
       list.innerHTML = `

@@ -99,8 +99,11 @@
   .ride-route .arrow { color: var(--grey-4); margin: 0 6px; }
   .status-badge { padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap; }
   .status-pending { background: #fef3c7; color: #78350f; }
-  .status-admin_confirmed { background: #dbeafe; color: #1e40af; }
-  .status-driver_assigned { background: #d1fae5; color: #065f46; }
+  .status-admin_confirmed, .status-verified { background: #dbeafe; color: #1e40af; }
+  .status-driver_assigned, .status-assigned { background: #d1fae5; color: #065f46; }
+  .status-en_route { background: #dbeafe; color: #1e40af; }
+  .status-arrived_pickup { background: #e0e7ff; color: #4338ca; }
+  .status-in_progress { background: #d1fae5; color: #065f46; }
   .status-completed { background: #e0e7ff; color: #3730a3; }
   .status-cancelled { background: #fee2e2; color: #991b1b; }
   .ride-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; font-size: 13px; color: var(--grey-6); margin-bottom: 12px; }
@@ -925,13 +928,19 @@
       const statusLabel = {
         pending: 'Pending review',
         admin_confirmed: 'Confirmed — finding driver',
+        verified: 'Confirmed — finding driver',
         driver_assigned: 'Driver assigned ✓',
-        completed: 'Completed',
+        assigned: 'Driver assigned ✓',
+        en_route: 'Driver on the way 🚗',
+        arrived_pickup: 'Driver has arrived 📍',
+        in_progress: 'Ride in progress ✨',
+        completed: 'Completed ✓',
         cancelled: 'Cancelled'
       }[status] || status;
 
+      const driverAssignedStatuses = ['driver_assigned','assigned','en_route','arrived_pickup','in_progress','completed'];
       let driverBox = '';
-      if (status === 'driver_assigned' && (r.driver_name || r.driver_phone || r.driver_vehicle)) {
+      if (driverAssignedStatuses.includes(status) && (r.driver_name || r.driver_phone || r.driver_vehicle)) {
         driverBox = `
           <div class="driver-box">
             <h4>🚖 Your driver</h4>
@@ -942,7 +951,7 @@
       }
 
       let paymentBox = '';
-      if (status === 'admin_confirmed') {
+      if (status === 'admin_confirmed' || status === 'verified') {
         paymentBox = `<div class="payment-notice">💳 Your ride is confirmed. Payment will be collected here once we add the payment step (coming soon).</div>`;
       }
 

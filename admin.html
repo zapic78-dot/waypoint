@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wayppoint Admin Panel</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -320,6 +321,11 @@
   const SUPABASE_ANON_KEY = 'sb_publishable__zcqj4jF2PYdg3GQy3OntQ_wIUojHtF';
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // EmailJS for notifying customer when their ride is approved
+  emailjs.init({ publicKey: 'kYiPgLtyuWFpFbpo4' });
+  const EMAILJS_SERVICE = 'waypoint001';
+  const EMAILJS_TEMPLATE_CUSTOMER = 'template_uyz5w3f';
 
   let currentUser = null;
   let currentRole = null;
@@ -711,9 +717,34 @@
     }).eq('id', bookingId);
 
     if (error) return alert('Failed to assign: ' + error.message);
+
+    // Send email to customer with driver details + final price
+    try {
+      const booking = allBookings.find(x => x.id === bookingId);
+      if (booking && booking.passenger_email) {
+        await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE_CUSTOMER, {
+          passenger_name: booking.passenger_name || 'Customer',
+          passenger_email: booking.passenger_email,
+          passenger_phone: booking.passenger_phone || '',
+          trip_type: booking.trip_type || 'Ride',
+          pickup: booking.pickup_address || '',
+          dropoff: booking.dropoff_address || '',
+          datetime: booking.pickup_datetime ? new Date(booking.pickup_datetime).toLocaleString() : '',
+          passengers: (booking.adults || 0) + (booking.children || 0),
+          distance: booking.distance_miles || '',
+          price: finalPrice,
+          vehicle: booking.vehicle_type || '',
+          comment: `✓ YOUR RIDE IS CONFIRMED!\n\nDriver: ${driver.full_name || 'Driver assigned'}\nDriver phone: ${driver.phone || ''}\nVehicle: ${driverVehicle || ''}\nFinal price: $${finalPrice}\n\nLog in to your Wayppoint account to view full details.`
+        });
+        console.log('Customer email sent');
+      }
+    } catch (emailErr) {
+      console.error('Email send failed (booking still approved):', emailErr);
+    }
+
     closeDetail();
     await loadBookings();
-    alert('✓ Driver approved and customer notified!');
+    alert('✓ Driver approved! Customer has been notified via email and on their page.');
   }
 
   async function rejectOffer(offerId, bookingId) {
